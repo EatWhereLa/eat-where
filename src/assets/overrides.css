@@ -1,0 +1,17 @@
+:root {
+  --va-background-primary: "#FAF1F2";
+  --va-font-family: "Poppins", sans-serif !important;
+  --va-modal-dialog-border-radius: 1.5rem;
+}
+
+.va-modal__overlay {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.va-input-wrapper__field:after {
+  @apply bg-white rounded-2xl;
+}
+
+.va-input-wrapper--solid .va-input-wrapper__field {
+  @apply py-4 border-none;
+}
