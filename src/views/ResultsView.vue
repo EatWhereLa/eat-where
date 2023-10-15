@@ -2,8 +2,9 @@
 import { RouterLink, useRouter } from "vue-router";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import GenericButton from "@/components/GenericButton.vue";
+import RestaurantModal from "@/components/RestaurantModal.vue";
 import { useGroupUpvoteRestaurantsStore } from "@/stores/groupUpvoteRestaurants";
-import { computed, onBeforeMount, onBeforeUnmount } from "vue";
+import { computed, onBeforeMount, onBeforeUnmount, ref } from "vue";
 import type { Restaurant } from "@/types/Restaurant";
 import ky from "ky";
 import type { LatLng } from "@/types/location";
@@ -53,6 +54,13 @@ const tabulatedResults = computed<Restaurant[]>(() => {
   return retArr;
 });
 
+const showModalValues = ref({
+  title: "",
+  placeId: "",
+  imgSrc: "",
+  show: true,
+});
+
 const expandedResults = computed<Restaurant[]>(() => {
   const retArr = [...tabulatedResults.value];
   if (retArr.length > 1) {
@@ -77,6 +85,14 @@ const getRestaurants = async () => {
         }),
       (error) => console.log(error),
     );
+  }
+};
+
+const getRestaurantImageUrl = (restaurant: Restaurant) => {
+  if (restaurant && restaurant.photos) {
+    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`;
+  } else {
+    return "";
   }
 };
 
@@ -149,6 +165,14 @@ const handleTryAgain = async () => {
     await getRestaurants();
   }
 };
+
+const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"], imgSrc: string) => {
+  showModalValues.value.placeId = placeId;
+  showModalValues.value.title = title;
+  showModalValues.value.imgSrc = imgSrc;
+  showModalValues.value.show = !showModalValues.value.show;
+}
+
 </script>
 
 <template>
@@ -157,11 +181,21 @@ const handleTryAgain = async () => {
       <span class="text-3xl font-semibold mr-2">1st</span>
       place
     </h2>
+
+    <RestaurantModal
+        :title="showModalValues.title"
+        :place-id="showModalValues.placeId"
+        :img-src="showModalValues.imgSrc"
+        :show="showModalValues.show"
+      >
+    </RestaurantModal>
+    
     <RestaurantListItem
       :title="tabulatedResults[0].name"
       :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${tabulatedResults[0]?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
       :tags="['Burger', 'Fastfood', 'Halal']"
       v-if="tabulatedResults.length > 0"
+      @click="handleModal(tabulatedResults[0].place_id, tabulatedResults[0].name, getRestaurantImageUrl(tabulatedResults[0]))"
     >
       <generic-button
         class="inline-flex align-center gap-2 text-primary"
@@ -191,6 +225,7 @@ const handleTryAgain = async () => {
             :title="restaurant.name"
             :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
             :tags="['Burger', 'Fastfood', 'Halal']"
+            @click="handleModal(restaurant.place_id, restaurant.name, getRestaurantImageUrl(restaurant))"
           />
         </li>
       </ul>
