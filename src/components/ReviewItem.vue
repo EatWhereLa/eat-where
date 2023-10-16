@@ -22,6 +22,7 @@ const props = defineProps({
         :src="imgUrl"
         alt="Image not found"
         class="absolute object-cover m-auto w-full h-full aspect-square"
+        referrerpolicy="no-referrer"
       />
     </div>
 
