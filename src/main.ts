@@ -8,6 +8,7 @@ import "./assets/main.css";
 
 import {
   createVuesticEssential,
+  VaAccordion,
   VaCarousel,
   VaSelect,
   VaModal,
@@ -33,6 +34,7 @@ app.use(router);
 app.use(
   createVuesticEssential({
     components: {
+      VaAccordion,
       VaCarousel,
       VaSelect,
       VaModal,
