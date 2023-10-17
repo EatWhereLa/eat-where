@@ -430,6 +430,7 @@ const handleModal = (
             getRestaurantImageUrl(restaurants.restaurants[0]),
           )
         "
+        
       >
         <generic-button
           title-color="text-gray-500"

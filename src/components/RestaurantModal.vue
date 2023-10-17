@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, type Ref } from "vue";
+import { ref, watch, type Ref, onMounted } from "vue";
 import GenericButton from "./GenericButton.vue";
 import ky from "ky";
 
@@ -70,8 +70,9 @@ const fetchPlaceInfo = async () => {
   };
 };
 
-watch(props, async (value) => {
+onMounted(async () => {
   const res = await fetchPlaceInfo();
+  console.log(res);
   modalValues.value.description = res.result.editorial_summary?.overview;
   modalValues.value.location = res.result.formatted_address;
   modalValues.value.priceLevel = priceLevels[res.result.price_level];
