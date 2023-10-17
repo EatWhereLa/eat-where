@@ -13,7 +13,6 @@ import { useCurrentLocationStore } from "@/stores/currentLocation";
 import { channel, isLeader, users } from "@/apis/supabase";
 import { useTimer } from "@/composables/useTimer";
 
-const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
 const API_URL = import.meta.env.VITE_API_URL;
 const groupUpvoteRestaurantsStore = useGroupUpvoteRestaurantsStore();
 const restaurants = useRestaurantsStore();
@@ -237,7 +236,7 @@ const handleModal = (
         >
           <RestaurantListItem
             :title="restaurant.name"
-            :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}&key=${MAP_KEY}`"
+            :imgSrc="getRestaurantImageUrl(restaurant)"
             :tags="['Burger', 'Fastfood', 'Halal']"
             @click="
               handleModal(

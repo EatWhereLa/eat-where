@@ -22,7 +22,6 @@ import type { Restaurant } from "@/types/Restaurant";
 import type { LatLng } from "@/types/location";
 import ky from "ky";
 
-const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
 

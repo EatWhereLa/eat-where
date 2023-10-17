@@ -7,7 +7,7 @@ import type { Review, RestaurantDetails } from "@/types/RestaurantDetails";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import ReviewItem from "@/components/ReviewItem.vue";
 
-const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
+const API_URL = import.meta.env.VITE_API_URL;
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -66,12 +66,9 @@ const restaurantMenuItems = [
 ];
 
 const fetchPlaceInfo = async () => {
-  const URL = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${props.placeId}&key=${MAP_KEY}`;
-  return (await ky(
-    `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
-  ).json()) as {
-    result: RestaurantDetails;
-  };
+  const URL = `${API_URL}/google/place-details?place_id=${props.placeId}`;
+  const res = (await ky(URL).json()) as { result: RestaurantDetails };
+  return res.result;
 };
 
 async function setImageURL(url: string) {
@@ -86,11 +83,11 @@ async function setImageURL(url: string) {
 onMounted(async () => {
   await setImageURL(props.imgSrc);
   const res = await fetchPlaceInfo();
-  modalValues.value.description = res.result.editorial_summary?.overview;
-  modalValues.value.location = res.result.formatted_address;
-  modalValues.value.priceLevel = priceLevels[res.result.price_level];
-  modalValues.value.reviews = res.result.reviews;
-  modalValues.value.openingHours = res.result.current_opening_hours;
+  modalValues.value.description = res.editorial_summary?.overview;
+  modalValues.value.location = res.formatted_address;
+  modalValues.value.priceLevel = priceLevels[res.price_level];
+  modalValues.value.reviews = res.reviews;
+  modalValues.value.openingHours = res.current_opening_hours;
 });
 </script>
 
