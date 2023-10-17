@@ -45,8 +45,8 @@ dependencies:
     specifier: ^4.2.5
     version: 4.2.5(vue@3.3.4)
   vuestic-ui:
-    specifier: ^1.8.2
-    version: 1.8.2(vue@3.3.4)
+    specifier: 1.8.0
+    version: 1.8.0(vue@3.3.4)
 
 devDependencies:
   '@rushstack/eslint-patch':
@@ -3869,8 +3869,8 @@ packages:
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
       '@vue/shared': 3.3.4
 
-  /vuestic-ui@1.8.2(vue@3.3.4):
-    resolution: {integrity: sha512-DEAD/mmlysjxqCyUKXlj7uD9DtSoNtxLF7jvQXOGfuy1wwtYT9juWeoECe64HjkLJa/0shOXacS1gbrtQTauNA==}
+  /vuestic-ui@1.8.0(vue@3.3.4):
+    resolution: {integrity: sha512-nfYID3AIRjtIZH6FMb28cvB6mfkw3D/ZLqHHEfWQXcjOPoBinlnMvucL070wlQ2JI7DPusaGZrNbBScZDPzrUg==}
     peerDependencies:
       vue: ^3.0.4
     dependencies:
