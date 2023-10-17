@@ -153,7 +153,7 @@ const success = async (position: LatLng) => {
   //   isDistanceChanged() ||
   //   isTagChanged()
   // ) {
-  const data = (await ky(URL).json()) as Restaurant[]
+  const data = (await ky(URL).json()) as Restaurant[];
 
   currentLocation.setLocationAddress(currentLocation.address);
   currentLocation.setOldLocationAddress(currentLocation.address);
@@ -314,7 +314,7 @@ const handleGroupDownvote = (restaurant: Restaurant) => {
 
 const getRestaurantImageUrl = (restaurant: Restaurant) => {
   if (restaurant && restaurant.photos) {
-    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}&key=${MAP_KEY}`;
+    return `${API_URL}/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}`;
   } else {
     return "";
   }

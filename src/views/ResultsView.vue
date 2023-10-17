@@ -91,7 +91,7 @@ const getRestaurants = async () => {
 
 const getRestaurantImageUrl = (restaurant: Restaurant) => {
   if (restaurant && restaurant.photos) {
-    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}&key=${MAP_KEY}`;
+    return `${API_URL}/google/photo?photo_reference=${restaurant?.photos?.photo_reference}`;
   } else {
     return "";
   }
@@ -200,7 +200,7 @@ const handleModal = (
 
     <RestaurantListItem
       :title="tabulatedResults[0].name"
-      :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${tabulatedResults[0]?.photos?.photo_reference}&key=${MAP_KEY}`"
+      :imgSrc="getRestaurantImageUrl(tabulatedResults[0])"
       :tags="['Burger', 'Fastfood', 'Halal']"
       v-if="tabulatedResults.length > 0"
       @click="

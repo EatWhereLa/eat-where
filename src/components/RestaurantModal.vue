@@ -19,8 +19,6 @@ const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
-const showCustomContent = ref(false);
-
 const modalValues: Ref<{
   description?: string;
   location: string;
@@ -38,6 +36,8 @@ const modalValues: Ref<{
     dine_in: false,
   },
 });
+
+const imageUrl = ref("");
 
 const priceLevels = [
   "Free",
@@ -74,7 +74,17 @@ const fetchPlaceInfo = async () => {
   };
 };
 
+async function setImageURL(url: string) {
+  try {
+    const res = (await ky(url).json()) as { image_url: string };
+    imageUrl.value = "https://" + res.image_url;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 onMounted(async () => {
+  await setImageURL(props.imgSrc);
   const res = await fetchPlaceInfo();
   modalValues.value.description = res.result.editorial_summary?.overview;
   modalValues.value.location = res.result.formatted_address;
@@ -89,7 +99,7 @@ onMounted(async () => {
     <div class="p-6 min-h-[220px] min-w-40 flex flex-col justify-between">
       <div style="background: black; width: 100%">
         <va-image
-          :src="imgSrc"
+          :src="imageUrl"
           alt="Image not found"
           class="max-h-40 min-h-40"
           style="opacity: 0.4; object-fit: cover"
@@ -122,7 +132,11 @@ onMounted(async () => {
           <p class="mt-1.5">Opening Hours</p>
           <div class="clear-left"></div>
 
-          <ul v-for="day in modalValues.openingHours.weekday_text" class="mb-2">
+          <ul
+            v-for="(day, idx) in modalValues.openingHours.weekday_text"
+            :key="idx"
+            class="mb-2"
+          >
             <li class="my-1">{{ day }}</li>
           </ul>
           <div class="clear-left"></div>

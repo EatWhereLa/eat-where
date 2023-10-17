@@ -1,12 +1,29 @@
 <script setup lang="ts">
 import GenericButton from "@/components/GenericButton.vue";
+import ky from "ky";
+import { onMounted, ref } from "vue";
 
 const props = defineProps({
   // foo: { type: String, required: true },
   title: { type: String },
-  imgSrc: { type: String },
+  imgSrc: { type: String, required: true },
   tags: { type: Array<String>, required: false },
   price: { type: Number, required: false },
+});
+
+const imageUrl = ref("");
+
+async function setImageURL(url: string) {
+  try {
+    const res = (await ky(url).json()) as { image_url: string };
+    imageUrl.value = "https://" + res.image_url;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(async () => {
+  await setImageURL(props.imgSrc);
 });
 </script>
 
@@ -18,7 +35,7 @@ const props = defineProps({
       class="relative rounded-3xl min-w-[115px] min-h-[115px] overflow-hidden"
     >
       <img
-        :src="imgSrc"
+        :src="imageUrl"
         alt="Image not found"
         class="absolute object-cover m-auto w-full h-full aspect-square"
       />
