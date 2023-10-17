@@ -14,6 +14,7 @@ import { channel, isLeader, users } from "@/apis/supabase";
 import { useTimer } from "@/composables/useTimer";
 
 const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
+const API_URL = import.meta.env.VITE_API_URL;
 const groupUpvoteRestaurantsStore = useGroupUpvoteRestaurantsStore();
 const restaurants = useRestaurantsStore();
 const currentLocation = useCurrentLocationStore();
@@ -90,7 +91,7 @@ const getRestaurants = async () => {
 
 const getRestaurantImageUrl = (restaurant: Restaurant) => {
   if (restaurant && restaurant.photos) {
-    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`;
+    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}&key=${MAP_KEY}`;
   } else {
     return "";
   }
@@ -101,18 +102,16 @@ const success = async (position: LatLng) => {
   const longitude = position.lng;
 
   const query = `location=${latitude},${longitude}
-  &radius=500&type=restaurant&minprice=1&key=${MAP_KEY}`;
-  const URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?${query}`;
+  &radius=500&type=restaurant&minprice=1`;
+  const URL = `${API_URL}/google?${query}`;
 
-  const data = (await ky(
-    `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
-  ).json()) as {
-    results: Restaurant[];
-  };
+  const data = (await ky(URL).json()) as Restaurant[];
+
+  console.log(data);
 
   restaurants.clearRestaurants();
 
-  data.results.forEach((item: Restaurant) => {
+  data.forEach((item: Restaurant) => {
     restaurants.addRestaurant({
       place_id: item.place_id,
       name: item.name,
@@ -121,10 +120,8 @@ const success = async (position: LatLng) => {
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
-        location: {
-          lat: item.geometry.location.lat,
-          lng: item.geometry.location.lng,
-        },
+        lat: item.geometry.lat,
+        lng: item.geometry.lng,
       },
       upvote_count: 0,
     });
@@ -197,12 +194,13 @@ const handleModal = (
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
+        @close="showModalValues.show = false"
       />
     </va-modal>
 
     <RestaurantListItem
       :title="tabulatedResults[0].name"
-      :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${tabulatedResults[0]?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
+      :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${tabulatedResults[0]?.photos?.photo_reference}&key=${MAP_KEY}`"
       :tags="['Burger', 'Fastfood', 'Halal']"
       v-if="tabulatedResults.length > 0"
       @click="
@@ -239,7 +237,7 @@ const handleModal = (
         >
           <RestaurantListItem
             :title="restaurant.name"
-            :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
+            :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}&key=${MAP_KEY}`"
             :tags="['Burger', 'Fastfood', 'Halal']"
             @click="
               handleModal(

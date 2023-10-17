@@ -49,6 +49,8 @@ import GenericModal from "../components/GenericModal.vue";
       </RouterLink>
       <IconWithTextButton title="Settings" icon="settings" />
     </div>
+    <!--Nearby restaurants based on user location-->
+    <div></div>
   </main>
 
   <!-- <Modal
