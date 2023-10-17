@@ -339,13 +339,16 @@ const getRemainingList = () => {
   return restaurants.restaurants.slice(1);
 };
 
-const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"], imgSrc: string) => {
+const handleModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  imgSrc: string,
+) => {
   showModalValues.value.placeId = placeId;
   showModalValues.value.title = title;
   showModalValues.value.imgSrc = imgSrc;
   showModalValues.value.show = !showModalValues.value.show;
-}
-
+};
 </script>
 
 <template>
@@ -390,13 +393,20 @@ const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"],
       </va-select>
     </div>
 
-    <RestaurantModal
+    <va-modal
+      v-model="showModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      closeButton
+      fullscreen
+    >
+      <RestaurantModal
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
-        :show="showModalValues.show"
-      >
-    </RestaurantModal>
+      />
+    </va-modal>
 
     <div class="flex items-center gap-2 mb-3">
       <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
@@ -409,49 +419,55 @@ const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"],
       <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
     </div>
     <div v-if="restaurants.restaurants.length > 0">
-        <RestaurantListItem
-          :title="restaurants.restaurants[0].name"
-          :imgSrc="getRestaurantImageUrl(restaurants.restaurants[0])"
-          :tags="['Burger', 'Fastfood', 'Halal']"
-          @click="handleModal(restaurants.restaurants[0].place_id, restaurants.restaurants[0].name, getRestaurantImageUrl(restaurants.restaurants[0]))"
+      <RestaurantListItem
+        :title="restaurants.restaurants[0].name"
+        :imgSrc="getRestaurantImageUrl(restaurants.restaurants[0])"
+        :tags="['Burger', 'Fastfood', 'Halal']"
+        @click="
+          handleModal(
+            restaurants.restaurants[0].place_id,
+            restaurants.restaurants[0].name,
+            getRestaurantImageUrl(restaurants.restaurants[0]),
+          )
+        "
+      >
+        <generic-button
+          title-color="text-gray-500"
+          :bg-color="
+            !isUpvoted(restaurants.restaurants[0].place_id)
+              ? 'bg-neutral-400/30'
+              : 'bg-primary'
+          "
+          padding="py-2 px-3"
+          @click="handleUpvote(restaurants.restaurants[0].place_id)"
         >
-          <generic-button
-            title-color="text-gray-500"
-            :bg-color="
-              !isUpvoted(restaurants.restaurants[0].place_id)
-                ? 'bg-neutral-400/30'
-                : 'bg-primary'
-            "
-            padding="py-2 px-3"
-            @click="handleUpvote(restaurants.restaurants[0].place_id)"
-          >
-            <va-icon
-              v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
-              name="arrow_upward"
-              size="1.5rem"
-            />
-            <va-icon
-              v-else
-              class="text-white"
-              name="arrow_downward"
-              size="1.5rem"
-            />
+          <va-icon
+            v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
+            name="arrow_upward"
+            size="1.5rem"
+          />
+          <va-icon
+            v-else
+            class="text-white"
+            name="arrow_downward"
+            size="1.5rem"
+          />
 
-            <!-- <span class="font-semibold">100</span> -->
-            <span
-              v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
-              class="font-semibold uppercase tracking-widest text-xs"
-            >
-              Upvote
-            </span>
-            <span
-              v-else
-              class="font-semibold uppercase tracking-widest text-xs text-white"
-            >
-              Downvote
-            </span>
-          </generic-button>
-        </RestaurantListItem>
+          <!-- <span class="font-semibold">100</span> -->
+          <span
+            v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
+            class="font-semibold uppercase tracking-widest text-xs"
+          >
+            Upvote
+          </span>
+          <span
+            v-else
+            class="font-semibold uppercase tracking-widest text-xs text-white"
+          >
+            Downvote
+          </span>
+        </generic-button>
+      </RestaurantListItem>
     </div>
     <hr class="h-px my-2 mb-3 bg-primary w-full m-auto" />
 
@@ -469,7 +485,13 @@ const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"],
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
           :tags="['Burger', 'Fastfood', 'Halal']"
-          @click="handleModal(restaurant.place_id, restaurant.name, getRestaurantImageUrl(restaurant))"
+          @click="
+            handleModal(
+              restaurant.place_id,
+              restaurant.name,
+              getRestaurantImageUrl(restaurant),
+            )
+          "
         >
           <generic-button
             title-color="text-gray-500"

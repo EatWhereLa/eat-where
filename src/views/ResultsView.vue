@@ -58,7 +58,7 @@ const showModalValues = ref({
   title: "",
   placeId: "",
   imgSrc: "",
-  show: true,
+  show: false,
 });
 
 const expandedResults = computed<Restaurant[]>(() => {
@@ -166,13 +166,16 @@ const handleTryAgain = async () => {
   }
 };
 
-const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"], imgSrc: string) => {
+const handleModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  imgSrc: string,
+) => {
   showModalValues.value.placeId = placeId;
   showModalValues.value.title = title;
   showModalValues.value.imgSrc = imgSrc;
   showModalValues.value.show = !showModalValues.value.show;
-}
-
+};
 </script>
 
 <template>
@@ -182,20 +185,33 @@ const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"],
       place
     </h2>
 
-    <RestaurantModal
+    <va-modal
+      v-model="showModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      closeButton
+      fullscreen
+    >
+      <RestaurantModal
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
-        :show="showModalValues.show"
-      >
-    </RestaurantModal>
-    
+      />
+    </va-modal>
+
     <RestaurantListItem
       :title="tabulatedResults[0].name"
       :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${tabulatedResults[0]?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
       :tags="['Burger', 'Fastfood', 'Halal']"
       v-if="tabulatedResults.length > 0"
-      @click="handleModal(tabulatedResults[0].place_id, tabulatedResults[0].name, getRestaurantImageUrl(tabulatedResults[0]))"
+      @click="
+        handleModal(
+          tabulatedResults[0].place_id,
+          tabulatedResults[0].name,
+          getRestaurantImageUrl(tabulatedResults[0]),
+        )
+      "
     >
       <generic-button
         class="inline-flex align-center gap-2 text-primary"
@@ -225,7 +241,13 @@ const handleModal = (placeId: Restaurant["place_id"], title: Restaurant["name"],
             :title="restaurant.name"
             :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
             :tags="['Burger', 'Fastfood', 'Halal']"
-            @click="handleModal(restaurant.place_id, restaurant.name, getRestaurantImageUrl(restaurant))"
+            @click="
+              handleModal(
+                restaurant.place_id,
+                restaurant.name,
+                getRestaurantImageUrl(restaurant),
+              )
+            "
           />
         </li>
       </ul>
