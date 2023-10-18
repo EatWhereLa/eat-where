@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, type Ref, onMounted } from "vue";
+import { ref, watch, type Ref, onMounted, defineEmits } from "vue";
 import GenericButton from "./GenericButton.vue";
 import ky from "ky";
 
@@ -14,6 +14,8 @@ const props = defineProps({
   placeId: { type: String, required: true },
   imgSrc: { type: String, required: true },
 });
+
+const emit = defineEmits();
 
 const showCustomContent = ref(false);
 
@@ -131,7 +133,7 @@ onMounted(async () => {
         <p v-if="modalValues.description !== undefined">
           {{ modalValues.description }}
         </p>
-        <p v-else>No description found for location</p>
+        <p class="mt-2" v-else>No description found for location</p>
       </va-card-content>
     </va-card>
   </div>
@@ -198,7 +200,7 @@ onMounted(async () => {
     <generic-button
       titleColor="text-white"
       bgColor="bg-primary"
-      @click="showCustomContent = !showCustomContent"
+      @click="emit('closeModal')"
     >
       Close
     </generic-button>
