@@ -94,7 +94,7 @@ onMounted(async () => {
       />
     </div>
     <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
-      <h3 class="lg:text-3xl pb-6 sm:text-2xl text-lg">{{ title }}</h3>
+      <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">{{ title }}</h3>
       <va-card-content>
         <va-icon
           name="location_on"
