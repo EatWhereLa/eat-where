@@ -113,7 +113,7 @@ onMounted(async () => {
         <va-icon
           name="alarm"
           size="1.8rem"
-          class="text-primary w-4 mr-2 float-left mb-1"
+          class="text-primary w-4 mr-3 float-left mb-1"
         />
         <p class="mt-1.5">Opening Hours</p>
         <div class="clear-left"></div>
@@ -136,7 +136,7 @@ onMounted(async () => {
     </va-card>
   </div>
   <section class="mt-7">
-    <va-accordion class="max-w-lg p-4">
+    <va-accordion class="max-w-full p-4">
       <va-collapse :header="'Menu'" body-color="white">
         <template #body>
           <li
