@@ -112,17 +112,18 @@ onMounted(async () => {
         <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
         <div class="clear-left"></div>
 
-        <va-icon
-          name="alarm"
-          size="1.8rem"
-          class="text-primary w-4 mr-3 float-left mb-1"
-        />
-        <p class="mt-1.5">Opening Hours</p>
-        <div class="clear-left"></div>
-
-        <ul v-for="day in modalValues.openingHours.weekday_text" class="mb-2">
-          <li class="my-1">{{ day }}</li>
-        </ul>
+        <div v-if="modalValues.openingHours">
+          <va-icon
+            name="alarm"
+            size="1.8rem"
+            class="text-primary w-4 mr-3 float-left mb-1"
+          />
+          <p class="mt-1.5">Opening Hours</p>
+          <div class="clear-left"></div>
+          <ul v-for="day in modalValues.openingHours.weekday_text" class="mb-2">
+            <li class="my-1">{{ day }}</li>
+          </ul>
+        </div>
         <div class="clear-left"></div>
 
         <va-icon
