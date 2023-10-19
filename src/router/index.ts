@@ -82,6 +82,16 @@ const router = createRouter({
         back: "/",
       },
     },
+    {
+      path: "/profile",
+      name: "profile",
+      component: () => import("../views/ProfileView.vue"),
+      meta: {
+        title: "Profile",
+        headerClass: "headerWithTitleWithButtonClose",
+        back: "/",
+      },
+    },
   ],
 });
 

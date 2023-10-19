@@ -44,10 +44,12 @@ import GenericModal from "../components/GenericModal.vue";
     <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
 
     <div class="grid grid-cols-2 gap-6 py-6">
-      <RouterLink to="/bookmarks">
+      <RouterLink to="/profile">
         <IconWithTextButton title="Bookmarks" icon="bookmark_outline" />
       </RouterLink>
-      <IconWithTextButton title="Settings" icon="settings" />
+      <RouterLink to="/profile">
+        <IconWithTextButton title="Settings" icon="settings" />
+      </RouterLink>
     </div>
   </main>
 
