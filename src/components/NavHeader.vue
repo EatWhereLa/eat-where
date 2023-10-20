@@ -38,13 +38,9 @@ onBeforeUnmount(() => {
         <a href="/">
           <img
             class="om"
-            src="../assets/images/logo-light.svg"
+            src="../assets/logo.jpg"
             alt="Logo Light"
-          />
-          <img
-            class="xc nm"
-            src="../assets/images/logo-dark.svg"
-            alt="Logo Dark"
+            style="width:80px"
           />
         </a>
 

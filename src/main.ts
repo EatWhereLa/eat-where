@@ -19,7 +19,7 @@ import {
   VaDropdownPlugin,
   VaModalPlugin,
 } from "vuestic-ui";
-import "vuestic-ui/css";
+// import "vuestic-ui/css";
 import config from "../vuestic.config";
 
 import "./assets/overrides.css";

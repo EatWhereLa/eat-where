@@ -28,12 +28,15 @@ const mainPaddingStyle = (routeName: string) => {
 </script>
 
 <template>
+
+<!-- class="max-w-2xl m-auto" -->
+
   <HeaderBar />
   <div
     :class="`${headerStyle($route.name as string)} ${mainPaddingStyle(
       $route.name as string,
     )}`"
-    class="max-w-2xl m-auto"
+    
   >
     <RouterView />
   </div>
