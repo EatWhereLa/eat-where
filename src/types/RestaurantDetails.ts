@@ -12,15 +12,24 @@ export type Review = {
     profile_photo_url: string,
     relative_time_description: string;
     text: string;
-    time: number
+    time: number;
 };
+
+export type TimePeriod = {
+  day: number;
+  time: string;
+}
 
 export type RestaurantDetails = {
     name: string;
     current_opening_hours: {
         open_now: boolean;
         weekday_text: string[];
-        dine_in: boolean
+        periods: [{
+          close: TimePeriod;
+          open: TimePeriod;
+        }]
+        dine_in: boolean;
     };
     business_status: string;
     editorial_summary?: {
@@ -38,6 +47,7 @@ export type RestaurantDetails = {
         lng: number;
       };
     };
+    reservable: boolean,
     types: string[],
     website: string
   };

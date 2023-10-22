@@ -4,8 +4,10 @@ import GenericButton from "./GenericButton.vue";
 import ky from "ky";
 
 import type { Review, RestaurantDetails } from "@/types/RestaurantDetails";
+import type { Restaurant } from "@/types/Restaurant";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import ReviewItem from "@/components/ReviewItem.vue";
+import ReservationModal from "@/components/ReservationModal.vue";
 
 const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
 
@@ -25,6 +27,7 @@ const modalValues: Ref<{
   priceLevel: string;
   reviews: Review[];
   openingHours: RestaurantDetails["current_opening_hours"];
+  reservable: RestaurantDetails["reservable"];
 }> = ref({
   description: "",
   location: "",
@@ -33,8 +36,23 @@ const modalValues: Ref<{
   openingHours: {
     open_now: false,
     weekday_text: [],
+    periods: [{
+      close: { day : 0, time: "" },
+      open: { day : 0, time: "" }
+    }],
     dine_in: false,
   },
+  reservable: false
+});
+
+const showReservationModalValues = ref({
+  title: "",
+  placeId: "",
+  periods: [{
+      close: { day : 0, time: "" },
+      open: { day : 0, time: "" }
+  }],
+  show: false,
 });
 
 const priceLevels = [
@@ -74,17 +92,52 @@ const fetchPlaceInfo = async () => {
 
 onMounted(async () => {
   const res = await fetchPlaceInfo();
-  console.log(res);
+
   modalValues.value.description = res.result.editorial_summary?.overview;
   modalValues.value.location = res.result.formatted_address;
   modalValues.value.priceLevel = priceLevels[res.result.price_level];
   modalValues.value.reviews = res.result.reviews;
   modalValues.value.openingHours = res.result.current_opening_hours;
+  
+  modalValues.value.reservable = "reservable" in res.result ? res.result.reservable : false;
 });
+
+const handleReservationModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  openingHours: RestaurantDetails["current_opening_hours"]["periods"]
+) => {
+  showReservationModalValues.value.placeId = placeId;
+  showReservationModalValues.value.title = title;
+  showReservationModalValues.value.periods = openingHours;
+  showReservationModalValues.value.show = !showReservationModalValues.value.show;
+};
 </script>
 
 <template>
   <div class="p-6 min-h-[220px] min-w-40 flex flex-col justify-between">
+    <va-modal
+      v-model="showReservationModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      closeButton
+    >
+      <ReservationModal
+        :title="showReservationModalValues.title"
+        :place-id="showReservationModalValues.placeId"
+        :opening-hours="showReservationModalValues.periods"
+        @closeModal="
+          handleReservationModal(
+            '', '', [{
+              close: { day : 0, time: '' },
+              open: { day : 0, time: '' },
+            }]
+          )
+        "
+      />
+    </va-modal>
+
     <div style="background: black; width: 100%">
       <va-image
         :src="imgSrc"
@@ -94,8 +147,8 @@ onMounted(async () => {
       />
     </div>
     <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
-      <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">{{ title }}</h3>
       <va-card-content>
+        <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">{{ title }}</h3>
         <va-icon
           name="location_on"
           size="1.8rem"
@@ -109,7 +162,7 @@ onMounted(async () => {
           size="1.8rem"
           class="text-primary w-4 mr-2 float-left mb-3"
         />
-        <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
+        <p class="pt-1.5">{{ modalValues.priceLevel }}</p>
         <div class="clear-left"></div>
 
         <div v-if="modalValues.openingHours">
@@ -118,7 +171,7 @@ onMounted(async () => {
             size="1.8rem"
             class="text-primary w-4 mr-3 float-left mb-1"
           />
-          <p class="mt-1.5">Opening Hours</p>
+          <p class="pt-1.5">Opening Hours</p>
           <div class="clear-left"></div>
           <ul v-for="day in modalValues.openingHours.weekday_text" class="mb-2">
             <li class="my-1">{{ day }}</li>
@@ -135,6 +188,24 @@ onMounted(async () => {
           {{ modalValues.description }}
         </p>
         <p class="mt-2" v-else>No description found for location</p>
+
+        <div class="clear-left"></div>
+        <generic-button v-if="modalValues.reservable"
+          class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
+          padding="p-0"
+          @click="
+            handleReservationModal(
+              placeId,
+              title,
+              modalValues.openingHours.periods,
+            )
+          "
+        >
+          <va-icon name="table_bar" size="2rem" />
+          <span class="font-semibold">
+          Reservation
+          </span>
+        </generic-button>
       </va-card-content>
     </va-card>
   </div>
