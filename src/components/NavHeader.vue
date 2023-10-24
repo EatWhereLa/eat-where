@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
 
       <div
         class="vd wo/4 sd qo f ho oo wf yf"
-        :class="{ 'd hh rm sr td ud qg ug jc yh': navigationOpen }"
+        :class="{ 'd hh rm sr td ud ug': navigationOpen }"
         @mouseleave="closeNavBarOnLeave"
       >
         <nav>
@@ -111,9 +111,9 @@ onBeforeUnmount(() => {
               <!-- Dropdown End -->
             </li>
             <li><a href="/location" class="xl">Location</a></li>
-            <li><a href="/#support" class="xl">Support</a></li>
-            <li><a href="/bookmark" class="xl">bookmark</a></li>
+            <li><a href="/activity" class="xl">Activity</a></li>
             <li><a href="/profile" class="xl">Profile</a></li>
+            <li><a href="/support" class="xl">Support</a></li>
           </ul>
         </nav>
 
