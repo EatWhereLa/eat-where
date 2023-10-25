@@ -6,6 +6,10 @@ import ky from "ky";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone"
 
+import type { Restaurant } from "@/types/Restaurant";
+
+import BookingModal from "@/components/BookingModal.vue";
+
 dayjs.extend(timezone)
 dayjs.tz.setDefault("Asia/Singapore")
 
@@ -13,7 +17,16 @@ const props = defineProps({
   title: { type: String, required: true },
   placeId: { type: String, required: true },
   openingHours: {type: Array, required: true},
-  });
+});
+
+const showBookingModalValues = ref({
+  title: "",
+  placeId: "",
+  bookingDate: "",
+  bookingTime: "",
+  show: false,
+});
+
 
 const emit = defineEmits();
 
@@ -59,7 +72,7 @@ function generateHours(businessHours: OpenClose[]): any[] {
       result.push({ day, hours });
     }
   });
-
+  
   // Distribute hours greater than "2400" to the subsequent day
   result.forEach((day, index) => {
     const nextDayHours: string[] = [];
@@ -90,26 +103,41 @@ function generateHours(businessHours: OpenClose[]): any[] {
 }
 
 const formatDates = (openingList: any[]) => {
-
     const currentDay = dayjs().get("day");
-    if (currentDay !== 0) {
-      const movingList = openingList.splice(0,currentDay);
-      const daysToAdd = 7 - openingList.length;
-
-      if (daysToAdd !== 0) {
-        movingList.forEach(openingDay => {
-          openingDay.day += daysToAdd;
-        });
-      }
-      openingList.push(movingList);
-    }
     
-    for (let i = 0; i < openingList.length; i++) {
-      openingList[i].day = dayjs().add(openingList[i].day, 'day').format("DD/MM/YYYY");
+    const nextSevenDays: any[] = [];
+    
+    let daysToAdd = 0;
+
+    while (nextSevenDays.length < 7) {
+        const potentialDay = currentDay + daysToAdd; // Day we're considering to add
+        const isOpen = openingList.find(day => day.day === potentialDay % 7);
+
+        if (isOpen) {
+            const openingDay = { ...isOpen }; // Clone to avoid mutating the original list
+            openingDay.day = dayjs().add(daysToAdd, 'day').format("DD/MM/YYYY");
+            nextSevenDays.push(openingDay);
+        }
+
+        daysToAdd++; // Always increment, even if the day was closed
     }
 
-    return openingList;
+    return nextSevenDays;
 }
+
+
+const handleBookingModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  bookingDate: string,
+  bookingTime: string,
+) => {
+  showBookingModalValues.value.placeId = placeId;
+  showBookingModalValues.value.title = title;
+  showBookingModalValues.value.bookingDate = bookingDate;
+  showBookingModalValues.value.bookingTime = bookingTime;
+  showBookingModalValues.value.show = !showBookingModalValues.value.show;
+};
 </script>
 
 <template>
@@ -123,6 +151,26 @@ const formatDates = (openingList: any[]) => {
       </template>
     </va-tabs>
 
+    <va-modal
+      v-model="showBookingModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="small"
+      closeButton
+    >
+      <BookingModal
+        :title="showBookingModalValues.title"
+        :place-id="showBookingModalValues.placeId"
+        :bookingDate ="showBookingModalValues.bookingDate"
+        :bookingTime="showBookingModalValues.bookingTime"
+        @closebookingmodal="
+          handleBookingModal(
+            '', '', '', ''
+          )
+        "
+      />
+    </va-modal>
+
     <div v-for="bookValue in bookingValues">
       <h2> {{ bookValue.day }}</h2>
       <div class="flex flex-wrap justify-evenly my-2">
@@ -131,6 +179,7 @@ const formatDates = (openingList: any[]) => {
           titleColor="text-white"
           bgColor="bg-primary"
           class="min-w-[130px] max-w-[100px] mx-1 my-1"
+          @click="handleBookingModal(placeId, title, bookValue.day.toString(), hour)"
         >
           {{ hour }}
         </generic-button>
@@ -138,15 +187,6 @@ const formatDates = (openingList: any[]) => {
     </div>
 
   </section>
-  <div class="self-end flex align-end">
-    <generic-button
-      titleColor="text-white"
-      bgColor="bg-primary"
-      @click="emit('closeModal')"
-    >
-      Close
-    </generic-button>
-  </div>
 </template>
 
 <style></style>
