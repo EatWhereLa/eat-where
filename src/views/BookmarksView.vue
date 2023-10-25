@@ -192,7 +192,7 @@ const toggleSelected = (category: string) => {
           </div>
 
           <div class="overflow-y-auto">
-            <div v-if="filter" class="wc zf iq my-grid pb-5 pt-5">
+            <div v-if="filter" class="grid xl:gap-10 my-grid">
               <!-- <div class="flex flex-wrap"> -->
               <BookmarkRestaurantItem
                 v-for="(restaurant, idx) in restaurants"
@@ -201,7 +201,7 @@ const toggleSelected = (category: string) => {
               />
               <!-- </div> -->
             </div>
-            <div v-else class="wc zf iq my-grid pb-5 pt-5">
+            <div v-else class="grid xl:gap-10 my-grid">
               <BookmarkRestaurantItem
                 v-for="(restaurant, idx) in restaurantsFiltered"
                 :key="idx"
