@@ -40,29 +40,18 @@ const bookmarks = [
 </template> -->
 
 <script setup lang="ts">
-import ProfileTabs from "@/components/ProfileTabs.vue";
 import BookmarkRestaurantItem from "@/components/ForRestaurantBookmark/BookmarkRestaurantItem.vue";
 import restaurantsData from "@/data/restaurants.json"; // Adjust this path to where your data resides
-import FilterButton from "@/components/ForRestaurantBookmark/FilterButton.vue";
-import {
-  ref,
-  watch,
-  computed,
-  reactive,
-  onBeforeMount,
-  type Ref,
-  watchEffect,
-} from "vue";
+import { ref, onBeforeMount, type Ref } from "vue";
 import SortButtonOnSide from "@/components/ForRestaurantBookmark/SortButtonOnSide.vue";
-
-import FilterButtonOnSide from "@/components/ForRestaurantBookmark/FilterButtonOnSide.vue";
 import PriceButtonOnSide from "@/components/ForRestaurantBookmark/PriceButtonOnSide.vue";
 import type { FilterRestaurant } from "@/types/Restaurant";
 
 const restaurants: FilterRestaurant[] = restaurantsData.restaurants; // This should directly give you the array of restaurants
 let restaurantCategories: string[] = [];
 const selectedCategories: Ref<string[]> = ref([]);
-const buttonNames = ref([]);
+const selectOptions = ref(["Name", "Distance", "Price"]);
+const selectedOption = ref("");
 
 onBeforeMount(() => {
   //init the categories
@@ -75,146 +64,8 @@ onBeforeMount(() => {
 
 const search = ref("");
 
-watch(search, (newSearch) => {
-  console.log("Search value changed:", newSearch);
-  // You can place your logic here or call your searchname function
-  // searchname(newSearch);
-});
-
-//use this for method
-// const searchname = (newSearch: string) => {
-//   restaurantCategories1.length = 0;
-//   restaurantCategories2.length = 0;
-//   const newSearch1 = newSearch.toLowerCase();
-//   console.log(restaurantCategories.length);
-//   for (const cat of restaurantCategories) {
-//     const cat1 = cat.toLowerCase();
-//     // console.log(cat1.includes(newSearch1) == true);
-//     if (cat1.includes(newSearch1) == true) {
-//       if (restaurantCategories1.length < 8) {
-//         restaurantCategories1.push(cat);
-//       } else {
-//         restaurantCategories2.push(cat);
-//       }
-//     } else if (newSearch1.length == 0) {
-//       if (restaurantCategories1.length < 8) {
-//         restaurantCategories1.push(cat);
-//       } else {
-//         restaurantCategories2.push(cat);
-//       }
-//     }
-//   }
-// };
-
 const restaurantsFiltered = ref([{}]);
 const filter = ref(true);
-const categories = reactive([]);
-//use this for method
-// const myAction = (category: string) => {
-//   if (category.toLowerCase() == "all") {
-//     // console.log("HOIBNIOB")
-//     // for (const cat in categories){
-//     //   document.getElementById(cat).checked = false;
-//     // }
-//     categories.length = 0;
-//     restaurantsFiltered.value.length = 0;
-//     filter.value = true;
-//   } else {
-//     if (categories.includes(category) == true) {
-//       var num = categories.indexOf(category);
-//       categories.splice(num, 1);
-//     } else {
-//       categories.push(category);
-//     }
-//   }
-//   if (categories.length != 0) {
-//     filter.value = true;
-//     filter.value = false;
-//     restaurantsFiltered.value.length = 0;
-//     for (const restaurant of restaurants) {
-//       for (const cat of categories) {
-//         if (restaurant.category.includes(cat) == true) {
-//           var add = true;
-//           for (const restaurantF of restaurantsFiltered.value) {
-//             if (restaurantF.name == restaurant.name) {
-//               add = false;
-//             }
-//           }
-//           if (add == true) {
-//             restaurantsFiltered.value.push(restaurant);
-//           }
-//         }
-//       }
-//     }
-//   } else {
-//     filter.value = true;
-//   }
-// };
-
-const toggleButton = (value: boolean, category: string) => {
-  // console.log(category);
-  // categories.push(category);
-  // console.log(categories);
-
-  isButtonOn.value[category] = value;
-  console.log(`Button ${category} is toggled to ${value ? "ON" : "OFF"}`);
-  if (category.toLowerCase() == "all") {
-    // console.log("HOIBNIOB")
-    // for (const cat in categories){
-    //   document.getElementById(cat).checked = false;
-    // }
-    categories.length = 0;
-    restaurantsFiltered.value.length = 0;
-    filter.value = true;
-  } else {
-    if (categories.includes(category) == true) {
-      var num = categories.indexOf(category);
-      categories.splice(num, 1);
-    } else {
-      categories.push(category);
-    }
-  }
-  if (categories.length != 0) {
-    filter.value = true;
-    filter.value = false;
-    restaurantsFiltered.value.length = 0;
-    for (const restaurant of restaurants) {
-      for (const cat of categories) {
-        if (restaurant.category.includes(cat) == true) {
-          var add = true;
-          for (const restaurantF of restaurantsFiltered.value) {
-            if (restaurantF.name == restaurant.name) {
-              add = false;
-            }
-          }
-          if (add == true) {
-            restaurantsFiltered.value.push(restaurant);
-          }
-        }
-      }
-    }
-  } else {
-    filter.value = true;
-  }
-  console.log(categories);
-};
-
-watch(categories, (newSearch) => {
-  for (const cat of newSearch) {
-    isButtonOn.value[cat] = true;
-    // console.log(isButtonOn.value[cat]);
-  }
-  buttonNames.value = Object.keys(isButtonOn.value);
-});
-
-const isCategoryExpanded = ref(false);
-const viewAll = () => {
-  if (isCategoryExpanded.value == false) {
-    isCategoryExpanded.value = true;
-  } else {
-    isCategoryExpanded.value = false;
-  }
-};
 
 const price = ["$", "$$", "$$$", "$$$$", "$$$$$"];
 
@@ -230,14 +81,26 @@ const toggleSortDirection = (ascending: boolean) => {
     isDescending.value = true;
   }
 };
+
+const toggleSelected = (category: string) => {
+  const res = selectedCategories.value.findIndex((item) => item === category);
+  if (res >= 0) {
+    // The item is already in the list, we want to remove it
+    selectedCategories.value.splice(res, 1);
+  } else {
+    selectedCategories.value.push(category);
+  }
+};
 </script>
 
 <template>
-  <main class="bg-white h-full flex flex-col">
+  <main class="bg-white h-full flex flex-col w-full">
     <!-- <ProfileTabs /> -->
-    <section class="container mx-auto bg-white h-full">
-      <div class="flex gap-4 px-8 justify-center items-center h-full">
-        <div class="col-span-0 w-72 hidden lg:block lg:col-span-3 h-4/5">
+    <section class="container mx-auto bg-white h-full w-full">
+      <div
+        class="flex gap-4 px-8 justify-center items-center h-full w-full overflow-y-auto"
+      >
+        <div class="w-72 hidden lg:block h-4/5">
           <div
             class="flex flex-col h-full border-solid border-2 border-orange-500 rounded-lg p-4 pl-7"
           >
@@ -275,77 +138,73 @@ const toggleSortDirection = (ascending: boolean) => {
             </div>
           </div>
         </div>
-        <div class="col-span-12 lg:col-span-9">
-          <div class="text-bold lg:hidden pb-1">Categories</div>
-          <div
-            class="scrollable-content pr-1 pb-1 pt-1 overflow-x-scroll lg:hidden"
-          >
-            <span v-for="buttonName in buttonNames" :key="buttonName">
-              <FilterButton
-                :modelValue="isButtonOn[buttonName]"
-                :buttonName="buttonName"
-                @button-click="toggleButton"
-                @update:modelValue="isButtonOn[buttonName] = $event"
-              />
-            </span>
-          </div>
-          <div class="flex" style="justify-content: end">
-            <div class="p-1 lg:hidden">
-              <div class="text-bold lg:hidden pb-1">Sort by</div>
-              <div class="relative inline-flex" style="margin-bottom: 25px">
-                <svg
-                  class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 412 232"
+        <div class="h-full sm:h-4/5 w-full">
+          <div class="h-1/5 lg:hidden flex flex-col gap-2">
+            <div>
+              <div class="text-bold pb-1 pt-4">Categories</div>
+              <div class="flex gap-2 overflow-x-scroll w-full py-1">
+                <va-chip
+                  size="large"
+                  :outline="!selectedCategories.includes(category)"
+                  :class="{
+                    'chip-active': selectedCategories.includes(category),
+                  }"
+                  v-for="(category, idx) in restaurantCategories"
+                  :key="idx"
+                  @click="toggleSelected(category)"
                 >
-                  <path
-                    d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                    fill="#648299"
-                    fill-rule="nonzero"
-                  />
-                </svg>
-                <select
-                  class="border border-orange-500 rounded-full text-orange-500 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
-                >
-                  <option value="Alphabet">Alphabet</option>
-                  <option value="Distance">Distance</option>
-                  <option value="Price">Price</option>
-                </select>
+                  <span class="text-base">{{ category }}</span>
+                </va-chip>
               </div>
-              <span
-                :class="{ pressed: isAscending }"
-                @click="toggleSortDirection(true)"
-              >
-                ▲</span
-              >
-              <span
-                :class="{ pressed: isDescending }"
-                @click="toggleSortDirection(false)"
-                >▼</span
-              >
+            </div>
+            <div class="flex" style="justify-content: end">
+              <div class="p-1 lg:hidden">
+                <div class="text-bold lg:hidden pb-1">Sort by</div>
+                <div class="relative inline-flex items-center">
+                  <!-- <select
+                    class="border border-orange-500 rounded-full text-orange-500 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
+                  >
+                    <option value="Alphabet">Alphabet</option>
+                    <option value="Distance">Distance</option>
+                    <option value="Price">Price</option>
+                  </select> -->
+
+                  <va-select
+                    v-model="selectedOption"
+                    class="!rounded-md"
+                    :options="selectOptions"
+                  />
+                  <span
+                    :class="{ pressed: isAscending }"
+                    @click="toggleSortDirection(true)"
+                  >
+                    ▲
+                  </span>
+                  <span
+                    :class="{ pressed: isDescending }"
+                    @click="toggleSortDirection(false)"
+                  >
+                    ▼
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- <FilterButton  v-for="category in restaurantCategories1" :key="category"
-              :category="category" :onToggle="toggleButton" />
-              // @filter-event="myAction"
-            <FilterButton  v-for="category in restaurantCategories2" :key="category"
-              :category="category" :onToggle="toggleButton" /> -->
-
-          <div class="overflow-y-scroll">
+          <div class="overflow-y-auto">
             <div v-if="filter" class="wc zf iq my-grid pb-5 pt-5">
               <!-- <div class="flex flex-wrap"> -->
               <BookmarkRestaurantItem
-                v-for="restaurant in restaurants"
-                :key="restaurant.id"
+                v-for="(restaurant, idx) in restaurants"
+                :key="idx"
                 :restaurant="restaurant"
               />
               <!-- </div> -->
             </div>
             <div v-else class="wc zf iq my-grid pb-5 pt-5">
               <BookmarkRestaurantItem
-                v-for="restaurant in restaurantsFiltered"
-                :key="restaurant.id"
+                v-for="(restaurant, idx) in restaurantsFiltered"
+                :key="idx"
                 :restaurant="restaurant"
               />
             </div>
@@ -357,6 +216,12 @@ const toggleSortDirection = (ascending: boolean) => {
 </template>
 
 <style scoped>
+.chip-active {
+  @apply bg-primary !important;
+  @apply text-white !important;
+  @apply shadow-custom-primary-sm;
+}
+
 @media (min-width: 640px) {
   .my-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -367,30 +232,6 @@ const toggleSortDirection = (ascending: boolean) => {
   my-grid {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
-}
-
-.scrollable-content {
-  /* overflow-x: auto; */
-  /* Enable horizontal scrolling */
-  white-space: nowrap;
-  /* Prevent buttons from wrapping to the next line */
-  margin-bottom: 25px;
-}
-
-/* Remove scrollbar */
-.scrollable-content::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-/* Remove scrollbar thumb */
-.scrollable-content::-webkit-scrollbar-thumb {
-  background: transparent;
-}
-
-/* Remove scrollbar track */
-.scrollable-content::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 .pressed {
