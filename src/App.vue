@@ -6,30 +6,6 @@ import SideBar from "./components/SideBar.vue";
 import { ref } from "vue";
 
 const showSidebar = ref(false);
-
-const headerStyle = (routeName: string) => {
-  switch (routeName) {
-    case "home":
-      return "pt-28";
-    case "location":
-      return "pt-0";
-    case "group":
-      return "pt-32";
-    default:
-      return "pt-24";
-  }
-};
-
-const mainPaddingStyle = (routeName: string) => {
-  switch (routeName) {
-    case "location":
-      return "";
-    case "group":
-      return "";
-    default:
-      return "p-5";
-  }
-};
 </script>
 
 <template>
@@ -45,12 +21,7 @@ const mainPaddingStyle = (routeName: string) => {
       <SideBar :show-sidebar="showSidebar" />
     </template>
     <template #content>
-      <div
-        :class="`${headerStyle($route.name as string)} ${mainPaddingStyle(
-          $route.name as string,
-        )}`"
-        class=""
-      >
+      <div class="flex justify-center items-center h-full p-4">
         <RouterView />
       </div>
     </template>
