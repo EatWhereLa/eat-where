@@ -20,3 +20,15 @@ export type Restaurant = {
   };
   upvote_count?: number;
 };
+
+export type FilterRestaurant = {
+  id: number;
+  name: string;
+  location: string;
+  details: string;
+  imageUrl: string;
+  owner: string;
+  dateAdded: string;
+  bookmark: boolean;
+  category: string[];
+};
