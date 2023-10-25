@@ -4,6 +4,15 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: "/app",
+      name: "app",
+      component: () => import("../views/HomeView.vue"),
+      meta: {
+        title: "Home",
+        headerClass: "",
+      },
+    },
+    {
       path: "/",
       name: "home",
       component: import("../views/LandingView.vue"),
@@ -49,17 +58,77 @@ const router = createRouter({
       },
     },
     {
+      path: "/restaurant/:id",
+      name: "restaurantDetail",
+      component: () => import("../views/RestaurantDetailView.vue"),
+      meta: {
+        headerClass: "headerNoBackgroundWithButtonClose",
+        back: "/",
+      },
+    },
+    {
+      path: "/results",
+      name: "results",
+      component: () => import("../views/ResultsView.vue"),
+      meta: {
+        title: "Results",
+        headerClass: "",
+        back: "/",
+      },
+    },
+    {
+      path: "/group",
+      name: "group",
+      component: () => import("../views/GroupRoomView.vue"),
+      meta: {
+        title: "Lobby",
+        headerClass: "headerWithButtonBack",
+        back: "/",
+      },
+    },
+    {
+      path: "/vote",
+      name: "vote",
+      component: () => import("../views/RestaurantListView.vue"),
+      meta: {
+        title: "Restaurants",
+        headerClass: "headerWithButtonBackAndUpvote",
+        back: "/",
+      },
+    },
+    {
+      path: "/vote/upvotes",
+      name: "upvotes",
+      component: () => import("../views/UpvotedRestaurantsView.vue"),
+      meta: {
+        title: "Upvoted Restaurants",
+        headerClass: "headerWithButtonBack",
+        back: "/vote",
+      },
+    },
+    {
       path: "/bookmarks",
       name: "bookmarks",
-      component: import("../views/BookmarksView.vue"),
+      component: () => import("../views/BookmarksView.vue"),
       meta: {
         title: "Bookmarks",
-        headerClass: "",
+        headerClass: "headerWithTitleWithButtonClose",
+        back: "/",
+      },
+    },
+    {
+      path: "/location",
+      name: "location",
+      component: () => import("../views/LocationView.vue"),
+      meta: {
+        title: "Bookmarks",
+        headerClass: "headerNoBackgroundWithButtonClose",
+        back: "/",
       },
     },
   ],
 
-  // Commnted for now since this is obsolete 
+  // Commnted for now since this is obsolete
   // [
   //   {
   //     path: "/",
