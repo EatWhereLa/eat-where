@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, type Ref, onMounted, defineEmits } from "vue";
 import GenericButton from "./GenericButton.vue";
-import ky from "ky";
 
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone"
@@ -30,15 +29,17 @@ const showBookingModalValues = ref({
 
 const emit = defineEmits();
 
-const tab = ref(0);
+const dateValue = ref(new Date());
+const daysArr = new Array(7).fill(false);
 
-const showCustomContent = ref(false);
+const bookingValues = ref([{day: 0, hours: [""]}]);
 
-let bookingValues = ref([{day: 0, hours: [""]}]);
+const hourButtons = ref([""]);
+
 
 onMounted(async () => {
-  bookingValues.value = generateHours(props.openingHours as OpenClose[])
-  bookingValues.value = formatDates(bookingValues.value);
+  bookingValues.value = generateHours(props.openingHours as OpenClose[]);
+  hourButtons.value = bookingValues.value.find(obj => obj.day === dateValue.value.getDay())!.hours;
 });
 
 type OpenClose = {
@@ -48,10 +49,13 @@ type OpenClose = {
 
 function generateHours(businessHours: OpenClose[]): any[] {
   const result: any[] = [];
-
+  
   businessHours.forEach((hour) => {
     const { open, close } = hour;
     const day = open.day;
+
+    daysArr[day] = true;
+
     let startTime = parseInt(open.time.slice(0, 2)) * 60 + parseInt(open.time.slice(2, 4));
     let endTime = parseInt(close.time.slice(0, 2)) * 60 + parseInt(close.time.slice(2, 4));
 
@@ -102,28 +106,36 @@ function generateHours(businessHours: OpenClose[]): any[] {
   return result.sort((a, b) => a.day - b.day); // Sorting by day for clarity
 }
 
-const formatDates = (openingList: any[]) => {
-    const currentDay = dayjs().get("day");
+watch(dateValue, (newValue) => {
+  hourButtons.value = bookingValues.value.find(obj => obj.day === newValue.getDay())!.hours;
+})
+
+/*
+For generation of 7 days with dates
+Currently not in use
+*/
+// const formatDates = (openingList: any[]) => {
+//     const currentDay = dayjs().get("day");
     
-    const nextSevenDays: any[] = [];
+//     const nextSevenDays: any[] = [];
     
-    let daysToAdd = 0;
+//     let daysToAdd = 0;
 
-    while (nextSevenDays.length < 7) {
-        const potentialDay = currentDay + daysToAdd; // Day we're considering to add
-        const isOpen = openingList.find(day => day.day === potentialDay % 7);
+//     while (nextSevenDays.length < 7) {
+//         const potentialDay = currentDay + daysToAdd; // Day we're considering to add
+//         const isOpen = openingList.find(day => day.day === potentialDay % 7);
 
-        if (isOpen) {
-            const openingDay = { ...isOpen }; // Clone to avoid mutating the original list
-            openingDay.day = dayjs().add(daysToAdd, 'day').format("DD/MM/YYYY");
-            nextSevenDays.push(openingDay);
-        }
+//         if (isOpen) {
+//             const openingDay = { ...isOpen }; // Clone to avoid mutating the original list
+//             openingDay.day = dayjs().add(daysToAdd, 'day').format("DD/MM/YYYY");
+//             nextSevenDays.push(openingDay);
+//         }
 
-        daysToAdd++; // Always increment, even if the day was closed
-    }
+//         daysToAdd++; // Always increment, even if the day was closed
+//     }
 
-    return nextSevenDays;
-}
+//     return nextSevenDays;
+// }
 
 
 const handleBookingModal = (
@@ -141,15 +153,8 @@ const handleBookingModal = (
 </script>
 
 <template>
-  <section class="mt-7">
+  <section class="mt-7 max-w-xl">
     <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">Make A Reservation</h3>
-
-    <va-tabs v-model="tab" class="mb-4">
-      <template #tabs>
-        <va-tab>Next 7 Days</va-tab>
-        <va-tab>Choose another date</va-tab>
-      </template>
-    </va-tabs>
 
     <va-modal
       v-model="showBookingModalValues.show"
@@ -171,20 +176,33 @@ const handleBookingModal = (
       />
     </va-modal>
 
-    <div v-for="bookValue in bookingValues">
-      <h2> {{ bookValue.day }}</h2>
-      <div class="flex flex-wrap justify-evenly my-2">
-        <generic-button 
-          v-for="hour in bookValue.hours"
-          titleColor="text-white"
-          bgColor="bg-primary"
-          class="min-w-[130px] max-w-[100px] mx-1 my-1"
-          @click="handleBookingModal(placeId, title, bookValue.day.toString(), hour)"
-        >
-          {{ hour }}
-        </generic-button>
+    <div class="grid place-content-center text-center">
+      <h1 class="text-xl pb-3">Choose A Booking Date</h1>
+        <va-date-picker
+          v-model="dateValue"
+          mode="single"
+          statefuls
+          :allowed-days="(date) => daysArr[date.getDay()]"
+        />
+        <h1 class="text-xl pb-3">Choose Your Timing</h1>
+    </div>  
+    <va-scroll-container
+      color="#262824"
+      horizontal
+      size="large"
+    >
+      <div class="flex my-2  px-2">
+          <generic-button 
+            v-for="hour in hourButtons"
+            titleColor="text-white"
+            bgColor="bg-primary"
+            class="min-w-[100px] max-w-[100px] mx-1 my-1"
+            @click="handleBookingModal(placeId, title, dayjs(dateValue).format('DD/MM/YYYY'), hour)"
+          >
+            {{ hour }}
+          </generic-button>
       </div>
-    </div>
+    </va-scroll-container>
 
   </section>
 </template>

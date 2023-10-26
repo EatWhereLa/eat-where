@@ -36,9 +36,9 @@ const submitReservation = async() => {
     const dateString = `${form.value.bookingDate.split('/').reverse().join('-')} ${form.value.bookingTime.slice(0, 2)}:${form.value.bookingTime.slice(2)}`;
 
     const unixDateTime = dayjs(dateString, "YYYY-MM-DD HH:mm").unix();
-    
+
     try {
-        const response = await ky.post(
+        await ky.post(
             `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
             {   
                 json: {
@@ -47,14 +47,14 @@ const submitReservation = async() => {
                     reservation_time: unixDateTime,
                     reservation_pax: parseInt(form.value.numPeople),
                 },
-            }).json();
+            });
 
             init({
                 message: 'Booking Success!',
                 color: 'success',
                 closeable: false,
             });
-            
+
     } catch (err: any) {
         console.log(err.message);
         init({
@@ -66,11 +66,6 @@ const submitReservation = async() => {
     }
     emit("closebookingmodal");
 }
-
-type OpenClose = {
-    open: { day: number; time: string };
-    close: { day: number; time: string };
-};
 </script>
 
 <template>
