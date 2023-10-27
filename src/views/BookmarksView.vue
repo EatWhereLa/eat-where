@@ -128,6 +128,10 @@ const handleBookmarkToggle = (id: number) => {
     res.bookmark = !res.bookmark;
   }
 };
+
+const handleSort = () => {
+  // Handle sort here
+};
 </script>
 
 <template>
@@ -144,7 +148,7 @@ const handleBookmarkToggle = (id: number) => {
             <h1 class="font-bold text-2xl">Filters</h1>
             <div>
               <div class="fold-black text-black">Sort By</div>
-              <SortButtonOnSide />
+              <SortButtonOnSide @select-sort="handleSort" />
             </div>
             <div>
               <div class="fold-black text-black">Categories</div>
