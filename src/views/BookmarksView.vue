@@ -44,7 +44,6 @@ import BookmarkRestaurantItem from "@/components/ForRestaurantBookmark/BookmarkR
 import restaurantsData from "@/data/restaurants.json"; // Adjust this path to where your data resides
 import { ref, onBeforeMount, type Ref } from "vue";
 import SortButtonOnSide from "@/components/ForRestaurantBookmark/SortButtonOnSide.vue";
-import PriceButtonOnSide from "@/components/ForRestaurantBookmark/PriceButtonOnSide.vue";
 import type { FilterRestaurant } from "@/types/Restaurant";
 
 const restaurants: FilterRestaurant[] = restaurantsData.restaurants; // This should directly give you the array of restaurants
@@ -65,9 +64,10 @@ onBeforeMount(() => {
 const search = ref("");
 
 const restaurantsFiltered = ref([{}]);
+const priceFilters: Ref<string[]> = ref([]);
 const filter = ref(true);
 
-const price = ["$", "$$", "$$$", "$$$$", "$$$$$"];
+const prices = ["$", "$$", "$$$", "$$$$", "$$$$$"];
 
 const isAscending = ref(false);
 const isDescending = ref(false);
@@ -89,6 +89,16 @@ const toggleSelected = (category: string) => {
     selectedCategories.value.splice(res, 1);
   } else {
     selectedCategories.value.push(category);
+  }
+};
+
+const toggleSelectedPrice = (price: string) => {
+  const res = priceFilters.value.findIndex((item) => item === price);
+  if (res >= 0) {
+    // The item is already in the list, we want to remove it
+    priceFilters.value.splice(res, 1);
+  } else {
+    priceFilters.value.push(price);
   }
 };
 </script>
@@ -132,13 +142,22 @@ const toggleSelected = (category: string) => {
                 :array-value="category"
               />
             </div>
-            <div class="fold-black text-black pb-2">Sort By</div>
             <div>
-              <PriceButtonOnSide
-                v-for="category in price"
-                :key="category"
-                :category="category"
-              />
+              <div class="fold-black text-black">Price</div>
+              <div class="pt-2 flex flex-wrap gap-2">
+                <va-chip
+                  size="medium"
+                  v-for="(price, idx) in prices"
+                  :key="idx"
+                  :outline="!priceFilters.includes(price)"
+                  :class="{
+                    'chip-active': priceFilters.includes(price),
+                  }"
+                  @click="toggleSelectedPrice(price)"
+                >
+                  <span class="text-base">{{ price }}</span>
+                </va-chip>
+              </div>
             </div>
           </div>
         </div>
