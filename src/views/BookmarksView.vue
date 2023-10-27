@@ -102,24 +102,28 @@ const toggleSelected = (category: string) => {
       >
         <div class="w-72 hidden lg:block h-4/5">
           <div
-            class="flex flex-col h-full border-solid border-2 border-orange-500 rounded-lg p-4 pl-7"
+            class="flex flex-col gap-4 h-full border-solid border-2 border-orange-500 rounded-lg p-4 pl-7"
           >
-            <div class="font-bold text-2xl pb-7">Filters</div>
-            <div class="fold-black text-black pb-2">Sort By</div>
-            <SortButtonOnSide class="h-2/6" />
-            <div class="fold-black text-black pb-2">Categories</div>
-            <div class="relative mb-3" data-te-input-wrapper-init>
-              <input
-                type="search"
-                class="border-orange-500 relative m-0 block w-full min-w-0 flex-auto rounded-full border border-solid bg-transparent bg-clip-padding px-3 py-[0.25rem] leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-orange-500 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-                id="exampleSearch2"
-                placeholder="Cuisine"
-                v-model="search"
-              />
-              <!-- <label for="exampleSearch2"
-                class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">Cusince</label> -->
+            <h1 class="font-bold text-2xl">Filters</h1>
+            <div>
+              <div class="fold-black text-black">Sort By</div>
+              <SortButtonOnSide />
             </div>
-            <div class="flex flex-col gap-4 h-2/6 overflow-y-scroll">
+            <div>
+              <div class="fold-black text-black">Categories</div>
+              <div class="relative">
+                <input
+                  type="search"
+                  class="border-orange-500 relative m-0 block w-full min-w-0 flex-auto rounded-full border border-solid bg-transparent bg-clip-padding px-3 py-[0.25rem] leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-orange-500 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+                  id="exampleSearch2"
+                  placeholder="Cuisine"
+                  v-model="search"
+                />
+                <!-- <label for="exampleSearch2"
+                class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">Cusince</label> -->
+              </div>
+            </div>
+            <div class="flex flex-col gap-4 grow overflow-y-scroll">
               <va-checkbox
                 v-for="(category, idx) in restaurantCategories"
                 :key="idx"
@@ -129,7 +133,7 @@ const toggleSelected = (category: string) => {
               />
             </div>
             <div class="fold-black text-black pb-2">Sort By</div>
-            <div class="h-2/6">
+            <div>
               <PriceButtonOnSide
                 v-for="category in price"
                 :key="category"
@@ -138,10 +142,12 @@ const toggleSelected = (category: string) => {
             </div>
           </div>
         </div>
-        <div class="h-full sm:h-4/5 w-full">
-          <div class="h-1/5 lg:hidden flex flex-col gap-2">
+        <div
+          class="h-full sm:h-4/5 w-full flex flex-col justify-center items-center gap-4"
+        >
+          <div class="h-1/5 lg:hidden flex flex-col gap-2 w-full pt-3">
             <div>
-              <div class="text-bold pb-1 pt-4">Categories</div>
+              <div class="text-bold pb-1">Categories</div>
               <div class="flex gap-2 overflow-x-scroll w-full py-1">
                 <va-chip
                   size="large"
@@ -157,7 +163,7 @@ const toggleSelected = (category: string) => {
                 </va-chip>
               </div>
             </div>
-            <div class="flex" style="justify-content: end">
+            <div class="flex">
               <div class="p-1 lg:hidden">
                 <div class="text-bold lg:hidden pb-1">Sort by</div>
                 <div class="relative inline-flex items-center">
@@ -191,7 +197,9 @@ const toggleSelected = (category: string) => {
             </div>
           </div>
 
-          <div class="overflow-y-auto">
+          <div
+            class="overflow-y-auto sm:h-4/5 flex justify-center items-center"
+          >
             <div v-if="filter" class="grid xl:gap-10 my-grid">
               <!-- <div class="flex flex-wrap"> -->
               <BookmarkRestaurantItem

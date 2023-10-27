@@ -25,10 +25,11 @@ import {
   VaSidebarItemContent,
   VaSidebarItemTitle,
   VaLayout,
+  VaOptionList,
   VaDropdownPlugin,
   VaModalPlugin,
 } from "vuestic-ui";
-import "vuestic-ui/css";
+import "vuestic-ui/styles/essential.css";
 import config from "../vuestic.config";
 
 import "./assets/overrides.css";
@@ -56,6 +57,7 @@ app.use(
       VaSidebarItemContent,
       VaSidebarItemTitle,
       VaLayout,
+      VaOptionList,
     },
     plugins: {
       VaDropdownPlugin,
