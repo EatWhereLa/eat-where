@@ -257,22 +257,4 @@ const handleBookmarkToggle = (id: number) => {
   @apply text-white !important;
   @apply shadow-custom-primary-sm;
 }
-
-@media (min-width: 640px) {
-  .my-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 641px) {
-  my-grid {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-}
-
-.pressed {
-  color: orange;
-  /* Change this to your desired color */
-  cursor: pointer;
-}
 </style>
