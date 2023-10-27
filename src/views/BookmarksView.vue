@@ -42,35 +42,55 @@ const bookmarks = [
 <script setup lang="ts">
 import BookmarkRestaurantItem from "@/components/ForRestaurantBookmark/BookmarkRestaurantItem.vue";
 import restaurantsData from "@/data/restaurants.json"; // Adjust this path to where your data resides
-import { ref, onBeforeMount, type Ref } from "vue";
+import { ref, onBeforeMount, type Ref, computed } from "vue";
 import SortButtonOnSide from "@/components/ForRestaurantBookmark/SortButtonOnSide.vue";
 import type { FilterRestaurant } from "@/types/Restaurant";
 
-const restaurants: FilterRestaurant[] = restaurantsData.restaurants; // This should directly give you the array of restaurants
+const restaurants: Ref<FilterRestaurant[]> = ref(restaurantsData.restaurants); // This should directly give you the array of restaurants
 let restaurantCategories: string[] = [];
+const prices = ["$", "$$", "$$$", "$$$$", "$$$$$"];
+
 const selectedCategories: Ref<string[]> = ref([]);
 const selectOptions = ref(["Name", "Distance", "Price"]);
 const selectedOption = ref("");
+const priceFilters: Ref<string[]> = ref([]);
 
+const search = ref("");
+
+const isAscending = ref(false);
+const isDescending = ref(false);
+
+const filteredList = computed(() => {
+  // We return early if there are no things to filter
+  if (
+    priceFilters.value.length === 0 &&
+    selectedCategories.value.length === 0
+  ) {
+    return restaurants.value;
+  }
+
+  const selectedCategoriesSet = new Set(selectedCategories.value);
+  const priceFiltersSet = new Set(priceFilters.value);
+
+  const restaurantsFiltered = restaurants.value.filter(
+    (restaurant) =>
+      (selectedCategoriesSet.size === 0 ||
+        restaurant.category.some((category) =>
+          selectedCategoriesSet.has(category),
+        )) &&
+      (priceFiltersSet.size === 0 || priceFiltersSet.has(restaurant.price)),
+  );
+
+  return restaurantsFiltered;
+});
 onBeforeMount(() => {
   //init the categories
   const categorySet = new Set<string>();
-  for (const restaurant of restaurants) {
+  for (const restaurant of restaurants.value) {
     restaurant.category.forEach((category) => categorySet.add(category));
   }
   restaurantCategories = Array.from(categorySet);
 });
-
-const search = ref("");
-
-const restaurantsFiltered = ref([{}]);
-const priceFilters: Ref<string[]> = ref([]);
-const filter = ref(true);
-
-const prices = ["$", "$$", "$$$", "$$$$", "$$$$$"];
-
-const isAscending = ref(false);
-const isDescending = ref(false);
 
 const toggleSortDirection = (ascending: boolean) => {
   if (ascending) {
@@ -101,6 +121,13 @@ const toggleSelectedPrice = (price: string) => {
     priceFilters.value.push(price);
   }
 };
+
+const handleBookmarkToggle = (id: number) => {
+  const res = restaurants.value.find((restaurant) => restaurant.id === id);
+  if (res) {
+    res.bookmark = !res.bookmark;
+  }
+};
 </script>
 
 <template>
@@ -110,9 +137,9 @@ const toggleSelectedPrice = (price: string) => {
       <div
         class="flex gap-4 px-8 justify-center items-center h-full w-full overflow-y-auto"
       >
-        <div class="w-72 hidden lg:block h-4/5">
+        <aside class="w-72 hidden lg:block h-4/5">
           <div
-            class="flex flex-col gap-4 h-full border-solid border-2 border-orange-500 rounded-lg p-4 pl-7"
+            class="flex flex-col gap-4 h-full border-solid border border-primary rounded-lg p-4 pl-7"
           >
             <h1 class="font-bold text-2xl">Filters</h1>
             <div>
@@ -129,8 +156,6 @@ const toggleSelectedPrice = (price: string) => {
                   placeholder="Cuisine"
                   v-model="search"
                 />
-                <!-- <label for="exampleSearch2"
-                class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">Cusince</label> -->
               </div>
             </div>
             <div class="flex flex-col gap-4 grow overflow-y-scroll">
@@ -160,11 +185,11 @@ const toggleSelectedPrice = (price: string) => {
               </div>
             </div>
           </div>
-        </div>
+        </aside>
         <div
           class="h-full sm:h-4/5 w-full flex flex-col justify-center items-center gap-4"
         >
-          <div class="h-1/5 lg:hidden flex flex-col gap-2 w-full pt-3">
+          <div class="lg:hidden flex flex-col gap-2 w-full pt-3">
             <div>
               <div class="text-bold pb-1">Categories</div>
               <div class="flex gap-2 overflow-x-scroll w-full py-1">
@@ -186,14 +211,6 @@ const toggleSelectedPrice = (price: string) => {
               <div class="p-1 lg:hidden">
                 <div class="text-bold lg:hidden pb-1">Sort by</div>
                 <div class="relative inline-flex items-center">
-                  <!-- <select
-                    class="border border-orange-500 rounded-full text-orange-500 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
-                  >
-                    <option value="Alphabet">Alphabet</option>
-                    <option value="Distance">Distance</option>
-                    <option value="Price">Price</option>
-                  </select> -->
-
                   <va-select
                     v-model="selectedOption"
                     class="!rounded-md"
@@ -217,22 +234,14 @@ const toggleSelectedPrice = (price: string) => {
           </div>
 
           <div
-            class="overflow-y-auto sm:h-4/5 flex justify-center items-center"
+            class="overflow-y-auto grow h-full flex justify-center items-center"
           >
-            <div v-if="filter" class="grid xl:gap-10 my-grid">
-              <!-- <div class="flex flex-wrap"> -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:gap-10 h-full">
               <BookmarkRestaurantItem
-                v-for="(restaurant, idx) in restaurants"
+                v-for="(restaurant, idx) in filteredList"
                 :key="idx"
                 :restaurant="restaurant"
-              />
-              <!-- </div> -->
-            </div>
-            <div v-else class="grid xl:gap-10 my-grid">
-              <BookmarkRestaurantItem
-                v-for="(restaurant, idx) in restaurantsFiltered"
-                :key="idx"
-                :restaurant="restaurant"
+                @toggle-bookmark="handleBookmarkToggle(restaurant.id)"
               />
             </div>
           </div>

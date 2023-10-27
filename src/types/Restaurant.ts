@@ -31,4 +31,5 @@ export type FilterRestaurant = {
   dateAdded: string;
   bookmark: boolean;
   category: string[];
+  price: string;
 };
