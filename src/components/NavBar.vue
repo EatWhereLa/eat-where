@@ -4,7 +4,7 @@ const { showSidebar } = defineProps<{ showSidebar: boolean }>();
 defineEmits(["toggleSidebar"]);
 </script>
 <template>
-  <va-navbar color="white" class="w-full">
+  <va-navbar color="white" class="xl:!px-64">
     <template #left>
       <va-navbar-item class="logo">
         <img class="max-w-[52px]" :src="logoUrl" />
