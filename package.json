@@ -12,6 +12,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.438.0",
     "@cloudflare/workers-types": "^4.20230914.0",
     "@googlemaps/js-api-loader": "^1.16.2",
     "@ngneat/falso": "^7.1.1",
