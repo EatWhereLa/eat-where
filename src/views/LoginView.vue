@@ -1,6 +1,21 @@
 <script setup lang="ts">
 import { Vue3Lottie } from "vue3-lottie";
 import FoodScrollJSON from "@/assets/lottie/food_scroll.json";
+import { useAuth } from "@/composables/auth";
+import { ref } from "vue";
+
+const { login } = useAuth();
+
+const username = ref("");
+const password = ref("");
+
+async function handleLogin() {
+  try {
+    await login(username.value, password.value);
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
@@ -22,8 +37,9 @@ import FoodScrollJSON from "@/assets/lottie/food_scroll.json";
             <p class="text-bold">Nice to see you again</p>
           </div>
 
-          <form class="flex flex-col gap-4">
+          <form class="flex flex-col gap-4" @submit.prevent="handleLogin">
             <va-input
+              v-model="username"
               class="w-full"
               type="text"
               name="name"
@@ -32,13 +48,14 @@ import FoodScrollJSON from "@/assets/lottie/food_scroll.json";
             />
 
             <va-input
+              v-model="password"
               class="w-full"
               type="password"
               name="password"
               label="Password"
               placeholder="Password"
             />
-            <va-button text-color="white">Sign Up</va-button>
+            <va-button text-color="white" type="submit">Login</va-button>
           </form>
           <p class="text-center text-lg font-light">
             Don't have an account?

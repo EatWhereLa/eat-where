@@ -1,6 +1,23 @@
 <script setup lang="ts">
 import { Vue3Lottie } from "vue3-lottie";
 import FoodJSON from "@/assets/lottie/food.json";
+import { ref } from "vue";
+import { useAuth } from "@/composables/auth";
+
+const { signup } = useAuth();
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+
+async function handleRegister() {
+  try {
+    const res = await signup(username.value, password.value, email.value);
+    res.user;
+  } catch (error) {
+    console.error(error);
+  }
+}
 </script>
 
 <template>
@@ -22,8 +39,9 @@ import FoodJSON from "@/assets/lottie/food.json";
             <p class="text-bold">Register for an account!</p>
           </div>
 
-          <form class="flex flex-col gap-4">
+          <form class="flex flex-col gap-4" @submit.prevent="handleRegister">
             <va-input
+              v-model="username"
               class="w-full"
               type="text"
               name="name"
@@ -32,6 +50,7 @@ import FoodJSON from "@/assets/lottie/food.json";
             />
 
             <va-input
+              v-model="email"
               class="w-full"
               type="email"
               name="email"
@@ -40,6 +59,7 @@ import FoodJSON from "@/assets/lottie/food.json";
             />
 
             <va-input
+              v-model="password"
               class="w-full"
               type="password"
               name="password"
@@ -48,13 +68,14 @@ import FoodJSON from "@/assets/lottie/food.json";
             />
 
             <va-input
+              v-model="confirmPassword"
               class="w-full"
               type="password"
               name="newpassword"
               label="Confirm Password"
               placeholder="Confirm Password"
             />
-            <va-button text-color="white">Sign Up</va-button>
+            <va-button text-color="white" type="submit">Sign Up</va-button>
           </form>
           <p class="text-center text-lg font-light">
             Already have an account?
