@@ -18,13 +18,12 @@ export function useAuth() {
     }
   }
 
-  function signup(username: string, password: string, email: string) {
+  async function signup(username: string, password: string, email: string) {
     try {
-      const res = Auth.signUp({
+      const res = await Auth.signUp({
         username,
         password,
         attributes: { email },
-        autoSignIn: { enabled: true },
       });
       console.log(res);
       return res;
@@ -33,5 +32,23 @@ export function useAuth() {
     }
   }
 
-  return { login, signup };
+  async function confirmSignup(username: string, code: string) {
+    try {
+      const res = await Auth.confirmSignUp(username, code);
+      console.log(res);
+      return res;
+    } catch (error) {
+      console.log("error signing in", error);
+    }
+  }
+
+  async function logout() {
+    try {
+      await Auth.signOut();
+    } catch (error) {
+      console.log("error signing out: ", error);
+    }
+  }
+
+  return { login, signup, confirmSignup, logout };
 }
