@@ -6,12 +6,14 @@ import router from "./router";
 
 import "./assets/main.css";
 
+import Vue3Lottie from "vue3-lottie";
 import {
   createVuesticEssential,
   VaButton,
   VaCarousel,
   VaSelect,
   VaCheckbox,
+  VaInput,
   VaModal,
   VaIcon,
   VaTabs,
@@ -44,6 +46,7 @@ app.use(
       VaCarousel,
       VaSelect,
       VaCheckbox,
+      VaInput,
       VaModal,
       VaIcon,
       VaTabs,
@@ -66,5 +69,6 @@ app.use(
     config,
   }),
 );
+app.use(Vue3Lottie);
 
 app.mount("#app");
