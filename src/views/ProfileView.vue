@@ -19,98 +19,37 @@ const avatar = computed(() => {
 </script>
 
 <template>
-  <main class="h-full">
-    <div class="flex flex-wrap mt-20 justify-center" style="min-width: 650px">
+  <main class="h-full flex flex-col gap-12 p-6 overflow-x-auto">
+    <div class="flex flex-wrap justify-center">
       <div
-        class="container !grow-0 lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 bg-white shadow-lg transform duration-200 easy-in-out"
+        class="container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 bg-white rounded-xl shadow-lg transform duration-200 easy-in-out"
       >
         <div class="h-32 overflow-hidden">
           <img class="w-full" src="/src/assets/profile-banner.png" alt="" />
         </div>
         <div class="flex justify-center px-5 -mt-12">
-          <!-- <img
-            class="!grow-0 h-32 w-32 bg-white p-2 rounded-full"
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
-            alt=""
-          /> -->
-
           <img
-            class="!grow-0 h-32 w-32 bg-white p-2 rounded-full"
+            class=" h-32 w-32 bg-white p-2 rounded-full"
             :src="avatar"
             alt="Avatar"
           />
         </div>
-        <div>
-          <div class="text-center px-14">
-            <h2 class="text-gray-800 text-3xl font-bold">Mohit Dhiman</h2>
-            <a
-              class="text-gray-400 mt-2 hover:text-blue-500"
-              href="https://www.instagram.com/immohitdhiman/"
-              target="BLANK()"
-            >
-              @immohitdhiman
-            </a>
-            <p class="mt-2 text-gray-500 text-sm">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s,
-            </p>
-          </div>
-          <hr class="mt-6" />
-          <div class="flex bg-gray-50">
-            <div class="text-center w-1/2 p-4 hover:bg-gray-100 cursor-pointer">
-              <p><span class="font-semibold">2.5 k </span> Followers</p>
-            </div>
-            <div class="border"></div>
-            <div class="text-center w-1/2 p-4 hover:bg-gray-100 cursor-pointer">
-              <p><span class="font-semibold">2.0 k </span> Following</p>
-            </div>
-          </div>
+        <div class="text-center px-14 pb-6">
+          <h2 class="text-gray-800 text-3xl font-bold">{{ username }}</h2>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-wrap mt-20 justify-center" style="min-width: 650px">
+    <div class="flex flex-wrap justify-center">
       <div
-        class="container !grow-0 lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
-        style="min-width: 650px"
+        class="container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
       >
         <div
           class="col-span-12 overflow-hidden rounded-xl bg-gray-50 px-8 sm:shadow"
-          style="min-width: 650px"
         >
           <div class="pt-4">
             <h1 class="py-2 text-2xl font-semibold">Account settings</h1>
             <!-- <p class="font- text-slate-600">Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p> -->
-          </div>
-          <hr class="mt-4 mb-8" />
-          <p class="py-2 text-xl font-semibold mb-2">Change Profile Picture</p>
-          <div
-            class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div class="flex items-center space-x-6">
-              <div class="shrink-0">
-                <img
-                  class="h-16 w-16 object-cover rounded-full"
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
-                  alt="Current profile photo"
-                />
-              </div>
-              <label class="block">
-                <span class="sr-only">Choose profile photo</span>
-                <input
-                  type="file"
-                  class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-500 hover:file:bg-orange-100"
-                />
-              </label>
-            </div>
-            <div class="ml-auto mt-4">
-              <button
-                class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
-              >
-                Change
-              </button>
-            </div>
           </div>
           <hr class="mt-4 mb-8" />
 
@@ -119,7 +58,7 @@ const avatar = computed(() => {
             class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
           >
             <p class="text-gray-600">
-              Your email address is <strong>john.doe@company.com</strong>
+              Your email address is <strong>{{ email }}</strong>
             </p>
             <!-- <button class="inline-flex text-sm font-semibold text-orange-500 underline decoration-2">Change</button> -->
           </div>
@@ -160,14 +99,12 @@ const avatar = computed(() => {
       </div>
     </div>
 
-    <div class="flex flex-wrap mt-20 justify-center" style="min-width: 650px">
+    <div class="flex flex-wrap justify-center">
       <div
-        class="container !grow-0 lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
-        style="min-width: 650px"
+        class="container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
       >
         <div
           class="col-span-12 overflow-hidden rounded-xl bg-gray-50 px-8 sm:shadow"
-          style="min-width: 650px"
         >
           <div class="pt-4">
             <h1 class="py-2 text-2xl font-semibold">Voting settings</h1>
