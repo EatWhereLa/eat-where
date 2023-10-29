@@ -13,7 +13,9 @@ defineEmits(["toggleSidebar"]);
   <va-navbar color="white" class="xl:!px-64">
     <template #left>
       <va-navbar-item class="logo">
-        <img class="max-w-[52px]" :src="logoUrl" />
+        <router-link to="/">
+          <img class="max-w-[52px]" :src="logoUrl" />
+        </router-link>
       </va-navbar-item>
     </template>
     <template #center>

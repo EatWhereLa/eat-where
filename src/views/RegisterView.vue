@@ -15,7 +15,7 @@ const confirmPassword = ref("");
 const code = ref("");
 const isCodeErr = ref(false);
 
-const showModal = ref(true);
+const showModal = ref(false);
 
 async function handleRegister() {
   try {
