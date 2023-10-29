@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { useAuthStore } from "@/stores/auth";
+import { useAuth } from "@/composables/auth";
+import { storeToRefs } from "pinia";
+
+const { isAuthenticated } = storeToRefs(useAuthStore());
+const { logout } = useAuth();
 const logoUrl = new URL("/src/assets/logo.jpg", import.meta.url).href;
 const { showSidebar } = defineProps<{ showSidebar: boolean }>();
 defineEmits(["toggleSidebar"]);
@@ -24,16 +30,25 @@ defineEmits(["toggleSidebar"]);
     </template>
     <template #right>
       <div class="flex gap-2">
-        <div class="hidden sm:block">
-          <va-navbar-item class="hidden sm:block">
-            <va-button to="/login" preset="secondary" border-color="primary">
-              Login
-            </va-button>
-          </va-navbar-item>
+        <div v-if="!isAuthenticated" class="flex gap-2">
+          <div class="hidden sm:block">
+            <va-navbar-item class="hidden sm:block">
+              <va-button to="/login" preset="secondary" border-color="primary">
+                Login
+              </va-button>
+            </va-navbar-item>
+          </div>
+          <div class="hidden sm:block">
+            <va-navbar-item>
+              <va-button to="/register" text-color="white">
+                Register
+              </va-button>
+            </va-navbar-item>
+          </div>
         </div>
-        <div class="hidden sm:block">
+        <div v-else>
           <va-navbar-item>
-            <va-button to="/register" text-color="white"> Register </va-button>
+            <va-button text-color="white" @click="logout"> Logout </va-button>
           </va-navbar-item>
         </div>
 

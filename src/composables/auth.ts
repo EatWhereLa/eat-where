@@ -58,6 +58,7 @@ export function useAuth() {
   async function logout() {
     try {
       await Auth.signOut();
+      setAuth(false);
     } catch (error) {
       console.log("error signing out: ", error);
     }
