@@ -15,19 +15,23 @@ Amplify.configure({
 });
 
 export function useAuth() {
-  const { setAuth } = useAuthStore();
+  const { setAuth, setEmail, setUsername } = useAuthStore();
   async function isLoggedIn() {
     try {
-      await Auth.currentAuthenticatedUser();
+      const user = await Auth.currentAuthenticatedUser();
       setAuth(true);
+      setEmail(user.attributes.email);
+      setUsername(user.username);
     } catch (error) {
       setAuth(false);
     }
   }
   async function login(username: string, password: string) {
     try {
-      await Auth.signIn(username, password);
+      const user = await Auth.signIn(username, password);
       setAuth(true);
+      setEmail(user.attributes.email);
+      setUsername(user.username);
     } catch (error) {
       console.log("error signing in", error);
     }
