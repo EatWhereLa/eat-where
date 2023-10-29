@@ -3,8 +3,10 @@ import { Vue3Lottie } from "vue3-lottie";
 import FoodScrollJSON from "@/assets/lottie/food_scroll.json";
 import { useAuth } from "@/composables/auth";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const { login } = useAuth();
+const router = useRouter();
 
 const username = ref("");
 const password = ref("");
@@ -12,6 +14,7 @@ const password = ref("");
 async function handleLogin() {
   try {
     await login(username.value, password.value);
+    router.push("/");
   } catch (error) {
     console.error(error);
   }

@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute } from "vue-router";
-import HeaderBar from "./components/HeaderBar.vue";
+import { onMounted, ref } from "vue";
 import NavBar from "./components/NavBar.vue";
 import SideBar from "./components/SideBar.vue";
-import { ref } from "vue";
+import { useAuth } from "@/composables/auth";
 
 const showSidebar = ref(false);
+const { isLoggedIn } = useAuth();
+
+onMounted(async () => {
+  await isLoggedIn();
+});
 </script>
 
 <template>

@@ -3,18 +3,43 @@ import { Vue3Lottie } from "vue3-lottie";
 import FoodJSON from "@/assets/lottie/food.json";
 import { ref } from "vue";
 import { useAuth } from "@/composables/auth";
+import { useRouter } from "vue-router";
 
-const { signup } = useAuth();
+const { signup, confirmSignup } = useAuth();
+const router = useRouter();
+
 const username = ref("");
 const email = ref("");
 const password = ref("");
 const confirmPassword = ref("");
+const code = ref("");
+const isCodeErr = ref(false);
+
+const showModal = ref(true);
 
 async function handleRegister() {
   try {
     const res = await signup(username.value, password.value, email.value);
-    res.user;
+    if (res?.userConfirmed === false) {
+      //launch dialog
+      showModal.value = true;
+    }
   } catch (error) {
+    console.error(error);
+  }
+}
+
+async function handleCode() {
+  try {
+    const res = await confirmSignup(username.value, code.value);
+    if (res === "SUCCESS") {
+      showModal.value = false;
+      router.push("/login");
+    } else {
+      isCodeErr.value = true;
+    }
+  } catch (error) {
+    isCodeErr.value = true;
     console.error(error);
   }
 }
@@ -35,7 +60,7 @@ async function handleRegister() {
         </div>
         <div class="p-6 lg:w-2/5 w-full flex flex-col gap-8">
           <div class="text-center">
-            <h2 class="text-4xl font-medium text-orange-500">EATWHERE</h2>
+            <h2 class="text-4xl font-medium text-primary">EATWHERE</h2>
             <p class="text-bold">Register for an account!</p>
           </div>
 
@@ -86,4 +111,24 @@ async function handleRegister() {
     </div>
     <!-- ===== SignIn Form End ===== -->
   </main>
+  <va-modal v-model="showModal" hide-default-actions>
+    <template #header>
+      <h3 class="text-primary text-2xl font-medium">Enter Code</h3>
+      <p class="text-gray-500/70 text-xs">Code sent to {{ email }}</p>
+    </template>
+    <div class="pt-4">
+      <va-input
+        v-model="code"
+        type="text"
+        input-class="text-center"
+        :error="isCodeErr"
+        error-messages="Please enter the correct code"
+      />
+    </div>
+    <template #footer>
+      <va-button class="w-full" text-color="white" @click="handleCode">
+        Confirm
+      </va-button>
+    </template>
+  </va-modal>
 </template>
