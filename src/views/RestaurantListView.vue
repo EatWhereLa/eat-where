@@ -5,6 +5,7 @@ import GenericButton from "@/components/GenericButton.vue";
 import { type Ref, ref, computed, watch, onMounted } from "vue";
 import { useGeolocation } from "../composables/useGeolocation";
 import { useTimer } from "@/composables/useTimer";
+import RestaurantModal from "@/components/RestaurantModal.vue";
 
 import { useRestaurantsStore } from "@/stores/restaurants";
 import { useUpvoteRestaurantsStore } from "@/stores/upvoteRestaurants";
@@ -21,7 +22,7 @@ import type { Restaurant } from "@/types/Restaurant";
 import type { LatLng } from "@/types/location";
 import ky from "ky";
 
-const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
+const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
 
 const selectFilter = useSelectFilterStore();
@@ -110,6 +111,13 @@ const locationSetCoords = ref({
   lng: currPos.value.lng,
 });
 
+const showModalValues = ref({
+  title: "",
+  placeId: "",
+  imgSrc: "",
+  show: false,
+});
+
 const success = async (position: LatLng) => {
   isLoadingRestaurants.value = true;
 
@@ -124,6 +132,7 @@ const success = async (position: LatLng) => {
       selectFilter.selectedPrice,
     )}&maxprice=${calcPriceValue(selectFilter.selectedPrice)}`;
   }
+
   const query = `location=${locationSetCoords.value.lat},${
     locationSetCoords.value.lng
   }
@@ -133,8 +142,8 @@ const success = async (position: LatLng) => {
     selectFilter.selectedTag !== "All"
       ? `&keyword=${selectFilter.selectedTag.toLowerCase()}`
       : ""
-  }&key=${MAP_KEY}`;
-  const URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?${query}`;
+  }`;
+  const URL = `${API_URL}/google?${query}`;
 
   // if (
   //   sessionStorage.getItem("restaurants") === null ||
@@ -143,11 +152,7 @@ const success = async (position: LatLng) => {
   //   isDistanceChanged() ||
   //   isTagChanged()
   // ) {
-  const data = (await ky(
-    `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
-  ).json()) as {
-    results: Restaurant[];
-  };
+  const data = (await ky(URL).json()) as Restaurant[];
 
   currentLocation.setLocationAddress(currentLocation.address);
   currentLocation.setOldLocationAddress(currentLocation.address);
@@ -163,7 +168,7 @@ const success = async (position: LatLng) => {
 
   restaurants.restaurants = [];
 
-  data.results.forEach((item: Restaurant) => {
+  data.forEach((item: Restaurant) => {
     restaurants.addRestaurant({
       place_id: item.place_id,
       name: item.name,
@@ -172,10 +177,8 @@ const success = async (position: LatLng) => {
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
-        location: {
-          lat: item.geometry.location.lat,
-          lng: item.geometry.location.lng,
-        },
+        lat: item.geometry.lat,
+        lng: item.geometry.lng,
       },
       upvote_count: 0,
     });
@@ -268,7 +271,8 @@ watch(
   },
 );
 
-const handleUpvote = (id: string) => {
+const handleUpvote = (event: { stopPropagation: () => void; }, id: string) => {
+  event.stopPropagation();
   const foundRestaurant: Restaurant | undefined = restaurants.restaurants.find(
     (restaurant) => restaurant.place_id === id,
   );
@@ -310,7 +314,7 @@ const handleGroupDownvote = (restaurant: Restaurant) => {
 
 const getRestaurantImageUrl = (restaurant: Restaurant) => {
   if (restaurant && restaurant.photos) {
-    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`;
+    return `${API_URL}/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}`;
   } else {
     return "";
   }
@@ -329,6 +333,17 @@ const handleGoToResults = async () => {
 
 const getRemainingList = () => {
   return restaurants.restaurants.slice(1);
+};
+
+const handleModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  imgSrc: string,
+) => {
+  showModalValues.value.placeId = placeId;
+  showModalValues.value.title = title;
+  showModalValues.value.imgSrc = imgSrc;
+  showModalValues.value.show = !showModalValues.value.show;
 };
 </script>
 
@@ -374,6 +389,26 @@ const getRemainingList = () => {
       </va-select>
     </div>
 
+    <va-modal
+      v-model="showModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      closeButton
+      fullscreen
+    >
+      <RestaurantModal
+        :title="showModalValues.title"
+        :place-id="showModalValues.placeId"
+        :img-src="showModalValues.imgSrc"
+        @closeModal="
+          handleModal(
+              '', '', ''
+          )
+        "
+      />
+    </va-modal>
+
     <div class="flex items-center gap-2 mb-3">
       <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
       <!-- <p>
@@ -389,6 +424,13 @@ const getRemainingList = () => {
         :title="restaurants.restaurants[0].name"
         :imgSrc="getRestaurantImageUrl(restaurants.restaurants[0])"
         :tags="['Burger', 'Fastfood', 'Halal']"
+        @click="
+          handleModal(
+            restaurants.restaurants[0].place_id,
+            restaurants.restaurants[0].name,
+            getRestaurantImageUrl(restaurants.restaurants[0]),
+          )
+        "
       >
         <generic-button
           title-color="text-gray-500"
@@ -398,7 +440,7 @@ const getRemainingList = () => {
               : 'bg-primary'
           "
           padding="py-2 px-3"
-          @click="handleUpvote(restaurants.restaurants[0].place_id)"
+          @click="handleUpvote($event, restaurants.restaurants[0].place_id)"
         >
           <va-icon
             v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
@@ -444,6 +486,13 @@ const getRemainingList = () => {
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
           :tags="['Burger', 'Fastfood', 'Halal']"
+          @click="
+            handleModal(
+              restaurant.place_id,
+              restaurant.name,
+              getRestaurantImageUrl(restaurant),
+            )
+          "
         >
           <generic-button
             title-color="text-gray-500"
@@ -453,7 +502,7 @@ const getRemainingList = () => {
                 : 'bg-primary'
             "
             padding="py-2 px-3"
-            @click="handleUpvote(restaurant.place_id)"
+            @click="handleUpvote($event, restaurant.place_id)"
           >
             <va-icon
               v-if="!isUpvoted(restaurant.place_id)"

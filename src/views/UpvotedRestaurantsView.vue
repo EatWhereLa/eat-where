@@ -10,7 +10,7 @@ import EmptyListImage from "../assets/empty_list_no_bg.png";
 import type { Restaurant } from "@/types/Restaurant";
 import { storeToRefs } from "pinia";
 
-const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
+const API_URL = import.meta.env.VITE_API_URL;
 
 const restaurants = useRestaurantsStore();
 const upvotedRestaurants = useUpvoteRestaurantsStore();
@@ -37,6 +37,14 @@ const handleDownvote = (id: string) => {
   }
 };
 
+const getRestaurantImageUrl = (restaurant: Restaurant) => {
+  if (restaurant && restaurant.photos) {
+    return `${API_URL}/google/photo?photo_reference=${restaurant?.photos?.photo_reference}`;
+  } else {
+    return "";
+  }
+};
+
 const handleGroupDownvote = (restaurant: Restaurant) => {
   if (restaurant == undefined) return;
   groupUpvotedRestaurants.removeRestaurant(restaurant.place_id);
@@ -52,7 +60,7 @@ const handleGroupDownvote = (restaurant: Restaurant) => {
         class="mb-2.5"
       >
         <RestaurantListItem
-          :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
+          :imgSrc="getRestaurantImageUrl(restaurant)"
           :title="restaurant.name"
         >
           <generic-button

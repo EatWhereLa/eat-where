@@ -2,8 +2,9 @@
 import { RouterLink, useRouter } from "vue-router";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import GenericButton from "@/components/GenericButton.vue";
+import RestaurantModal from "@/components/RestaurantModal.vue";
 import { useGroupUpvoteRestaurantsStore } from "@/stores/groupUpvoteRestaurants";
-import { computed, onBeforeMount, onBeforeUnmount } from "vue";
+import { computed, onBeforeMount, onBeforeUnmount, ref } from "vue";
 import type { Restaurant } from "@/types/Restaurant";
 import ky from "ky";
 import type { LatLng } from "@/types/location";
@@ -12,7 +13,7 @@ import { useCurrentLocationStore } from "@/stores/currentLocation";
 import { channel, isLeader, users } from "@/apis/supabase";
 import { useTimer } from "@/composables/useTimer";
 
-const MAP_KEY = import.meta.env.VITE_MAPS_API_KEY;
+const API_URL = import.meta.env.VITE_API_URL;
 const groupUpvoteRestaurantsStore = useGroupUpvoteRestaurantsStore();
 const restaurants = useRestaurantsStore();
 const currentLocation = useCurrentLocationStore();
@@ -53,6 +54,13 @@ const tabulatedResults = computed<Restaurant[]>(() => {
   return retArr;
 });
 
+const showModalValues = ref({
+  title: "",
+  placeId: "",
+  imgSrc: "",
+  show: false,
+});
+
 const expandedResults = computed<Restaurant[]>(() => {
   const retArr = [...tabulatedResults.value];
   if (retArr.length > 1) {
@@ -80,23 +88,29 @@ const getRestaurants = async () => {
   }
 };
 
+const getRestaurantImageUrl = (restaurant: Restaurant) => {
+  if (restaurant && restaurant.photos) {
+    return `${API_URL}/google/photo?photo_reference=${restaurant?.photos?.photo_reference}`;
+  } else {
+    return "";
+  }
+};
+
 const success = async (position: LatLng) => {
   const latitude = position.lat;
   const longitude = position.lng;
 
   const query = `location=${latitude},${longitude}
-  &radius=500&type=restaurant&minprice=1&key=${MAP_KEY}`;
-  const URL = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?${query}`;
+  &radius=500&type=restaurant&minprice=1`;
+  const URL = `${API_URL}/google?${query}`;
 
-  const data = (await ky(
-    `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
-  ).json()) as {
-    results: Restaurant[];
-  };
+  const data = (await ky(URL).json()) as Restaurant[];
+
+  console.log(data);
 
   restaurants.clearRestaurants();
 
-  data.results.forEach((item: Restaurant) => {
+  data.forEach((item: Restaurant) => {
     restaurants.addRestaurant({
       place_id: item.place_id,
       name: item.name,
@@ -105,10 +119,8 @@ const success = async (position: LatLng) => {
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
-        location: {
-          lat: item.geometry.location.lat,
-          lng: item.geometry.location.lng,
-        },
+        lat: item.geometry.lat,
+        lng: item.geometry.lng,
       },
       upvote_count: 0,
     });
@@ -149,6 +161,17 @@ const handleTryAgain = async () => {
     await getRestaurants();
   }
 };
+
+const handleModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  imgSrc: string,
+) => {
+  showModalValues.value.placeId = placeId;
+  showModalValues.value.title = title;
+  showModalValues.value.imgSrc = imgSrc;
+  showModalValues.value.show = !showModalValues.value.show;
+};
 </script>
 
 <template>
@@ -157,11 +180,39 @@ const handleTryAgain = async () => {
       <span class="text-3xl font-semibold mr-2">1st</span>
       place
     </h2>
+
+    <va-modal
+      v-model="showModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      closeButton
+      fullscreen
+    >
+      <RestaurantModal
+        :title="showModalValues.title"
+        :place-id="showModalValues.placeId"
+        :img-src="showModalValues.imgSrc"
+        @closeModal="
+          handleModal(
+            '', '', ''
+          )
+        "
+      />
+    </va-modal>
+
     <RestaurantListItem
       :title="tabulatedResults[0].name"
-      :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${tabulatedResults[0]?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
+      :imgSrc="getRestaurantImageUrl(tabulatedResults[0])"
       :tags="['Burger', 'Fastfood', 'Halal']"
       v-if="tabulatedResults.length > 0"
+      @click="
+        handleModal(
+          tabulatedResults[0].place_id,
+          tabulatedResults[0].name,
+          getRestaurantImageUrl(tabulatedResults[0]),
+        )
+      "
     >
       <generic-button
         class="inline-flex align-center gap-2 text-primary"
@@ -189,8 +240,15 @@ const handleTryAgain = async () => {
         >
           <RestaurantListItem
             :title="restaurant.name"
-            :imgSrc="`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant?.photos[0]?.photo_reference}&key=${MAP_KEY}`"
+            :imgSrc="getRestaurantImageUrl(restaurant)"
             :tags="['Burger', 'Fastfood', 'Halal']"
+            @click="
+              handleModal(
+                restaurant.place_id,
+                restaurant.name,
+                getRestaurantImageUrl(restaurant),
+              )
+            "
           />
         </li>
       </ul>

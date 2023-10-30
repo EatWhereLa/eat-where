@@ -8,15 +8,13 @@ export type Photo = {
 export type Restaurant = {
   place_id: string;
   name: string;
-  photos: Photo[];
+  photos: Photo;
   rating: number;
   user_ratings: number;
   vicinity: string;
   geometry: {
-    location: {
-      lat: number;
-      lng: number;
-    };
+    lat: number;
+    lng: number;
   };
   upvote_count?: number;
 };

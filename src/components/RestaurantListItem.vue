@@ -1,22 +1,62 @@
 <script setup lang="ts">
 import GenericButton from "@/components/GenericButton.vue";
+import ky from "ky";
+import { onMounted, ref } from "vue";
 
 const props = defineProps({
   // foo: { type: String, required: true },
   title: { type: String },
-  imgSrc: { type: String },
+  imgSrc: { type: String, required: true },
   tags: { type: Array<String>, required: false },
   price: { type: Number, required: false },
   rating: { type: Number },
   distance: { type: String },
   time: { type: String },
 });
+
+const imageUrl = ref("");
+
+async function setImageURL(url: string) {
+  try {
+    const res = (await ky(url).json()) as { image_url: string };
+    imageUrl.value = "https://" + res.image_url;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(async () => {
+  await setImageURL(props.imgSrc);
+});
+
+const imageUrl = ref("");
+
+async function setImageURL(url: string) {
+  try {
+    const res = (await ky(url).json()) as { image_url: string };
+    imageUrl.value = "https://" + res.image_url;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(async () => {
+  await setImageURL(props.imgSrc);
+});
 </script>
 
 <template>
-    <div class="relative flex w-full max-w-[48rem] flex-row rounded-xl bg-white bg-clip-border text-gray-700 shadow-md" style="max-height: 200px;">
-    <div class="relative w-2/5 shrink-0 overflow-hidden bg-white bg-clip-border text-gray-700">
-      <img :src="imgSrc" alt="Image not found" class="h-full w-full object-cover rounded-xl rounded-r-none" />
+  <div
+    class="inline-flex gap-5 bg-white rounded-3xl shadow-default p-3 w-full mb-3"
+  >
+    <div
+      class="relative rounded-3xl min-w-[115px] min-h-[115px] overflow-hidden"
+    >
+      <img
+        :src="imageUrl"
+        alt="Image not found"
+        class="absolute object-cover m-auto w-full h-full aspect-square"
+      />
     </div>
     <div class="p-4 w-3/5">
         <div class="mb-2 text-3xl font-semibold flex items-center justify-between">

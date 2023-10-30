@@ -138,7 +138,7 @@ const error = (err: any) => {
 };
 
 onMounted(async () => {
-  await loader.load();
+  await loader.importLibrary("maps");
   isDisabled.value = true;
   navigator.geolocation.getCurrentPosition(success, error);
 });
