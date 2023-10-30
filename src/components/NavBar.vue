@@ -8,6 +8,14 @@ const { logout } = useAuth();
 const logoUrl = new URL("/src/assets/logo.jpg", import.meta.url).href;
 const { showSidebar } = defineProps<{ showSidebar: boolean }>();
 defineEmits(["toggleSidebar"]);
+
+function showMenuItem(itemName: string | undefined) {
+  const menuItems = ["profile", "bookmarks", "home"];
+  if (itemName && menuItems.includes(itemName)) {
+    return true;
+  }
+  return false;
+}
 </script>
 <template>
   <va-navbar color="white" class="xl:!px-64">
@@ -19,16 +27,35 @@ defineEmits(["toggleSidebar"]);
       </va-navbar-item>
     </template>
     <template #center>
-      <div class="block sm:hidden">
-        <va-navbar-item>
-          <h1
-            v-show="$route.name === 'app'"
-            class="uppercase text-3xl text-primary text-center font-semibold flex justify-center items-center"
-          >
-            EatWhere!?
-          </h1>
-        </va-navbar-item>
-      </div>
+      <va-navbar-item class="!hidden md:!block" v-if="$route.name === 'app'">
+        <h1
+          class="uppercase text-3xl text-primary text-center font-semibold flex justify-center items-center"
+        >
+          EatWhere!?
+        </h1>
+      </va-navbar-item>
+      <va-navbar-item
+        class="!hidden md:!block"
+        v-if="showMenuItem($route.name?.toString())"
+      >
+        <router-link to="/profile" active-class="text-primary">
+          Profile
+        </router-link>
+      </va-navbar-item>
+      <va-navbar-item
+        class="!hidden md:!block"
+        v-if="showMenuItem($route.name?.toString())"
+      >
+        <router-link to="/bookmarks" active-class="text-primary">
+          Bookmarks
+        </router-link>
+      </va-navbar-item>
+      <va-navbar-item
+        class="!hidden md:!block"
+        v-if="showMenuItem($route.name?.toString())"
+      >
+        <router-link to="/app" active-class="text-primary"> App </router-link>
+      </va-navbar-item>
     </template>
     <template #right>
       <div class="flex gap-2">
