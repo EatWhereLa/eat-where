@@ -6,9 +6,15 @@ import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
 import restaurantsData from "@/data/restaurants.json"; // Adjust this path to where your data resides
 
+const { username, email } = storeToRefs(useAuthStore());
+
 const categories: Ref<string[]> = ref([]);
 const selectedCategories: Ref<string[]> = ref([]);
-const { username, email } = storeToRefs(useAuthStore());
+const selectedTime = ref("1:00");
+const timings = ["1:00", "2:00", "3:00", "5:00"];
+const selectedDist = ref("500m");
+const distances = ["500m", "1km", "2km", "5km"];
+
 const avatar = computed(() => {
   if (username.value === "") {
     return "";
@@ -82,7 +88,6 @@ onBeforeMount(() => {
             <p class="text-gray-600">
               Your email address is <strong>{{ email }}</strong>
             </p>
-            <!-- <button class="inline-flex text-sm font-semibold text-orange-500 underline decoration-2">Change</button> -->
           </div>
           <hr class="mt-4 mb-8" />
 
@@ -117,7 +122,6 @@ onBeforeMount(() => {
             </button>
           </div>
         </div>
-        <!-- </div> -->
       </div>
     </div>
 
@@ -134,36 +138,15 @@ onBeforeMount(() => {
             Set Default Vote Duration
           </p>
           <div class="flex">
-            <div class="relative inline-flex">
-              <svg
-                class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 412 232"
-              >
-                <path
-                  d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                  fill="#648299"
-                  fill-rule="nonzero"
-                />
-              </svg>
-              <select
-                class="border-none rounded-full text-orange-500 h-10 pl-5 pr-10 bg-orange-50 hover:bg-orange-100 focus:outline-none appearance-none font-semibold text-sm"
-              >
-                <option class="border-none" value="1">1:00 min</option>
-                <option class="border-none" value="2">2:00 min</option>
-                <option class="border-none" value="3">3:00 min</option>
-                <option class="border-none" value="4">4:00 min</option>
-                <option class="border-none" value="5">5:00 min</option>
-              </select>
-            </div>
-
-            <div class="ml-auto">
-              <button
-                class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
-              >
-                Change
-              </button>
-            </div>
+            <va-select
+              v-model="selectedTime"
+              class="w-full text-primary !border-0"
+              :options="timings"
+            >
+              <template #prependInner>
+                <va-icon name="schedule" />
+              </template>
+            </va-select>
           </div>
 
           <hr class="mt-4 mb-8" />
@@ -171,35 +154,15 @@ onBeforeMount(() => {
             Set Search Radius For Nearby Restaurants
           </p>
           <div class="flex">
-            <div class="relative inline-flex">
-              <svg
-                class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 412 232"
-              >
-                <path
-                  d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                  fill="#648299"
-                  fill-rule="nonzero"
-                />
-              </svg>
-              <select
-                class="border-none rounded-full text-orange-500 h-10 pl-5 pr-10 bg-orange-50 hover:bg-orange-100 focus:outline-none appearance-none font-semibold text-sm"
-              >
-                <option class="border-none" value="500">500 m</option>
-                <option class="border-none" value="1">1 km</option>
-                <option class="border-none" value="2">2 km</option>
-                <option class="border-none" value="3">5 km</option>
-              </select>
-            </div>
-
-            <div class="ml-auto">
-              <button
-                class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
-              >
-                Change
-              </button>
-            </div>
+            <va-select
+              v-model="selectedDist"
+              class="w-full text-primary !border-0"
+              :options="distances"
+            >
+              <template #prependInner>
+                <va-icon name="location_on" />
+              </template>
+            </va-select>
           </div>
 
           <hr class="mt-4 mb-8" />
@@ -211,6 +174,9 @@ onBeforeMount(() => {
               v-model="selectedCategories"
               :options="categories"
               multiple
+              searchable
+              highlight-matched-text
+              selected-top-shown
             >
               <template #content="{ value }">
                 <va-chip
