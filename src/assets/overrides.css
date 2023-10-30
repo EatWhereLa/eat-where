@@ -15,3 +15,7 @@
 .va-input-wrapper--solid .va-input-wrapper__field {
   @apply py-4 border-none;
 }
+
+.va-sidebar-item--active {
+  @apply !text-white hover:!text-gray-500;
+}

@@ -1,15 +1,62 @@
+import { useAuth } from "@/composables/auth";
+import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
-      name: "home",
-      component: HomeView,
+      path: "/app",
+      name: "app",
+      component: () => import("../views/HomeView.vue"),
       meta: {
         title: "Home",
+        headerClass: "",
+      },
+    },
+    {
+      path: "/",
+      name: "home",
+      component: () => import("../views/LandingView.vue"),
+      meta: {
+        title: "Home",
+        headerClass: "",
+      },
+    },
+    {
+      path: "/activity",
+      name: "Activity",
+      component: () => import("../views/ActivityView.vue"),
+      meta: {
+        title: "Activity",
+        headerClass: "",
+      },
+    },
+    {
+      path: "/profile",
+      name: "profile",
+      component: () => import("../views/ProfileView.vue"),
+      meta: {
+        title: "Profile",
+        headerClass: "",
+      },
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: () => import("../views/LoginView.vue"),
+      meta: {
+        title: "Login",
+        headerClass: "",
+      },
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: () => import("../views/RegisterView.vue"),
+      meta: {
+        title: "Register",
         headerClass: "",
       },
     },
@@ -83,6 +130,20 @@ const router = createRouter({
       },
     },
   ],
+});
+
+router.beforeEach(async (to) => {
+  const { isAuthenticated } = storeToRefs(useAuthStore());
+  const { isLoggedIn } = useAuth();
+  if (to.name === "Login" || to.name === "Register") {
+    if (!isAuthenticated.value) {
+      // We try to check if there the user is authenticated
+      await isLoggedIn();
+    }
+    if (isAuthenticated.value) {
+      return { name: "home" };
+    }
+  }
 });
 
 export default router;

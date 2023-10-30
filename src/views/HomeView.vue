@@ -14,7 +14,7 @@ import GenericModal from "../components/GenericModal.vue";
 </script>
 
 <template>
-  <main>
+  <main class="container m-auto">
     <!-- <h2 class="capitalize text-3xl text-primary font-semibold mb-6">
       Don't Miss Out!
     </h2>
@@ -25,14 +25,14 @@ import GenericModal from "../components/GenericModal.vue";
     </RouterLink>
 
     <div class="grid grid-cols-2 gap-6 py-6">
-      <RouterLink to="/results">
+      <RouterLink class="flex justify-center items-center" to="/results">
         <ImageButton
           :imgSrc="PickForMeImage"
           title="Pick For Me"
           titleColor="text-primary"
         />
       </RouterLink>
-      <RouterLink to="/group">
+      <RouterLink class="flex justify-center items-center" to="/group">
         <ImageButton
           :imgSrc="GroupVoteImage"
           title="Group Vote"
@@ -44,10 +44,12 @@ import GenericModal from "../components/GenericModal.vue";
     <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
 
     <div class="grid grid-cols-2 gap-6 py-6">
-      <RouterLink to="/bookmarks">
+      <RouterLink class="flex justify-center items-center" to="/profile">
         <IconWithTextButton title="Bookmarks" icon="bookmark_outline" />
       </RouterLink>
-      <IconWithTextButton title="Settings" icon="settings" />
+      <RouterLink class="flex justify-center items-center" to="/profile">
+        <IconWithTextButton title="Settings" icon="settings" />
+      </RouterLink>
     </div>
   </main>
 
