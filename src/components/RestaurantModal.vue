@@ -4,8 +4,11 @@ import GenericButton from "./GenericButton.vue";
 import ky from "ky";
 
 import type { Review, RestaurantDetails } from "@/types/RestaurantDetails";
+import type { Restaurant } from "@/types/Restaurant";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
+import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewItem from "@/components/ReviewItem.vue";
+import dayjs from "dayjs";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,7 +19,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "close"): void;
+  (e: "closeModal"): void;
 }>();
 
 const modalValues: Ref<{
@@ -25,6 +28,7 @@ const modalValues: Ref<{
   priceLevel: string;
   reviews: Review[];
   openingHours: RestaurantDetails["current_opening_hours"];
+  reservable: RestaurantDetails["reservable"];
 }> = ref({
   description: "",
   location: "",
@@ -33,11 +37,39 @@ const modalValues: Ref<{
   openingHours: {
     open_now: false,
     weekday_text: [],
+    periods: [
+      {
+        close: {
+          day: 0,
+          time: "",
+        },
+        open: {
+          day: 0,
+          time: "",
+        },
+      },
+    ],
     dine_in: false,
   },
 });
 
-const imageUrl = ref("");
+const appReviews: Ref<
+  Array<{
+    place_id: string;
+    rating: number;
+    user_id: number;
+    description: string;
+  }>
+> = ref([
+  {
+    place_id: "",
+    rating: 0,
+    user_id: 0,
+    description: "",
+  },
+]);
+
+const restaurantStatus = ref("");
 
 const priceLevels = [
   "Free",
@@ -80,6 +112,29 @@ async function setImageURL(url: string) {
   }
 }
 
+const fetchPlaceReviews = async () => {
+  const URL = `https://ns6tzwwmuy.ap-southeast-1.awsapprunner.com/review/restaurant?place_id=${props.placeId}`;
+  return (await ky(
+    `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
+  ).json()) as typeof appReviews.value;
+};
+
+const getClosingTime = () => {
+  const timePeriods = modalValues.value.openingHours.periods;
+  const currentDay = dayjs().day();
+
+  if (modalValues.value.openingHours.open_now) {
+    for (let i = timePeriods.length - 1; i >= 0; i--) {
+      if (timePeriods[i].close.day === currentDay) {
+        restaurantStatus.value = `Open till: ${timePeriods[i].close.time}`;
+        break;
+      }
+    }
+  } else {
+    restaurantStatus.value = "Opening Hours (Closed)";
+  }
+};
+
 onMounted(async () => {
   await setImageURL(props.imgSrc);
   const res = await fetchPlaceInfo();
@@ -88,11 +143,36 @@ onMounted(async () => {
   modalValues.value.priceLevel = priceLevels[res.price_level];
   modalValues.value.reviews = res.reviews;
   modalValues.value.openingHours = res.current_opening_hours;
+
+  getClosingTime();
+  appReviews.value = await fetchPlaceReviews();
 });
 </script>
 
 <template>
   <div class="p-6 min-h-[220px] min-w-40 flex flex-col justify-between">
+    <va-modal
+      v-model="showReservationModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      closeButton
+    >
+      <ReservationModal
+        :title="showReservationModalValues.title"
+        :place-id="showReservationModalValues.placeId"
+        :opening-hours="showReservationModalValues.periods"
+        @closeModal="
+          handleReservationModal('', '', [
+            {
+              close: { day: 0, time: '' },
+              open: { day: 0, time: '' },
+            },
+          ])
+        "
+      />
+    </va-modal>
+
     <div style="background: black; width: 100%">
       <va-image
         :src="imgSrc"
@@ -102,8 +182,11 @@ onMounted(async () => {
       />
     </div>
     <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
-      <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">{{ title }}</h3>
+      <va-card-title
+        ><h3 class="lg:va-h3 sm:text-2xl va-h3">{{ title }}</h3></va-card-title
+      >
       <va-card-content>
+        <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">{{ title }}</h3>
         <va-icon
           name="location_on"
           size="1.8rem"
@@ -112,26 +195,12 @@ onMounted(async () => {
         <p class="mt-1.5">{{ modalValues.location }}</p>
         <div class="clear-left"></div>
 
-          <va-icon
-            name="attach_money"
-            size="1.8rem"
-            class="text-primary w-4 mr-2 float-left mb-3"
-          />
-          <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
-          <div class="clear-left"></div>
-
         <va-icon
-          name="alarm"
+          name="attach_money"
           size="1.8rem"
-          class="text-primary w-4 mr-2 float-left mb-1"
+          class="text-primary w-4 mr-2 float-left mb-3"
         />
-        <p class="mt-1.5">Opening Hours</p>
-        <div class="clear-left"></div>
-
-        <ul v-for="(day, idx) in modalValues.openingHours.weekday_text"
-            :key="idx" class="mb-2">
-          <li class="my-1">{{ day }}</li>
-        </ul>
+        <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
         <div class="clear-left"></div>
 
         <va-icon
@@ -143,67 +212,64 @@ onMounted(async () => {
           {{ modalValues.description }}
         </p>
         <p class="mt-2" v-else>No description found for location</p>
+
+        <div class="clear-left"></div>
+
+        <div v-if="modalValues.openingHours" class="mt-2">
+          <va-collapse
+            :header="restaurantStatus"
+            icon="alarm"
+            textColor="primary"
+          >
+            <ul
+              v-for="(day, idx) in modalValues.openingHours.weekday_text"
+              :key="idx"
+              class="mb-2"
+            >
+              <li class="my-1">{{ day }}</li>
+            </ul>
+          </va-collapse>
+        </div>
       </va-card-content>
     </va-card>
   </div>
   <section class="mt-7">
-    <va-accordion class="max-w-full p-4">
-      <va-collapse :header="'Menu'" body-color="white">
-        <template #body>
-          <li
-            v-for="(menuItem, index) in restaurantMenuItems"
-            :key="index"
-            class="list-none"
-          >
-            <RestaurantListItem
-              :title="menuItem.title"
-              :imgSrc="menuItem.imgSrc"
-              :price="menuItem.price"
-            />
-          </li>
-        </template>
-      </va-collapse>
-      <va-collapse :header="'Google Reviews'" body-color="white">
-        <template #body>
-          <li
-            v-for="(review, index) in modalValues.reviews.sort(
-              (a, b) => b.time - a.time,
-            )"
-            :key="index"
-            class="list-none"
-          >
-            <ReviewItem
-              :name="review.author_name"
-              :imgUrl="review.profile_photo_url"
-              :rating="review.rating"
-              :time-description="review.relative_time_description"
-              :text="review.text"
-              :time="review.time"
-            />
-          </li>
-        </template>
-      </va-collapse>
-      <va-collapse :header="'WhereToEat Reviews'" body-color="white">
-        <template #body>
-          <li
-            v-for="(review, index) in modalValues.reviews.sort(
-              (a, b) => b.time - a.time,
-            )"
-            :key="index"
-            class="list-none"
-          >
-            <ReviewItem
-              :name="review.author_name"
-              :imgUrl="review.profile_photo_url"
-              :rating="review.rating"
-              :time-description="review.relative_time_description"
-              :text="review.text"
-              :time="review.time"
-            />
-          </li>
-        </template>
-      </va-collapse>
-    </va-accordion>
+    <ReviewForm :place-id="placeId" :title="title" />
+
+    <li
+      v-for="(review, index) in appReviews"
+      :key="index"
+      class="list-none mt-7"
+    >
+      <ReviewItem
+        :name="review.user_id.toString()"
+        :rating="review.rating"
+        :text="review.description"
+      />
+    </li>
+
+    <div class="my-5" v-if="!appReviews">
+      <h4 class="va-h4 text-center">There are no current reviews</h4>
+    </div>
+    <h5 class="va-h5 text-center">
+      Here's what Google reviewers are saying...
+    </h5>
+    <li
+      v-for="(review, index) in modalValues.reviews.sort(
+        (a, b) => b.time - a.time,
+      )"
+      :key="index"
+      class="list-none mt-7"
+    >
+      <ReviewItem
+        :name="review.author_name"
+        :imgUrl="review.profile_photo_url"
+        :rating="review.rating"
+        :time-description="review.relative_time_description"
+        :text="review.text"
+        :time="review.time"
+      />
+    </li>
   </section>
   <div class="self-end flex align-end">
     <generic-button

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GenericButton from "@/components/GenericButton.vue";
+import logo from "@/assets/logo.jpg";
 
 const props = defineProps({
   name: { type: String },
@@ -18,17 +19,30 @@ const props = defineProps({
     <div
       class="relative rounded-3xl min-w-[115px] min-h-[115px] max-w-[115px] max-h-[115px] overflow-hidden"
     >
-      <img
+
+      <img v-if="imgUrl"
         :src="imgUrl"
         alt="Image not found"
         class="absolute object-cover m-auto w-full h-full aspect-square"
         referrerpolicy="no-referrer"
       />
+
+      <img v-else
+        :src="logo"
+        alt="Image not found"
+        class="absolute object-cover m-auto w-full h-full aspect-square"
+        referrerpolicy="no-referrer"
+      />
+
     </div>
 
     <div class="w-full">
           <h5 class="font-semibold text-black">{{ name }}</h5>
-          <p class="my-2">Rating: {{ rating }}</p>
+          <va-rating
+              :model-value="rating"
+              size="large"
+              halves
+          />
           <p class="my-2">{{ text }}</p>
           <p class="italic">{{ timeDescription }}</p>
     </div>
