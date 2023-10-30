@@ -130,67 +130,77 @@ onBeforeMount(() => {
         class="container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
       >
         <div
-          class="col-span-12 overflow-hidden rounded-xl bg-white p-8 sm:shadow"
+          class="overflow-hidden rounded-xl bg-white p-8 sm:shadow flex flex-col gap-8"
         >
-          <h1 class="py-2 text-2xl font-semibold">Voting settings</h1>
-          <hr class="mt-4 mb-8" />
-          <p class="py-2 text-xl font-semibold mb-2">
-            Set Default Vote Duration
-          </p>
-          <div class="flex">
-            <va-select
-              v-model="selectedTime"
-              class="w-full text-primary !border-0"
-              :options="timings"
-            >
-              <template #prependInner>
-                <va-icon name="schedule" />
-              </template>
-            </va-select>
+          <div>
+            <h1 class="py-2 text-2xl font-semibold">Voting settings</h1>
+            <hr class="mt-4" />
           </div>
 
-          <hr class="mt-4 mb-8" />
-          <p class="py-2 text-xl font-semibold mb-2">
-            Set Search Radius For Nearby Restaurants
-          </p>
-          <div class="flex">
-            <va-select
-              v-model="selectedDist"
-              class="w-full text-primary !border-0"
-              :options="distances"
-            >
-              <template #prependInner>
-                <va-icon name="location_on" />
-              </template>
-            </va-select>
+          <div>
+            <p class="py-2 text-xl font-semibold mb-2">
+              Set Default Vote Duration
+            </p>
+            <div class="flex">
+              <va-select
+                v-model="selectedTime"
+                class="w-full text-primary !border-0"
+                :options="timings"
+              >
+                <template #prependInner>
+                  <va-icon name="schedule" />
+                </template>
+              </va-select>
+            </div>
+
+            <hr class="mt-4" />
           </div>
 
-          <hr class="mt-4 mb-8" />
-          <span class="py-2 text-xl font-semibold mb-2">
-            Set Categories For Nearby Restaurants
-          </span>
-          <div class="flex">
-            <va-select
-              v-model="selectedCategories"
-              :options="categories"
-              multiple
-              searchable
-              highlight-matched-text
-              selected-top-shown
-            >
-              <template #content="{ value }">
-                <va-chip
-                  v-for="category in value"
-                  :key="category"
-                  size="small"
-                  class="mr-1 my-1 !text-white"
-                  closeable
-                  @update:modelValue="deleteCategory(category)"
-                >
-                  {{ category }}
-                </va-chip>
-              </template>
-            </va-select>
+          <div>
+            <p class="py-2 text-xl font-semibold mb-2">
+              Set Search Radius For Nearby Restaurants
+            </p>
+            <div class="flex">
+              <va-select
+                v-model="selectedDist"
+                class="w-full text-primary !border-0"
+                :options="distances"
+              >
+                <template #prependInner>
+                  <va-icon name="location_on" />
+                </template>
+              </va-select>
+            </div>
+            <hr class="mt-4" />
+          </div>
+
+          <div>
+            <p class="py-2 text-xl font-semibold mb-2">
+              Set Categories For Nearby Restaurants
+            </p>
+            <div class="flex">
+              <va-select
+                v-model="selectedCategories"
+                :options="categories"
+                multiple
+                searchable
+                highlight-matched-text
+                selected-top-shown
+              >
+                <template #content="{ value }">
+                  <va-chip
+                    v-for="category in value"
+                    :key="category"
+                    size="small"
+                    class="mr-1 my-1 !text-white"
+                    closeable
+                    @update:modelValue="deleteCategory(category)"
+                  >
+                    {{ category }}
+                  </va-chip>
+                </template>
+              </va-select>
+            </div>
           </div>
         </div>
       </div>
