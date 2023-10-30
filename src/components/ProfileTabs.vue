@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mx-auto mt-20 pt-10 border-gray-200 dark:border-gray-700 container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3"
+    class="mx-auto border-gray-200 dark:border-gray-700 container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3"
   >
     <ul
       class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500 dark:text-gray-400"

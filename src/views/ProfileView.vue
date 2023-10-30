@@ -143,7 +143,7 @@ const viewAll = () => {
     <ProfileTabs />
     <div class="flex flex-wrap mt-20 justify-center" style="min-width: 650px">
       <div
-        class="container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 bg-white shadow-lg transform duration-200 easy-in-out"
+        class="container !grow-0 lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 bg-white shadow-lg transform duration-200 easy-in-out"
         style="min-width: 650px"
       >
         <div class="h-32 overflow-hidden">
@@ -151,12 +151,12 @@ const viewAll = () => {
         </div>
         <div class="flex justify-center px-5 -mt-12">
           <img
-            class="h-32 w-32 bg-white p-2 rounded-full"
+            class="!grow-0 h-32 w-32 bg-white p-2 rounded-full"
             src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
             alt=""
           />
         </div>
-        <div class=" ">
+        <div>
           <div class="text-center px-14">
             <h2 class="text-gray-800 text-3xl font-bold">Mohit Dhiman</h2>
             <a
@@ -187,7 +187,7 @@ const viewAll = () => {
 
     <div class="flex flex-wrap mt-20 justify-center" style="min-width: 650px">
       <div
-        class="container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
+        class="container !grow-0 lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
         style="min-width: 650px"
       >
         <div
@@ -219,7 +219,7 @@ const viewAll = () => {
                 />
               </label>
             </div>
-            <!-- <div class="ml-auto mt-4">
+            <div class="ml-auto mt-4">
               <button
                 class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
               >
@@ -277,7 +277,7 @@ const viewAll = () => {
 
     <div class="flex flex-wrap mt-20 justify-center" style="min-width: 650px">
       <div
-        class="container lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
+        class="container !grow-0 lg:w-4/6 xl:w-4/7 sm:w-full md:w-2/3 transform duration-200 easy-in-out"
         style="min-width: 650px"
       >
         <div

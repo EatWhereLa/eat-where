@@ -1,40 +1,34 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRoute } from "vue-router";
-import HeaderBar from "./components/HeaderBar.vue";
+import { onMounted, ref } from "vue";
+import NavBar from "./components/NavBar.vue";
+import SideBar from "./components/SideBar.vue";
+import { useAuth } from "@/composables/auth";
 
-const headerStyle = (routeName: string) => {
-  switch (routeName) {
-    case "home":
-      return "pt-28";
-    case "location":
-      return "pt-0";
-    case "group":
-      return "pt-32";
-    default:
-      return "pt-24";
-  }
-};
+const showSidebar = ref(false);
+const { isLoggedIn } = useAuth();
 
-const mainPaddingStyle = (routeName: string) => {
-  switch (routeName) {
-    case "location":
-      return "";
-    case "group":
-      return "";
-    default:
-      return "p-5";
-  }
-};
+onMounted(async () => {
+  await isLoggedIn();
+});
 </script>
 
 <template>
-  <div
-    :class="`${headerStyle($route.name as string)} ${mainPaddingStyle(
-      $route.name as string,
-    )}`"
-    class=""
-  >
-    <RouterView />
-  </div>
+  <!-- <HeaderBar /> -->
+  <va-layout :right="{ absolute: true }">
+    <template #top>
+      <NavBar
+        @toggle-sidebar="showSidebar = !showSidebar"
+        :show-sidebar="showSidebar"
+      />
+    </template>
+    <template #right>
+      <SideBar :show-sidebar="showSidebar" />
+    </template>
+    <template #content>
+      <div class="flex justify-center items-center h-full p-4">
+        <RouterView />
+      </div>
+    </template>
+  </va-layout>
 </template>
-
