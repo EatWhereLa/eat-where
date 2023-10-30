@@ -314,7 +314,7 @@ const handleGroupDownvote = (restaurant: Restaurant) => {
 
 const getRestaurantImageUrl = (restaurant: Restaurant) => {
   if (restaurant && restaurant.photos) {
-    return `${API_URL}/photo?maxwidth=400&photoreference=${restaurant?.photos?.photo_reference}`;
+    return `${API_URL}/google/photo?photo_reference=${restaurant?.photos?.photo_reference}`;
   } else {
     return "";
   }

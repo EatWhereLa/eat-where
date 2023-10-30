@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import NavHeader from "@/components/NavHeader.vue";
-import { Activity, ActivityType } from "@/types/Activity";
+import { type Activity, ActivityType } from "@/types/Activity";
 import { ref, watch, onMounted, nextTick, onUpdated } from "vue";
 import * as d3 from 'd3';
 

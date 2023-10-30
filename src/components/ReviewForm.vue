@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import ky from "ky";
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 import { useToast } from "vuestic-ui";
 import GenericButton from "./GenericButton.vue";
 
 const { init } = useToast();
+
+const emit = defineEmits();
 
 const props = defineProps({
   placeId: { type: String, required: true },
@@ -46,6 +48,7 @@ const submitReview = async() => {
         });
         
     }
+    emit("submittedForm");
     resetForm();
 }
 
@@ -58,7 +61,7 @@ const resetForm = () => {
 <template>
 
     <div class="w-full">
-        <h5 class="va-h5">Review {{ title }}</h5>
+        <h5 class="va-h4 font-semibold">Review {{ title }}</h5>
         <va-rating
             v-model="reviewVal.rating"
             hover
