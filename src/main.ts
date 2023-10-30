@@ -20,6 +20,8 @@ import {
   VaTab,
   VaChip,
   VaCollapse,
+  VaRating,
+  VaTextarea,
   VaDropdownPlugin,
   VaModalPlugin,
 } from "vuestic-ui";
@@ -46,6 +48,8 @@ app.use(
       VaTab,
       VaChip,
       VaCollapse,
+      VaRating,
+      VaTextarea,
     },
     plugins: {
       VaDropdownPlugin,
