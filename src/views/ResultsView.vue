@@ -193,7 +193,11 @@ const handleModal = (
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
-        @close="showModalValues.show = false"
+        @closeModal="
+          handleModal(
+            '', '', ''
+          )
+        "
       />
     </va-modal>
 

@@ -271,7 +271,8 @@ watch(
   },
 );
 
-const handleUpvote = (id: string) => {
+const handleUpvote = (event: { stopPropagation: () => void; }, id: string) => {
+  event.stopPropagation();
   const foundRestaurant: Restaurant | undefined = restaurants.restaurants.find(
     (restaurant) => restaurant.place_id === id,
   );
@@ -400,7 +401,11 @@ const handleModal = (
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
-        @close="showModalValues.show = false"
+        @closeModal="
+          handleModal(
+              '', '', ''
+          )
+        "
       />
     </va-modal>
 
@@ -435,7 +440,7 @@ const handleModal = (
               : 'bg-primary'
           "
           padding="py-2 px-3"
-          @click="handleUpvote(restaurants.restaurants[0].place_id)"
+          @click="handleUpvote($event, restaurants.restaurants[0].place_id)"
         >
           <va-icon
             v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
@@ -497,7 +502,7 @@ const handleModal = (
                 : 'bg-primary'
             "
             padding="py-2 px-3"
-            @click="handleUpvote(restaurant.place_id)"
+            @click="handleUpvote($event, restaurant.place_id)"
           >
             <va-icon
               v-if="!isUpvoted(restaurant.place_id)"
