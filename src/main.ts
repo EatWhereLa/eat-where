@@ -6,11 +6,15 @@ import router from "./router";
 
 import "./assets/main.css";
 
+import Vue3Lottie from "vue3-lottie";
 import {
   createVuesticEssential,
+  VaButton,
   VaAccordion,
   VaCarousel,
   VaSelect,
+  VaCheckbox,
+  VaInput,
   VaModal,
   VaImage,
   VaIcon,
@@ -23,13 +27,21 @@ import {
   VaTab,
   VaChip,
   VaCollapse,
+  VaNavbar,
+  VaNavbarItem,
+  VaSidebar,
+  VaSidebarItem,
+  VaSidebarItemContent,
+  VaSidebarItemTitle,
+  VaLayout,
+  VaOptionList,
   VaScrollContainer,
   VaRating,
   VaTextarea,
   VaDropdownPlugin,
   VaModalPlugin,
 } from "vuestic-ui";
-import "vuestic-ui/css";
+import "vuestic-ui/styles/essential.css";
 import config from "../vuestic.config";
 
 import "./assets/overrides.css";
@@ -40,9 +52,12 @@ app.use(router);
 app.use(
   createVuesticEssential({
     components: {
+      VaButton,
       VaAccordion,
       VaCarousel,
       VaSelect,
+      VaCheckbox,
+      VaInput,
       VaModal,
       VaImage,
       VaIcon,
@@ -55,6 +70,14 @@ app.use(
       VaTab,
       VaChip,
       VaCollapse,
+      VaNavbar,
+      VaNavbarItem,
+      VaSidebar,
+      VaSidebarItem,
+      VaSidebarItemContent,
+      VaSidebarItemTitle,
+      VaLayout,
+      VaOptionList,
       VaScrollContainer,
       VaRating,
       VaTextarea,
@@ -66,5 +89,6 @@ app.use(
     config,
   }),
 );
+app.use(Vue3Lottie);
 
 app.mount("#app");
