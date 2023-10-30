@@ -30,8 +30,8 @@ onBeforeUnmount(() => {
 <template>
   <!-- ===== Header Start ===== -->
   <header
-    class="g s r vd ya cj"
-    :class="{ 'hh sm _k dj bl ll': pageOffSet > 20 }"
+    class="g s r vd ya cj pink"
+    :class="{ 'sm _k dj bl ll white': pageOffSet > 20 }"
   >
     <div class="bb ze ki xn 2xl:ud-px-0 oo wf yf i">
       <div class="vd to/4 tc wf yf">

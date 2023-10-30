@@ -225,7 +225,7 @@ const viewAll = () => {
               >
                 Change
               </button>
-            </div>
+            </div> -->
           </div>
           <hr class="mt-4 mb-8" />
 
@@ -316,13 +316,13 @@ const viewAll = () => {
               </select>
             </div>
 
-            <div class="ml-auto">
+            <!-- <div class="ml-auto">
               <button
                 class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
               >
                 Change
               </button>
-            </div>
+            </div> -->
           </div>
 
           <hr class="mt-4 mb-8" />
@@ -352,13 +352,13 @@ const viewAll = () => {
               </select>
             </div>
 
-            <div class="ml-auto">
+            <!-- <div class="ml-auto">
               <button
                 class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
               >
                 Change
               </button>
-            </div>
+            </div> -->
           </div>
 
           <hr class="mt-4 mb-8" />
@@ -366,13 +366,6 @@ const viewAll = () => {
             <span class="py-2 text-xl font-semibold mb-2">
               Set Categories For Nearby Restaurants
             </span>
-            <p class="ml-auto">
-              <button
-                class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
-              >
-                Change
-              </button>
-            </p>
           </div>
 
           <div class="relative mb-3" data-te-input-wrapper-init>
@@ -394,6 +387,7 @@ const viewAll = () => {
                 class="px-4 cols-span-1"
               />
             </div>
+       
             <span v-if="gotsearch">
               <button
                 v-if="seemore == false"
@@ -403,7 +397,7 @@ const viewAll = () => {
                 See more
               </button>
             </span>
-
+            
             <span v-if="seemore == true">
               <div class="grid sm:grid-cols-5 grid-cols-2">
                 <FilterButtonOnSide
@@ -428,6 +422,17 @@ const viewAll = () => {
           <div v-else>
             <span class="px-4 pb-4">No Results</span>
           </div>
+          <div class="flex">
+            <div class="ml-auto">
+                <button
+                  class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
+                >
+                  Change
+                </button>
+            </div>
+          </div>
+          <br>
+          
         </div>
       </div>
     </div>
