@@ -5,7 +5,6 @@ import ky from "ky";
 
 import type { Review, RestaurantDetails } from "@/types/RestaurantDetails";
 import type { Restaurant } from "@/types/Restaurant";
-import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewItem from "@/components/ReviewItem.vue";
 import dayjs from "dayjs";
@@ -27,6 +26,7 @@ const modalValues: Ref<{
   location: string;
   priceLevel: string;
   reviews: Review[];
+  rating: RestaurantDetails["rating"];
   openingHours: RestaurantDetails["current_opening_hours"];
   reservable: RestaurantDetails["reservable"];
 }> = ref({
@@ -34,6 +34,7 @@ const modalValues: Ref<{
   location: "",
   priceLevel: "",
   reviews: [],
+  rating: 0,
   openingHours: {
     open_now: false,
     weekday_text: [],
@@ -51,6 +52,17 @@ const modalValues: Ref<{
     ],
     dine_in: false,
   },
+  reservable: false,  
+});
+
+const showReservationModalValues = ref({
+  title: "",
+  placeId: "",
+  periods: [{
+      close: { day : 0, time: "" },
+      open: { day : 0, time: "" }
+  }],
+  show: false,
 });
 
 const appReviews: Ref<
@@ -103,6 +115,8 @@ const fetchPlaceInfo = async () => {
   return res.result;
 };
 
+const imageUrl = ref("");
+
 async function setImageURL(url: string) {
   try {
     const res = (await ky(url).json()) as { image_url: string };
@@ -143,14 +157,31 @@ onMounted(async () => {
   modalValues.value.priceLevel = priceLevels[res.price_level];
   modalValues.value.reviews = res.reviews;
   modalValues.value.openingHours = res.current_opening_hours;
+  modalValues.value.rating = res.rating;
+
+  modalValues.value.reservable = "reservable" in res ? res.reservable : false;
 
   getClosingTime();
-  appReviews.value = await fetchPlaceReviews();
+  updateReviews();
 });
+
+const updateReviews = async() => {
+  appReviews.value = await fetchPlaceReviews();
+}
+
+const handleReservationModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  openingHours: RestaurantDetails["current_opening_hours"]["periods"]
+) => {
+  showReservationModalValues.value.placeId = placeId;
+  showReservationModalValues.value.title = title;
+  showReservationModalValues.value.periods = openingHours;
+  showReservationModalValues.value.show = !showReservationModalValues.value.show;
+};
 </script>
 
 <template>
-  <div class="p-6 min-h-[220px] min-w-40 flex flex-col justify-between">
     <va-modal
       v-model="showReservationModalValues.show"
       hide-default-actions
@@ -175,18 +206,14 @@ onMounted(async () => {
 
     <div style="background: black; width: 100%">
       <va-image
-        :src="imgSrc"
+        :src="imageUrl"
         alt="Image not found"
-        class="max-h-40 min-h-40"
-        style="opacity: 0.4; object-fit: cover"
+        class="max-h-40 min-h-40 opacity-40 object-cover w-full"
       />
     </div>
     <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
-      <va-card-title
-        ><h3 class="lg:va-h3 sm:text-2xl va-h3">{{ title }}</h3></va-card-title
-      >
       <va-card-content>
-        <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">{{ title }}</h3>
+        <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg font-semibold">{{ title }}</h3>
         <va-icon
           name="location_on"
           size="1.8rem"
@@ -201,6 +228,14 @@ onMounted(async () => {
           class="text-primary w-4 mr-2 float-left mb-3"
         />
         <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
+        <div class="clear-left"></div>
+
+        <va-icon
+          name="star"
+          size="1.8rem"
+          class="text-primary w-5 mr-2 float-left mb-3"
+        />
+        <p class="mt-1.5"> {{ modalValues.rating }}/5</p>
         <div class="clear-left"></div>
 
         <va-icon
@@ -230,11 +265,30 @@ onMounted(async () => {
             </ul>
           </va-collapse>
         </div>
+
+        <div class="clear-left"></div>
+        <generic-button v-if="modalValues.reservable"
+          class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
+          padding="p-0"
+          @click="
+            handleReservationModal(
+              placeId,
+              title,
+              modalValues.openingHours.periods,
+            )
+          "
+        >
+          <va-icon name="table_bar" size="2rem" />
+          <span class="font-semibold">
+          Reservation
+          </span>
+        </generic-button>
       </va-card-content>
     </va-card>
-  </div>
   <section class="mt-7">
-    <ReviewForm :place-id="placeId" :title="title" />
+    <ReviewForm :place-id="placeId" :title="title"
+    @submittedForm="updateReviews()"
+    />
 
     <li
       v-for="(review, index) in appReviews"
@@ -248,10 +302,10 @@ onMounted(async () => {
       />
     </li>
 
-    <div class="my-5" v-if="!appReviews">
-      <h4 class="va-h4 text-center">There are no current reviews</h4>
+    <div class="my-5" v-if="appReviews.length == 0">
+      <h4 class="va-h4 text-center">There are no recent reviews</h4>
     </div>
-    <h5 class="va-h5 text-center">
+    <h5 class="va-h5 text-center mt-7">
       Here's what Google reviewers are saying...
     </h5>
     <li

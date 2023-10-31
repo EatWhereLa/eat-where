@@ -14,17 +14,6 @@ const props = defineProps({
   time: { type: String },
 });
 
-const imageUrl = ref("");
-
-async function setImageURL(url: string) {
-  try {
-    const res = (await ky(url).json()) as { image_url: string };
-    imageUrl.value = "https://" + res.image_url;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 onMounted(async () => {
   await setImageURL(props.imgSrc);
 });
