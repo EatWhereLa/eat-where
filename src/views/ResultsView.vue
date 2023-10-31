@@ -100,8 +100,7 @@ const success = async (position: LatLng) => {
   const latitude = position.lat;
   const longitude = position.lng;
 
-  const query = `location=${latitude},${longitude}
-  &radius=500&type=restaurant&minprice=1`;
+  const query = `location=${latitude},${longitude}&radius=500&type=restaurant&minprice=1`;
   const URL = `${API_URL}/google?${query}`;
 
   const data = (await ky(URL).json()) as Restaurant[];
@@ -193,11 +192,7 @@ const handleModal = (
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
-        @closeModal="
-          handleModal(
-            '', '', ''
-          )
-        "
+        @closeModal="handleModal('', '', '')"
       />
     </va-modal>
 
