@@ -5,11 +5,37 @@ import LandingHeader from "@/components/LandingHeader.vue";
 </script>
 
 <template>
-  <NavHeader />
+  <!-- <NavHeader /> -->
 
-  <main>
+  <main class="m-auto">
     <!-- ===== Hero Start ===== -->
+    <div class="grid grid-cols-3">
+      <div class="col-span-2 flex items-center justify-center ">
+        <div class="text-bold block">Search Location</div>
+        <div class="block">
+        <form class="flex items-center ">
+          <label for="simple-search" class="sr-only">Search</label>
+          <div class="relative w-full">
+            <input type="text" id="simple-search"
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Your street and street number" required>
+          </div>
+          <button type="submit"
+            class="p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+            </svg>
+            <span class="sr-only">Search</span>
+          </button>
+        </form>
+      </div>
 
+      </div>
+      <div class="col-span-1">
+        <img  alt="Food and groceries you love, delivered." class="bds-c-hero__image w-full h-full" src="https://images.deliveryhero.io/image/foodpanda/homepage/refresh-hero-home-sg.png">
+      </div>
+    </div>
     <LandingHeader />
     <br />
 
@@ -107,36 +133,20 @@ import LandingHeader from "@/components/LandingHeader.vue";
     <!-- ===== Small Features End ===== -->
 
     <!-- ===== About Start ===== -->
-    <section class="ji gp uq 2xl:ud-py-35 pg">
+    <section class="ji gp uq 2xl:ud-py-35 pg" style="padding:3em 2em;">
       <div class="bb ze ki xn wq">
         <div class="tc wf gg qq">
           <!-- About Images -->
           <div class="animate_left xc gn gg jn/2 i">
             <div>
-              <img
-                src="/src/assets/images/shape-05.svg"
-                alt="Shape"
-                class="h -ud-left-5 x"
-              />
-              <img
-                src="/src/assets/images/about-01.png"
-                alt="About"
-                class="ib"
-              />
+              <img src="/src/assets/images/shape-05.svg" alt="Shape" class="h -ud-left-5 x" />
+              <img src="/src/assets/images/about-01.png" alt="About" class="ib" />
               <img src="/src/assets/images/about-02.png" alt="About" />
             </div>
             <div>
               <img src="/src/assets/images/shape-06.svg" alt="Shape" />
-              <img
-                src="/src/assets/images/about-03.png"
-                alt="About"
-                class="ob gb"
-              />
-              <img
-                src="/src/assets/images/shape-07.svg"
-                alt="Shape"
-                class="bb"
-              />
+              <img src="/src/assets/images/about-03.png" alt="About" class="ob gb" />
+              <img src="/src/assets/images/shape-07.svg" alt="Shape" class="bb" />
             </div>
           </div>
 
@@ -151,11 +161,7 @@ import LandingHeader from "@/components/LandingHeader.vue";
               decisions in a snap.
             </p>
 
-            <a
-              href="https://www.youtube.com/watch?v=xcJtL7QggTI"
-              data-fslightbox
-              class="vc wf hg mb"
-            >
+            <a href="https://www.youtube.com/watch?v=xcJtL7QggTI" data-fslightbox class="vc wf hg mb">
               <!-- <svg fill="#f59e0b" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71px" height="71px" viewBox="0 0 408.221 408.221" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.816442"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M204.11,0C91.388,0,0,91.388,0,204.111c0,112.725,91.388,204.11,204.11,204.11c112.729,0,204.11-91.385,204.11-204.11 C408.221,91.388,316.839,0,204.11,0z M286.547,229.971l-126.368,72.471c-17.003,9.75-30.781,1.763-30.781-17.834V140.012 c0-19.602,13.777-27.575,30.781-17.827l126.368,72.466C303.551,204.403,303.551,220.217,286.547,229.971z"></path> </g> </g> </g></svg>             -->
 
               <span class="tc wf xf be dd rg i gh ua">
@@ -175,16 +181,8 @@ import LandingHeader from "@/components/LandingHeader.vue";
 
 
     <section class="i pg qh rm ji hp">
-      <img
-        src="/src/assets/images/shape-11.svg"
-        alt="Shape"
-        class="of h ga ha ke"
-      />
-      <img
-        src="/src/assets/images/shape-07.svg"
-        alt="Shape"
-        class="h ia o ae jf"
-      />
+      <img src="/src/assets/images/shape-11.svg" alt="Shape" class="of h ga ha ke" />
+      <img src="/src/assets/images/shape-07.svg" alt="Shape" class="h ia o ae jf" />
       <img src="/src/assets/images/shape-14.svg" alt="Shape" class="h ja ka" />
       <img src="/src/assets/images/shape-15.svg" alt="Shape" class="h q p" />
 
@@ -212,3 +210,10 @@ import LandingHeader from "@/components/LandingHeader.vue";
 
   </main>
 </template>
+
+<style scoped>
+@media screen and (min-width: 1445px) {
+  div .content {
+    padding: 5em 4.5em;
+  }
+}</style>

@@ -84,6 +84,7 @@
   overflow: hidden;
   transition: background-color 2s;
 }
+
 .slider .credits {
   position: absolute;
   top: 2rem;
@@ -97,7 +98,9 @@
   position: relative;
   width: 60%;
   padding-top: 60%;
+  left: 0;
 }
+
 .slider .item .imgs .grid {
   position: absolute;
   top: 0;
@@ -123,6 +126,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .slider .item .img {
   width: 100%;
   height: 100%;
@@ -130,8 +134,9 @@
   will-change: transform;
   will-change: opacity;
 }
+
 .slider .item .img img {
-  position: absolute;
+  /* position: absolute; */
   top: 0;
   width: 100%;
   height: 100%;
@@ -140,6 +145,7 @@
   -webkit-filter: contrast(110%) brightness(110%) saturate(130%);
   filter: contrast(110%) brightness(110%) saturate(130%);
 }
+
 .slider .item .img img::before {
   content: "";
   display: block;
@@ -152,18 +158,23 @@
   mix-blend-mode: screen;
   background: rgba(243, 106, 188, 0.3);
 }
+
 .slider .item .img-1 {
   grid-area: 1/1/7/5;
 }
+
 .slider .item .img-2 {
   grid-area: 2/5/7/13;
 }
+
 .slider .item .img-3 {
   grid-area: 7/1/12/9;
 }
+
 .slider .item .img-4 {
   grid-area: 7/9/13/13;
 }
+
 .slider .item .content {
   position: absolute;
   z-index: 2;
@@ -178,6 +189,7 @@
   font-size: 8rem;
   font-weight: 700;
 }
+
 .slider .item .content .wrap {
   /* font-size: 1em; */
   text-align: center;
@@ -186,51 +198,96 @@
   max-width: 600px;
   line-height: 1;
 }
+
 .slider .item .content .wrap .letter {
   display: inline-block;
 }
 
-.wrap{
-    font-size: 1em;
-  }
-
-
-  @media screen and (min-width: 768px) {
-    .wrap {
-        font-size: 1em;
-    }
+.wrap {
+  font-size: 1em;
 }
 
-@media screen and (max-width: 1024px) {
-    .wrap {
-        font-size: 0.5em;
-    }
+
+@media screen and (min-width: 899px) {
+  .wrap,
+  .slider .nav .next,
+  .slider .nav .prev {
+    font-size: 1em;
+  }
+  
+}
+
+@media screen and (max-width: 900px) {
+  .wrap {
+    font-size: 0.45em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .slider .item .imgs {
+    width: 40%; /* Reduce the width for smaller screens */
+    position: absolute;
+    margin: 80px;
+  }
+
+  .slider .item .imgs .grid {
+    width: 100%; /* Adjust the width of the grid for smaller screens */
+    height: 100%; /* Adjust the height of the grid for smaller screens */
+  }
+
+  .slider .item .img {
+    width: 100%; /* Adjust the width of individual images for smaller screens */
+    height: 100%; /* Adjust the height of individual images for smaller screens */
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .slider .item .imgs {
+    width: 20%; /* Reduce the width for smaller screens */
+    position: absolute;
+    margin: 0px;
+  }
+
+  .slider .item .imgs .grid {
+    width: 100%; /* Adjust the width of the grid for smaller screens */
+    height: 100%; /* Adjust the height of the grid for smaller screens */
+  }
+
+  .slider .item .img {
+    width: 100%; /* Adjust the width of individual images for smaller screens */
+    height: 100%; /* Adjust the height of individual images for smaller screens */
+  }
 }
 
 .slider .nav .next,
 .slider .nav .prev {
-  height: 2rem;
-  width: 2rem;
+  height: 1.8rem;
+  width: 1.8rem;
   position: absolute;
   top: calc(50% - 1rem);
   cursor: pointer;
   z-index: 3;
   transition: transform 0.3s;
 }
+
 .slider .nav .next {
   right: 2rem;
   background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M 19 8 L 19 11 L 1 11 L 1 13 L 19 13 L 19 16 L 23 12 L 19 8 z' fill='orange'/%3E%3C/svg%3E");
 }
+
 .slider .nav .next:hover {
   transform: translateX(0.5rem);
 }
+
 .slider .nav .prev {
   left: 2rem;
   background-image: url("data:image/svg+xml,%3C?xml version='1.0' encoding='utf-8'?%3E %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M 5 8 L 1 12 L 5 16 L 5 13 L 23 13 L 23 11 L 5 11 L 5 8 z' fill='orange'/%3E%3C/svg%3E");
 }
+
 .slider .nav .prev:hover {
   transform: translateX(-0.5rem);
 }
+
 .slider .nav .explore-btn {
   z-index: 4;
   position: absolute;
@@ -245,6 +302,7 @@
   transition: background-color 0.3s;
   cursor: pointer;
 }
+
 .slider .nav .explore-btn:hover {
   color: #0a0908;
   background: white;
