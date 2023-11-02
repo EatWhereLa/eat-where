@@ -2,6 +2,10 @@
 import NavHeader from "@/components/NavHeader.vue";
 import SlideShow from "@/components/SlideshowHeader.vue";
 import LandingHeader from "@/components/LandingHeader.vue";
+import LocationButton from "../components/LocationButton.vue";
+import { Vue3Lottie } from "vue3-lottie";
+import LandingJSON from "@/assets/lottie/landing.json";
+import { RouterLink } from "vue-router";
 </script>
 
 <template>
@@ -9,11 +13,12 @@ import LandingHeader from "@/components/LandingHeader.vue";
 
   <main class="m-auto">
     <!-- ===== Hero Start ===== -->
-    <div class="grid grid-cols-3">
+    <div class="grid grid-cols-4">
+      
       <div class="col-span-2 flex items-center justify-center ">
-        <div class="text-bold block">Search Location</div>
-        <div class="block">
-        <form class="flex items-center ">
+        <!-- <div class="text-bold block">Search Location</div> -->
+        <!-- <div class="block"> -->
+        <!-- <form class="flex items-center ">
           <label for="simple-search" class="sr-only">Search</label>
           <div class="relative w-full">
             <input type="text" id="simple-search"
@@ -28,14 +33,22 @@ import LandingHeader from "@/components/LandingHeader.vue";
             </svg>
             <span class="sr-only">Search</span>
           </button>
-        </form>
-      </div>
+        </form> -->
+
+      <RouterLink to="/location" id="router-link">
+       <LocationButton />
+      </RouterLink>
+      
+
+      <!-- </div> -->
 
       </div>
-      <div class="col-span-1">
-        <img  alt="Food and groceries you love, delivered." class="bds-c-hero__image w-full h-full" src="https://images.deliveryhero.io/image/foodpanda/homepage/refresh-hero-home-sg.png">
+      <div class="col-span-2">
+        <!-- <img  alt="Food and groceries you love, delivered." class="bds-c-hero__image w-full h-full" src="https://images.deliveryhero.io/image/foodpanda/homepage/refresh-hero-home-sg.png"> -->
+        <Vue3Lottie :animation-data="LandingJSON" :height="600" />
       </div>
     </div>
+
     <LandingHeader />
     <br />
 
@@ -216,4 +229,10 @@ import LandingHeader from "@/components/LandingHeader.vue";
   div .content {
     padding: 5em 4.5em;
   }
-}</style>
+}
+
+#router-link {
+  display: block; 
+  width: 80%;
+}
+</style>

@@ -13,8 +13,10 @@ const displayLocation = computed(() => {
 </script>
 
 <template>
+
+  <h1>Vote Together, Eat Better!</h1>
   <div
-    class="bg-white flex align-center gap-x-2.5 shadow-default rounded-3xl py-6 px-6"
+    class="bg-white flex align-center gap-x-2.5 shadow-default rounded-3xl py-5 px-5 relative" 
   >
     <va-icon
       class="text-primary"
@@ -25,5 +27,22 @@ const displayLocation = computed(() => {
     <span class="text-[#7E7571] text-xl font-medium">
       {{ displayLocation }}
     </span>
+
+    <va-button to="/group" text-color="white" style="position: absolute; right: 0; margin-right: 20px; border-radius: 10px;">
+        Create lobby
+    </va-button>
+    <br>
   </div>
+
 </template>
+
+<style scoped>
+h1 {
+  text-transform: capitalize;
+  font-size: clamp(1.5rem, 5vw, 4rem);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* 4 */
+  font-weight: 500;
+  margin: 0.2em 0 4rem 0;
+}
+</style>
