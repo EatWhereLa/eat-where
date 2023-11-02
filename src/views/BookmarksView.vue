@@ -135,9 +135,9 @@ const handleSort = () => {
 </script>
 
 <template>
-  <main class="bg-white h-full flex flex-col w-full">
+  <main class=" h-full flex flex-col w-full">
     <!-- <ProfileTabs /> -->
-    <section class="container mx-auto bg-white h-full w-full">
+    <section class="container mx-auto h-full w-full">
       <div
         class="flex gap-4 px-8 justify-center items-center h-full w-full overflow-y-auto"
       >
@@ -240,7 +240,7 @@ const handleSort = () => {
           <div
             class="overflow-y-auto grow h-full flex justify-center items-center"
           >
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:gap-10 h-full">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:gap-10 gap-1 h-full">
               <BookmarkRestaurantItem
                 v-for="(restaurant, idx) in filteredList"
                 :key="idx"
