@@ -53,21 +53,16 @@ const fetchCurrentLocationAddress = async (pos: {
   const result = res.results[0];
   currentLocationRef.value = result.formatted_address;
   currentLocation.setLocationAddress(result.formatted_address);
-  console.log("OLD ADDRESSSSS: ", currentLocation.oldAddress);
   newCoords.value.lat = result.geometry.location.lat as any;
   newCoords.value.lng = result.geometry.location.lng as any;
 };
 
 const success = async (position: Position) => {
-  console.log(currentLocation.latLng);
   const lat = currentLocation.latLng?.lat || position.coords.latitude;
   const lng = currentLocation.latLng?.lng || position.coords.longitude;
 
-  console.log(`latitude: ${lat}, longitude: ${lng}`);
   currPos.value.lat = lat;
   currPos.value.lng = lng;
-
-  console.log(currPos.value);
 
   if (mapRef.value == null) {
     return;
@@ -83,12 +78,7 @@ const success = async (position: Position) => {
     map: map.value,
   });
 
-  console.log("MARKER TYPE: ", typeof marker);
-  console.log("MAP TYPE: ", typeof map.value);
-
   await fetchCurrentLocationAddress(currPos.value);
-
-  console.log("MAP VALUE: ", map.value);
 
   setTimeout(() => {
     if (marker !== null) {
@@ -99,7 +89,6 @@ const success = async (position: Position) => {
   clickListener = map.value.addListener(
     "click",
     async (e: google.maps.MapMouseEvent) => {
-      console.log("e: ", e.latLng?.lat());
       otherPosRef.value = {
         lat: e.latLng?.lat() || currPos.value.lat,
         lng: e.latLng?.lng() || currPos.value.lng,
@@ -117,7 +106,6 @@ const success = async (position: Position) => {
   clickListener = map.value.addListener(
     "mousedown",
     async (e: google.maps.MapMouseEvent) => {
-      console.log("e: ", e.latLng?.lat());
       otherPosRef.value = {
         lat: e.latLng?.lat() || currPos.value.lat,
         lng: e.latLng?.lng() || currPos.value.lng,
@@ -148,7 +136,6 @@ onUnmounted(() => {
 });
 
 watch([map, currPos, otherPosRef], () => {
-  // console.log("latlng: ", currentLocation.latLng);
   if (marker) marker.setMap(null);
   if (map.value && otherPosRef.value !== null) {
     marker = new google.maps.Marker({
@@ -179,10 +166,10 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <main>
-    <div class="relative">
+  <main class="w-full h-full">
+    <div class="w-full h-full relative">
       <!-- Map placeholder -->
-      <div ref="mapRef" class="bg-gray-400 w-full min-h-screen" />
+      <div ref="mapRef" class="bg-gray-400 w-full h-full" />
 
       <div class="absolute bottom-0 w-full">
         {{ currPos.lat }}
@@ -195,9 +182,9 @@ const handleSubmit = () => {
             />
           </Transition>
         </div>
-        <div class="bottom-0 bg-white/50 w-full p-5 py-[2rem] flex flex-col">
+        <div class="bottom-0 w-5/6 m-auto p-5 py-[2rem] flex flex-col gap-2">
           <div
-            class="relative rounded-3xl w-full bg-white p-2.5 mb-[20px] inline-flex align-center gap-2 shadow-default-sm"
+            class="relative rounded-3xl w-full bg-white p-2.5 inline-flex align-center gap-2 shadow-default-sm"
           >
             <va-icon name="location_on" class="text-primary" size="2rem" />
             <input
@@ -216,10 +203,6 @@ const handleSubmit = () => {
           >
             Set Location
           </generic-button>
-          <span v-if="otherPosRef">
-            Latitude: {{ newCoords.lat }}, Longitude:
-            {{ newCoords.lng }}
-          </span>
         </div>
       </div>
     </div>
