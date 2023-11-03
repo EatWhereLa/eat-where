@@ -61,7 +61,7 @@ function showMenuItem(itemName: string | undefined) {
       <div class="flex gap-2">
         <div v-if="!isAuthenticated" class="flex gap-2">
           <div class="hidden sm:block">
-            <va-navbar-item class="hidden sm:block">
+            <va-navbar-item>
               <va-button to="/login" preset="secondary" border-color="primary">
                 Login
               </va-button>
@@ -75,7 +75,7 @@ function showMenuItem(itemName: string | undefined) {
             </va-navbar-item>
           </div>
         </div>
-        <div v-else>
+        <div v-else class="hidden sm:block">
           <va-navbar-item>
             <va-button text-color="white" @click="logout"> Logout </va-button>
           </va-navbar-item>
