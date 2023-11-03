@@ -182,7 +182,9 @@ const handleSubmit = () => {
             />
           </Transition>
         </div>
-        <div class="bottom-0 w-5/6 m-auto p-5 py-[2rem] flex flex-col gap-2">
+        <div
+          class="bottom-0 w-5/6 md:w-2/5 m-auto p-5 py-[2rem] flex flex-col gap-2"
+        >
           <div
             class="relative rounded-3xl w-full bg-white p-2.5 inline-flex align-center gap-2 shadow-default-sm"
           >
