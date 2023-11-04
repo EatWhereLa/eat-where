@@ -21,7 +21,7 @@ import LocationHeader from "../components/LocationHeader.vue";
       <div class="mx-auto p-4 lg:p-9">
         <div class="flex items-center gap-8 lg:gap-28">
           <!-- About Images -->
-          <div class="relative none md:w-1/2 md:flex md:gap-8">
+          <div class="relative hidden md:w-1/2 md:flex md:gap-8">
             <div>
               <img
                 src="/src/assets/images/shape-05.svg"
@@ -55,7 +55,7 @@ import LocationHeader from "../components/LocationHeader.vue";
           </div>
 
           <!-- About Content -->
-          <div class="w-1/2">
+          <div class="md:w-1/2">
             <h4 class="text-primary font-medium text-xl leading-relaxed mb-5">
               Our Mission
             </h4>
