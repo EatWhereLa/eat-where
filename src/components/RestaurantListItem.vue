@@ -6,10 +6,10 @@ import { onMounted, ref } from "vue";
 const props = defineProps<{
   title: string;
   imgSrc: string;
-  tags: string[];
+  tags?: string[];
   price?: number | undefined;
-  rating: number;
-  distance: string;
+  rating?: number;
+  distance?: string;
   time?: string;
 }>();
 
@@ -68,7 +68,7 @@ onMounted(async () => {
           <va-icon name="location_on" color="primary" />
           {{ distance }}
         </div>
-        <div class="col-span-1">
+        <div class="col-span-1" v-if="rating">
           <span v-for="index in Math.round(rating)" :key="index">
             <va-icon name="star" color="primary" />
           </span>

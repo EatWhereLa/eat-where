@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import BookmarkRestaurantItem from "@/components/ForRestaurantBookmark/BookmarkRestaurantItem.vue";
 import SortButtonOnSide from "@/components/ForRestaurantBookmark/SortButtonOnSide.vue";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import { ref, onBeforeMount, type Ref, computed } from "vue";
 import type { Restaurant } from "@/types/Restaurant";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";
-import { rand } from "@ngneat/falso";
 import { useBookmarks } from "@/composables/useBookmarks";
 
 const API_URL = import.meta.env.VITE_API_URL;
