@@ -96,6 +96,10 @@ const getRestaurantImageUrl = (restaurant: Restaurant) => {
   }
 };
 
+function generateCrowd(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const success = async (position: LatLng) => {
   const latitude = position.lat;
   const longitude = position.lng;
@@ -115,6 +119,7 @@ const success = async (position: LatLng) => {
       name: item.name,
       photos: item.photos,
       rating: item.rating,
+      crowd: generateCrowd(1, 5),
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
@@ -174,7 +179,7 @@ const handleModal = (
 </script>
 
 <template>
-  <main>
+  <main class="p-4 md:p-0 overflow-x-auto">
     <h2 class="text-primary mb-2.5" v-if="tabulatedResults.length > 0">
       <span class="text-3xl font-semibold mr-2">1st</span>
       place

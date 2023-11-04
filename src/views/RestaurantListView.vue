@@ -118,6 +118,10 @@ const showModalValues = ref({
   show: false,
 });
 
+function generateCrowd(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const success = async (position: LatLng) => {
   isLoadingRestaurants.value = true;
 
@@ -174,6 +178,7 @@ const success = async (position: LatLng) => {
       name: item.name,
       photos: item.photos,
       rating: item.rating,
+      crowd: generateCrowd(1, 5),
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
@@ -188,35 +193,6 @@ const success = async (position: LatLng) => {
     "restaurants",
     JSON.stringify(restaurants.restaurants),
   );
-  // } else {
-  //   restaurants.restaurants = [];
-  //   console.log(
-  //     "INSIDE SESSIONSTORAGE: ",
-  //     JSON.parse(sessionStorage.getItem("restaurants") as string)
-  //   );
-  //   const restaurantsLocal: Restaurant[] = JSON.parse(
-  //     sessionStorage.getItem("restaurants") as string
-  //   );
-
-  //   console.log("restaurantsLocal: ", restaurantsLocal);
-  //   restaurantsLocal.forEach((item: Restaurant) => {
-  //     restaurants.addRestaurant({
-  //       place_id: item.place_id,
-  //       name: item.name,
-  //       photos: item.photos,
-  //       rating: item.rating,
-  //       user_ratings: item.user_ratings,
-  //       vicinity: item.vicinity,
-  //       geometry: {
-  //         location: {
-  //           lat: item.geometry.location.lat,
-  //           lng: item.geometry.location.lng,
-  //         },
-  //       },
-  //       upvote_count: 0,
-  //     });
-  //   });
-  // }
 
   isLoadingRestaurants.value = false;
 
@@ -407,10 +383,6 @@ const handleModal = (
 
     <div class="flex items-center gap-2 mb-3">
       <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
-      <!-- <p>
-        COORDS: {{ currentLocation.latLng.lat }},
-        {{ currentLocation.latLng.lng }}
-      </p> -->
       <p class="text-primary font-semibold text-sm">Featured</p>
 
       <hr class="h-px my-2 bg-primary w-2/5 m-auto" />

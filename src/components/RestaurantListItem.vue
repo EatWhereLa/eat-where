@@ -13,6 +13,8 @@ const props = defineProps<{
   time?: string;
 }>();
 
+const crowd = ref(0);
+
 onMounted(async () => {
   await setImageURL(props.imgSrc);
 });
@@ -28,25 +30,30 @@ async function setImageURL(url: string) {
   }
 }
 
+function generateCrowd(min: number, max: number) {
+  crowd.value = Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 onMounted(async () => {
   await setImageURL(props.imgSrc);
+  generateCrowd(1, 5);
 });
 </script>
 
 <template>
   <div
-    class="inline-flex gap-5 bg-white rounded-3xl shadow-default p-3 w-full md:max-w-xl mb-3"
+    class="flex gap-5 bg-white rounded-3xl shadow-sm p-3 w-full md:max-w-xl mb-3"
   >
-    <div
-      class="relative rounded-3xl min-w-[115px] min-h-[115px] overflow-hidden"
-    >
-      <img
-        :src="imageUrl"
-        alt="Image not found"
-        class="absolute object-cover m-auto w-full h-full aspect-square"
-      />
+    <div class="flex items-center">
+      <div class="w-32 h-32 overflow-hidden justify-center hidden md:flex">
+        <img
+          :src="imageUrl"
+          alt="Image not found"
+          class="object-cover m-auto aspect-square rounded-xl"
+        />
+      </div>
     </div>
-    <div class="p-4 w-3/5 flex flex-col justify-center">
+    <div class="p-4 w-3/5 flex flex-col justify-center gap-2">
       <div
         class="mb-2 text-3xl font-semibold flex items-center justify-between"
       >
@@ -58,17 +65,18 @@ onMounted(async () => {
       </ul>
       <span class="grid grid-cols-1 text-xs lg:grid-cols-3 gap-2">
         <div class="col-span-1">
+          <va-icon name="location_on" color="primary" />
+          {{ distance }}
+        </div>
+        <div class="col-span-1">
           <span v-for="index in Math.round(rating)" :key="index">
             <va-icon name="star" color="primary" />
           </span>
         </div>
         <div class="col-span-1">
-          <va-icon name="location_on" color="primary" />
-          {{ distance }}
-        </div>
-        <div class="col-span-1">
-          <va-icon name="schedule" color="primary" />
-          30min
+          <span v-for="index in Math.round(crowd)" :key="index">
+            <va-icon name="person" color="primary" />
+          </span>
         </div>
       </span>
 
@@ -82,13 +90,15 @@ onMounted(async () => {
       </span>
     </div>
 
-    <div class="ml-auto flex flex-col justify-between">
-      <va-icon
-        name="bookmark_outline"
-        v-if="$route.name !== 'restaurantDetail'"
-        class="flex justify-end"
-      />
-      <slot />
+    <div class="flex items-center">
+      <div class="ml-auto flex flex-col justify-between h-full">
+        <va-icon
+          name="bookmark_outline"
+          v-if="$route.name !== 'restaurantDetail'"
+          class="flex justify-end"
+        />
+        <slot />
+      </div>
     </div>
   </div>
 </template>
