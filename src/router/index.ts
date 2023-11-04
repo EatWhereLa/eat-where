@@ -144,6 +144,16 @@ router.beforeEach(async (to) => {
       return { name: "home" };
     }
   }
+
+  if (to.name === "bookmarks" || to.name === "profile") {
+    if (!isAuthenticated.value) {
+      // We try to check if there the user is authenticated
+      await isLoggedIn();
+    }
+    if (!isAuthenticated.value) {
+      return false;
+    }
+  }
 });
 
 export default router;
