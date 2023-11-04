@@ -185,6 +185,7 @@ const success = async (position: LatLng) => {
         lat: item.geometry.lat,
         lng: item.geometry.lng,
       },
+      category: [],
       upvote_count: 0,
     });
   });

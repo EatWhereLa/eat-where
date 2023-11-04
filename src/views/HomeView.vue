@@ -54,17 +54,4 @@ import GenericModal from "../components/GenericModal.vue";
     <!--Nearby restaurants based on user location-->
     <div></div>
   </main>
-
-  <!-- <Modal
-    title="Close Room?"
-    description="Are you sure you want to close this room?"
-  />
-  <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
-  <li v-for="(restaurant, index) in restaurants" :key="index">
-    <RestaurantListItem
-      :imgSrc="restaurant.imgSrc"
-      :title="restaurant.title"
-      :tags="restaurant.tags"
-    />
-  </li> -->
 </template>

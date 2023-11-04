@@ -1,59 +1,30 @@
-<!-- <script setup lang="ts">
-import RestaurantListItem from "@/components/RestaurantListItem.vue";
-
-const bookmarks = [
-  {
-    title: `McDonald's`,
-    imgSrc: "/src/assets/mcdonalds.jpg",
-    tags: ["Burger", "Fastfood", "Halal"],
-    rating: 4,
-    distance: "2.5km",
-    time: "30min",
-
-  },
-  {
-    title: `McDonald's`,
-    imgSrc: "/src/assets/mcdonalds.jpg",
-    tags: ["Burger", "Fastfood", "Halal"],
-    rating: 5,
-    distance: "2.6km",
-    time: "30min",
-  },
-];
-</script>
-
-<template>
-  <main>
-    <ul>
-      <li v-for="(bookmark, index) in bookmarks" :key="index" class="mb-2.5">
-        <RestaurantListItem
-          :imgSrc="bookmark.imgSrc"
-          :title="bookmark.title"
-          :tags="bookmark.tags"
-          :rating="bookmark.rating"
-          :distance="bookmark.distance"
-          :time="bookmark.time"
-        />
-      </li>
-    </ul>
-  </main>
-</template> -->
-
 <script setup lang="ts">
 import BookmarkRestaurantItem from "@/components/ForRestaurantBookmark/BookmarkRestaurantItem.vue";
-import restaurantsData from "@/data/restaurants.json"; // Adjust this path to where your data resides
-import { ref, onBeforeMount, type Ref, computed } from "vue";
 import SortButtonOnSide from "@/components/ForRestaurantBookmark/SortButtonOnSide.vue";
-import type { FilterRestaurant } from "@/types/Restaurant";
+import RestaurantListItem from "@/components/RestaurantListItem.vue";
+import { ref, onBeforeMount, type Ref, computed } from "vue";
+import type { Restaurant } from "@/types/Restaurant";
+import { useCuisineCategories } from "@/composables/useCuisineCategories";
+import { rand } from "@ngneat/falso";
+import { useBookmarks } from "@/composables/useBookmarks";
 
-const restaurants: Ref<FilterRestaurant[]> = ref(restaurantsData.restaurants); // This should directly give you the array of restaurants
-let restaurantCategories: string[] = [];
+const API_URL = import.meta.env.VITE_API_URL;
+// const restaurants: Ref<Restaurant[]> = ref([]); // This should directly give you the array of restaurants
+const { cuisineCategories, getRandomCuisineArr } = useCuisineCategories();
+const { bookmarks: restaurants, getBookmarks } = useBookmarks();
 const prices = ["$", "$$", "$$$", "$$$$", "$$$$$"];
 
 const selectedCategories: Ref<string[]> = ref([]);
 const selectOptions = ref(["Name", "Distance", "Price"]);
 const selectedOption = ref("");
 const priceFilters: Ref<string[]> = ref([]);
+
+const showModalValues = ref({
+  title: "",
+  placeId: "",
+  imgSrc: "",
+  show: false,
+});
 
 const search = ref("");
 
@@ -70,27 +41,53 @@ const filteredList = computed(() => {
   }
 
   const selectedCategoriesSet = new Set(selectedCategories.value);
-  const priceFiltersSet = new Set(priceFilters.value);
+  const priceFiltersSet = new Set(
+    priceFilters.value.map((filter) => filter.length),
+  );
 
   const restaurantsFiltered = restaurants.value.filter(
     (restaurant) =>
       (selectedCategoriesSet.size === 0 ||
-        restaurant.category.some((category) =>
+        restaurant.category?.some((category) =>
           selectedCategoriesSet.has(category),
         )) &&
-      (priceFiltersSet.size === 0 || priceFiltersSet.has(restaurant.price)),
+      (priceFiltersSet.size === 0 ||
+        priceFiltersSet.has(restaurant.price ?? 1)),
   );
 
   return restaurantsFiltered;
 });
-onBeforeMount(() => {
-  //init the categories
-  const categorySet = new Set<string>();
+
+function generateRandomPrice() {
+  return Math.round(Math.random() * 5) + 1;
+}
+onBeforeMount(async () => {
+  await getBookmarks("Tester1");
+  //init the categories for restaurants
   for (const restaurant of restaurants.value) {
-    restaurant.category.forEach((category) => categorySet.add(category));
+    restaurant.category = getRandomCuisineArr();
+    restaurant.price = generateRandomPrice();
   }
-  restaurantCategories = Array.from(categorySet);
 });
+
+const getRestaurantImageUrl = (restaurant: Restaurant) => {
+  if (restaurant && restaurant.photos) {
+    return `${API_URL}/google/photo?photo_reference=${restaurant?.photos?.photo_reference}`;
+  } else {
+    return "";
+  }
+};
+
+const handleModal = (
+  placeId: Restaurant["place_id"],
+  title: Restaurant["name"],
+  imgSrc: string,
+) => {
+  showModalValues.value.placeId = placeId;
+  showModalValues.value.title = title;
+  showModalValues.value.imgSrc = imgSrc;
+  showModalValues.value.show = !showModalValues.value.show;
+};
 
 const toggleSortDirection = (ascending: boolean) => {
   if (ascending) {
@@ -122,12 +119,12 @@ const toggleSelectedPrice = (price: string) => {
   }
 };
 
-const handleBookmarkToggle = (id: number) => {
-  const res = restaurants.value.find((restaurant) => restaurant.id === id);
-  if (res) {
-    res.bookmark = !res.bookmark;
-  }
-};
+// const handleBookmarkToggle = (id: string) => {
+//   const res = restaurants.value.find((restaurant) => restaurant.id === id);
+//   if (res) {
+//     res.bookmark = !res.bookmark;
+//   }
+// };
 
 const handleSort = () => {
   // Handle sort here
@@ -135,8 +132,22 @@ const handleSort = () => {
 </script>
 
 <template>
-  <main class=" h-full flex flex-col w-full">
-    <!-- <ProfileTabs /> -->
+  <main class="h-full flex flex-col w-full">
+    <va-modal
+      v-model="showModalValues.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      closeButton
+      fullscreen
+    >
+      <RestaurantModal
+        :title="showModalValues.title"
+        :place-id="showModalValues.placeId"
+        :img-src="showModalValues.imgSrc"
+        @closeModal="handleModal('', '', '')"
+      />
+    </va-modal>
     <section class="container mx-auto h-full w-full">
       <div
         class="flex gap-4 px-8 justify-center items-center h-full w-full overflow-y-auto"
@@ -164,7 +175,7 @@ const handleSort = () => {
             </div>
             <div class="flex flex-col gap-4 grow overflow-y-scroll">
               <va-checkbox
-                v-for="(category, idx) in restaurantCategories"
+                v-for="(category, idx) in cuisineCategories"
                 :key="idx"
                 v-model="selectedCategories"
                 :label="category"
@@ -198,12 +209,12 @@ const handleSort = () => {
               <div class="text-bold pb-1">Categories</div>
               <div class="flex gap-2 overflow-x-scroll w-full py-1">
                 <va-chip
-                  size="large"                
+                  size="large"
                   :outline="!selectedCategories.includes(category)"
                   :class="{
                     'chip-active': selectedCategories.includes(category),
                   }"
-                  v-for="(category, idx) in restaurantCategories"
+                  v-for="(category, idx) in cuisineCategories"
                   :key="idx"
                   @click="toggleSelected(category)"
                 >
@@ -241,11 +252,23 @@ const handleSort = () => {
             class="overflow-y-auto grow h-full flex justify-center items-center"
           >
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:gap-10 gap-1 h-full">
-              <BookmarkRestaurantItem
+              <RestaurantListItem
+                class="h-1/5"
                 v-for="(restaurant, idx) in filteredList"
                 :key="idx"
-                :restaurant="restaurant"
-                @toggle-bookmark="handleBookmarkToggle(restaurant.id)"
+                :title="restaurant.name"
+                :imgSrc="getRestaurantImageUrl(restaurant)"
+                :tags="restaurant.category"
+                :rating="restaurant.rating"
+                :distance="restaurant.vicinity"
+                :price="restaurant.price"
+                @click="
+                  handleModal(
+                    restaurant.place_id,
+                    restaurant.name,
+                    getRestaurantImageUrl(restaurant),
+                  )
+                "
               />
             </div>
           </div>

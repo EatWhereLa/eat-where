@@ -17,7 +17,9 @@ export type Restaurant = {
     lat: number;
     lng: number;
   };
+  category: string[];
   upvote_count?: number;
+  price?: number;
 };
 
 export type FilterRestaurant = {

@@ -7,7 +7,7 @@ const props = defineProps<{
   title: string;
   imgSrc: string;
   tags: string[];
-  price?: number;
+  price?: number | undefined;
   rating: number;
   distance: string;
   time?: string;
@@ -73,20 +73,16 @@ onMounted(async () => {
             <va-icon name="star" color="primary" />
           </span>
         </div>
-        <div class="col-span-1">
+        <div class="col-span-1" v-if="price">
+          <span v-for="index in Math.round(price)" :key="index">
+            <va-icon name="attach_money" color="primary" />
+          </span>
+        </div>
+        <div class="col-span-1" v-else>
           <span v-for="index in Math.round(crowd)" :key="index">
             <va-icon name="person" color="primary" />
           </span>
         </div>
-      </span>
-
-      <span v-if="price">
-        {{
-          price.toLocaleString("en", {
-            style: "currency",
-            currency: "SGD",
-          })
-        }}
       </span>
     </div>
 
