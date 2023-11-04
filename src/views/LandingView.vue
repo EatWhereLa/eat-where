@@ -70,21 +70,19 @@ import LocationHeader from "../components/LocationHeader.vue";
               last-minute Google searches. With EatWhere, you'll make dining
               decisions in a snap.
             </p>
-
-            <a
-              href="https://www.youtube.com/watch?v=xcJtL7QggTI"
-              class="inline-flex items-center gap-6 mt-10"
-            >
-              <span
-                class="bg-primary rounded-full justify-center items-center w-12 h-12 flex z-10 relative"
-              >
+            <router-link to="/group">
+              <a class="inline-flex items-center gap-6 mt-10">
                 <span
-                  class="opacity-75 bg-primary rounded-full w-full h-full animate-ping inline-flex -z-10 absolute"
-                ></span>
-                <img src="/src/assets/images/icon-play.svg" alt="Play" />
-              </span>
-              <span>TRY IT OUT</span>
-            </a>
+                  class="bg-primary rounded-full justify-center items-center w-12 h-12 flex z-10 relative"
+                >
+                  <span
+                    class="opacity-75 bg-primary rounded-full w-full h-full animate-ping inline-flex -z-10 absolute"
+                  ></span>
+                  <img src="/src/assets/images/icon-play.svg" alt="Play" />
+                </span>
+                <span>TRY IT OUT</span>
+              </a>
+            </router-link>
           </div>
         </div>
       </div>

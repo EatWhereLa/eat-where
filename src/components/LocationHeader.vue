@@ -9,9 +9,14 @@ import { RouterLink } from "vue-router";
   <section>
     <div class="flex flex-col-reverse md:flex-row pb-4">
       <div class="flex items-center justify-center grow basis-0">
-        <RouterLink to="/location" id="router-link" class="w-4/5">
-          <LocationButton />
-        </RouterLink>
+        <div>
+          <h1 class="capitalize text-6xl font-medium mt-3 md:mb-8">
+            Vote Together, Eat Better!
+          </h1>
+          <RouterLink to="/location" id="router-link">
+            <LocationButton />
+          </RouterLink>
+        </div>
 
         <!-- </div> -->
       </div>
