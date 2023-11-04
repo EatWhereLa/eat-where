@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, type Ref, onMounted, defineEmits } from "vue";
+import { useToast } from "vuestic-ui";
 import GenericButton from "./GenericButton.vue";
 import ky from "ky";
 
@@ -7,7 +8,20 @@ import type { Review, RestaurantDetails } from "@/types/RestaurantDetails";
 import type { Restaurant } from "@/types/Restaurant";
 import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewItem from "@/components/ReviewItem.vue";
+import ReservationModal from "@/components/ReservationModal.vue";
+import BookingModal from "@/components/BookingModal.vue";
 import dayjs from "dayjs";
+
+import { useRoute } from "vue-router";
+const route = useRoute();
+
+import { useVoteTimingsStore } from "@/stores/voteTimings";
+import { useAuthStore } from "@/stores/auth";
+
+const voteTimingsStore = useVoteTimingsStore();
+const authStore = useAuthStore();
+
+const { init } = useToast();
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -55,7 +69,7 @@ const modalValues: Ref<{
   reservable: false,  
 });
 
-const showReservationModalValues = ref({
+const showModalValues = ref({
   title: "",
   placeId: "",
   periods: [{
@@ -63,6 +77,8 @@ const showReservationModalValues = ref({
       open: { day : 0, time: "" }
   }],
   show: false,
+  mostFreqDate: "",
+  mostFreqTime: "",
 });
 
 const appReviews: Ref<
@@ -127,7 +143,7 @@ async function setImageURL(url: string) {
 }
 
 const fetchPlaceReviews = async () => {
-  const URL = `https://ns6tzwwmuy.ap-southeast-1.awsapprunner.com/review/restaurant?place_id=${props.placeId}`;
+  const URL = `${API_URL}/review/restaurant?place_id=${props.placeId}`;
   return (await ky(
     `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
   ).json()) as typeof appReviews.value;
@@ -163,44 +179,157 @@ onMounted(async () => {
 
   getClosingTime();
   updateReviews();
+  
+  if (authStore.username !== "") {
+    const clashes = userTimingClash();
+    if (clashes) {
+      init({
+                message: 'Yay this fits your preference!',
+                color: 'success',
+            });
+    } else {
+      init({
+          message: 'Oops this doesnt fit your preference!',
+          color: 'danger',
+        });
+    }
+  }
 });
 
 const updateReviews = async() => {
   appReviews.value = await fetchPlaceReviews();
 }
 
-const handleReservationModal = (
+const showForm = () => {
+  return route.path === '/activity';
+}
+
+const showReservation = () => {
+  if (authStore.username === "") {
+    return false;
+  }
+  return route.path === '/results';
+}
+
+const userTimingClash = (): boolean => {
+  const userTiming = voteTimingsStore.getVoteTiming(authStore.username);
+  const newTiming = userTiming.date.split('/').reverse().join('-');
+  const dayOfWeek = dayjs(newTiming).day();
+
+  // Convert current time to a number for easier comparison
+  const currentTimeNumber = parseInt(userTiming.time, 10);
+
+  // Iterate over each opening hour period
+  for (const period of modalValues.value.openingHours.periods) {
+    // Check if the current day matches the opening day
+    if (dayOfWeek === period.open.day) {
+      // Convert times to numbers for easier comparison
+      const openTimeNumber = parseInt(period.open.time, 10);
+      const closeTimeNumber = parseInt(period.close.time, 10);
+
+      // Check if the current time is within the open and close times
+      if (currentTimeNumber >= openTimeNumber && currentTimeNumber <= closeTimeNumber) {
+        return true; // The place is open
+      }
+    }
+  }
+
+  return false;
+}
+
+const getCommonTimeSlot = () => {
+  
+  const dateTimeFrequency: { [key: string]: number } = {};
+
+  // Populate the frequency map
+  voteTimingsStore.voteTimings.forEach((activity) => {
+    const dateTimeKey = `${activity.date}-${activity.time}`;
+    if (!dateTimeFrequency[dateTimeKey]) {
+      dateTimeFrequency[dateTimeKey] = 1;
+    } else {
+      dateTimeFrequency[dateTimeKey]++;
+    }
+  });
+
+  // Find the most frequent date-time combination
+  let mostFrequentDateTime = {
+    date: "",
+    time: "",
+  };
+  let maxFrequency = 0;
+
+  for (const [key, frequency] of Object.entries(dateTimeFrequency)) {
+    if (frequency >= maxFrequency) {
+      maxFrequency = frequency;
+      const [date, time] = key.split('-');
+      mostFrequentDateTime = { date, time };
+    }
+  }
+
+  showModalValues.value.mostFreqDate = mostFrequentDateTime.date;
+  showModalValues.value.mostFreqTime = mostFrequentDateTime.time;
+
+}
+
+
+const handleModal = (
   placeId: Restaurant["place_id"],
   title: Restaurant["name"],
-  openingHours: RestaurantDetails["current_opening_hours"]["periods"]
+  openingHours: RestaurantDetails["current_opening_hours"]["periods"],
+  show: boolean
 ) => {
-  showReservationModalValues.value.placeId = placeId;
-  showReservationModalValues.value.title = title;
-  showReservationModalValues.value.periods = openingHours;
-  showReservationModalValues.value.show = !showReservationModalValues.value.show;
+  showModalValues.value.placeId = placeId;
+  showModalValues.value.title = title;
+  showModalValues.value.periods = openingHours;
+  showModalValues.value.show = show;
+
+  if(placeId !== "" && voteTimingsStore.voteTimings.length !== 0) {
+    getCommonTimeSlot()
+  }
 };
 </script>
 
 <template>
     <va-modal
-      v-model="showReservationModalValues.show"
+      v-model="showModalValues.show"
       hide-default-actions
       class="mx-auto"
       size="large"
       closeButton
     >
       <ReservationModal
-        :title="showReservationModalValues.title"
-        :place-id="showReservationModalValues.placeId"
-        :opening-hours="showReservationModalValues.periods"
+        :title="showModalValues.title"
+        :place-id="showModalValues.placeId"
+        :opening-hours="showModalValues.periods"
+        v-if="voteTimingsStore.voteTimings.length === 0"
         @closeModal="
-          handleReservationModal('', '', [
+          handleModal('', '', [
             {
               close: { day: 0, time: '' },
               open: { day: 0, time: '' },
             },
-          ])
+          ], false)
         "
+      />
+      <BookingModal
+        :title="showModalValues.title"
+        :place-id="showModalValues.placeId"
+        :opening-hours="showModalValues.periods"
+        :booking-date="showModalValues.mostFreqDate"
+        :booking-time="showModalValues.mostFreqTime"
+        v-else
+        @closeFreqModal=" handleModal('', '', [
+            {
+              close: { day: 0, time: '' },
+              open: { day: 0, time: '' },
+            },
+          ], false)"
+        @closebookingmodal=" handleModal('', '', [
+            {
+              close: { day: 0, time: '' },
+              open: { day: 0, time: '' },
+            },
+          ], false)"
       />
     </va-modal>
 
@@ -267,14 +396,15 @@ const handleReservationModal = (
         </div>
 
         <div class="clear-left"></div>
-        <generic-button v-if="modalValues.reservable"
+        <generic-button v-if="showReservation() && modalValues.reservable"
           class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
           padding="p-0"
           @click="
-            handleReservationModal(
+            handleModal(
               placeId,
               title,
               modalValues.openingHours.periods,
+              true,
             )
           "
         >
@@ -288,6 +418,7 @@ const handleReservationModal = (
   <section class="mt-7">
     <ReviewForm :place-id="placeId" :title="title"
     @submittedForm="updateReviews()"
+    v-if="showForm()"
     />
 
     <li

@@ -36,7 +36,6 @@ const submitReview = async() => {
             init({
                 message: 'Review Submitted',
                 color: 'success',
-                closeable: false,
             });
 
     } catch (err: any) {
@@ -44,7 +43,6 @@ const submitReview = async() => {
         init({
           message: 'Failed to submit review',
           color: 'danger',
-          closeable: false,
         });
         
     }

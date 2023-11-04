@@ -2,6 +2,7 @@
 import { ref, watch, type Ref, onMounted, defineEmits } from "vue";
 import { useForm, useToast } from "vuestic-ui";
 import GenericButton from "./GenericButton.vue";
+import ReservationModal from "@/components/ReservationModal.vue";
 import ky from "ky";
 
 import dayjs from "dayjs";
@@ -15,9 +16,10 @@ const props = defineProps({
     placeId: { type: String, required: true },
     bookingDate: { type: String, required: true },
     bookingTime: {type: String, required: true },
+    openingHours: {type: Array, required: false },
 });
 
-const emit = defineEmits();
+const emit = defineEmits(["closeFreqModal","closebookingmodal"]);
 
 const form = ref({
     title: props.title,
@@ -25,6 +27,15 @@ const form = ref({
     bookingDate: props.bookingDate,
     bookingTime: props.bookingTime,
 });
+
+const showReservationModal = ref({
+    title: props.title,
+    numPeople: "1",
+    bookingDate: props.bookingDate,
+    bookingTime: props.bookingTime,
+    show: false
+});
+
 
 const { errorMessagesNamed } = useForm("myForm");
 
@@ -52,7 +63,6 @@ const submitReservation = async() => {
             init({
                 message: 'Booking Success!',
                 color: 'success',
-                closeable: false,
             });
 
     } catch (err: any) {
@@ -60,17 +70,43 @@ const submitReservation = async() => {
         init({
           message: 'Booking failed!',
           color: 'danger',
-          closeable: false,
         });
         
     }
     emit("closebookingmodal");
 }
+
+const handleReservationModal = () => {
+  showReservationModal.value.show = !showReservationModal.value.show;
+};
 </script>
 
 <template>
+    <va-modal
+      v-model="showReservationModal.show"
+      hide-default-actions
+      class="mx-auto"
+      size="large"
+      v-if="openingHours !== undefined"
+      closeButton
+    >
+      <ReservationModal
+        :title="props.title"
+        :place-id="props.placeId"
+        :opening-hours="props.openingHours!"
+        @closeParent="emit('closebookingmodal')"
+        @closeModal="{
+            handleReservationModal();
+            emit('closeFreqModal');
+        }"
+      />
+    </va-modal>
+
     <section class="mt-7">
-        <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">Enter Reservation Details</h3>
+        <h3
+        class="pb-6 lg:text-3xl sm:text-2xl text-lg font-medium">
+            Enter Reservation Details
+        </h3>
 
         <va-form immediate hide-error-messages ref="myForm" class="flex flex-col gap-2 mb-2">
             <va-input label="Restaurant Name" v-model="form.title" name="restaurantName" disabled />
@@ -90,9 +126,17 @@ const submitReservation = async() => {
                 </div>
         </va-form>
     </section>
-    <div class="self-end flex align-end">
+    <div class="self-end flex justify-center">
         <generic-button titleColor="text-white" bgColor="bg-primary" @click="submitReservation()">
             Make Reservation
+        </generic-button>
+        <generic-button v-if="openingHours !== undefined" 
+            titleColor="text-primary" 
+            bgColor="bg-white"
+            class="border border-solid border-primary ml-2"
+            @click="handleReservationModal()"
+        >
+            Choose Another Time
         </generic-button>
     </div>
 </template>
