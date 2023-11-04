@@ -52,16 +52,18 @@ const modalValues: Ref<{
     ],
     dine_in: false,
   },
-  reservable: false,  
+  reservable: false,
 });
 
 const showReservationModalValues = ref({
   title: "",
   placeId: "",
-  periods: [{
-      close: { day : 0, time: "" },
-      open: { day : 0, time: "" }
-  }],
+  periods: [
+    {
+      close: { day: 0, time: "" },
+      open: { day: 0, time: "" },
+    },
+  ],
   show: false,
 });
 
@@ -165,129 +167,133 @@ onMounted(async () => {
   updateReviews();
 });
 
-const updateReviews = async() => {
+const updateReviews = async () => {
   appReviews.value = await fetchPlaceReviews();
-}
+};
 
 const handleReservationModal = (
   placeId: Restaurant["place_id"],
   title: Restaurant["name"],
-  openingHours: RestaurantDetails["current_opening_hours"]["periods"]
+  openingHours: RestaurantDetails["current_opening_hours"]["periods"],
 ) => {
   showReservationModalValues.value.placeId = placeId;
   showReservationModalValues.value.title = title;
   showReservationModalValues.value.periods = openingHours;
-  showReservationModalValues.value.show = !showReservationModalValues.value.show;
+  showReservationModalValues.value.show =
+    !showReservationModalValues.value.show;
 };
 </script>
 
 <template>
-    <va-modal
-      v-model="showReservationModalValues.show"
-      hide-default-actions
-      class="mx-auto"
-      size="large"
-      closeButton
-    >
-      <ReservationModal
-        :title="showReservationModalValues.title"
-        :place-id="showReservationModalValues.placeId"
-        :opening-hours="showReservationModalValues.periods"
-        @closeModal="
-          handleReservationModal('', '', [
-            {
-              close: { day: 0, time: '' },
-              open: { day: 0, time: '' },
-            },
-          ])
-        "
+  <va-modal
+    v-model="showReservationModalValues.show"
+    hide-default-actions
+    class="mx-auto"
+    size="large"
+    closeButton
+  >
+    <ReservationModal
+      :title="showReservationModalValues.title"
+      :place-id="showReservationModalValues.placeId"
+      :opening-hours="showReservationModalValues.periods"
+      @closeModal="
+        handleReservationModal('', '', [
+          {
+            close: { day: 0, time: '' },
+            open: { day: 0, time: '' },
+          },
+        ])
+      "
+    />
+  </va-modal>
+
+  <div style="background: black; width: 100%">
+    <va-image
+      :src="imageUrl"
+      alt="Image not found"
+      class="max-h-40 min-h-40 opacity-40 object-cover w-full"
+    />
+  </div>
+  <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
+    <va-card-content>
+      <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg font-semibold">
+        {{ title }}
+      </h3>
+      <va-icon
+        name="location_on"
+        size="1.8rem"
+        class="text-primary w-5 mr-2 float-left mb-3"
       />
-    </va-modal>
+      <p class="mt-1.5">{{ modalValues.location }}</p>
+      <div class="clear-left"></div>
 
-    <div style="background: black; width: 100%">
-      <va-image
-        :src="imageUrl"
-        alt="Image not found"
-        class="max-h-40 min-h-40 opacity-40 object-cover w-full"
+      <va-icon
+        name="attach_money"
+        size="1.8rem"
+        class="text-primary w-4 mr-2 float-left mb-3"
       />
-    </div>
-    <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
-      <va-card-content>
-        <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg font-semibold">{{ title }}</h3>
-        <va-icon
-          name="location_on"
-          size="1.8rem"
-          class="text-primary w-5 mr-2 float-left mb-3"
-        />
-        <p class="mt-1.5">{{ modalValues.location }}</p>
-        <div class="clear-left"></div>
+      <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
+      <div class="clear-left"></div>
 
-        <va-icon
-          name="attach_money"
-          size="1.8rem"
-          class="text-primary w-4 mr-2 float-left mb-3"
-        />
-        <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
-        <div class="clear-left"></div>
+      <va-icon
+        name="star"
+        size="1.8rem"
+        class="text-primary w-5 mr-2 float-left mb-3"
+      />
+      <p class="mt-1.5">{{ modalValues.rating }}/5</p>
+      <div class="clear-left"></div>
 
-        <va-icon
-          name="star"
-          size="1.8rem"
-          class="text-primary w-5 mr-2 float-left mb-3"
-        />
-        <p class="mt-1.5"> {{ modalValues.rating }}/5</p>
-        <div class="clear-left"></div>
+      <va-icon
+        name="edit"
+        size="1.8rem"
+        class="text-primary w-5 mr-2 float-left"
+      />
+      <p v-if="modalValues.description !== undefined">
+        {{ modalValues.description }}
+      </p>
+      <p class="mt-2" v-else>No description found for location</p>
 
-        <va-icon
-          name="edit"
-          size="1.8rem"
-          class="text-primary w-5 mr-2 float-left"
-        />
-        <p v-if="modalValues.description !== undefined">
-          {{ modalValues.description }}
-        </p>
-        <p class="mt-2" v-else>No description found for location</p>
+      <div class="clear-left"></div>
 
-        <div class="clear-left"></div>
-
-        <div v-if="modalValues.openingHours" class="mt-2">
-          <va-collapse
-            :header="restaurantStatus"
-            icon="alarm"
-            textColor="primary"
-          >
-            <ul
-              v-for="(day, idx) in modalValues.openingHours.weekday_text"
-              :key="idx"
-              class="mb-2"
-            >
-              <li class="my-1">{{ day }}</li>
-            </ul>
-          </va-collapse>
-        </div>
-
-        <div class="clear-left"></div>
-        <generic-button v-if="modalValues.reservable"
-          class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
-          padding="p-0"
-          @click="
-            handleReservationModal(
-              placeId,
-              title,
-              modalValues.openingHours.periods,
-            )
-          "
+      <div v-if="modalValues.openingHours" class="mt-2">
+        <va-collapse
+          :header="restaurantStatus"
+          icon="alarm"
+          textColor="primary"
         >
-          <va-icon name="table_bar" size="2rem" />
-          <span class="font-semibold">
-          Reservation
-          </span>
-        </generic-button>
-      </va-card-content>
-    </va-card>
+          <ul
+            v-for="(day, idx) in modalValues.openingHours.weekday_text"
+            :key="idx"
+            class="mb-2"
+          >
+            <li class="my-1">{{ day }}</li>
+          </ul>
+        </va-collapse>
+      </div>
+
+      <div class="clear-left"></div>
+      <generic-button
+        v-if="modalValues.reservable"
+        class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
+        padding="p-0"
+        @click="
+          handleReservationModal(
+            placeId,
+            title,
+            modalValues.openingHours.periods,
+          )
+        "
+      >
+        <va-icon name="table_bar" size="2rem" />
+        <span class="font-semibold"> Reservation </span>
+      </generic-button>
+    </va-card-content>
+  </va-card>
   <section class="mt-7">
-    <ReviewForm :place-id="placeId" :title="title"
-    @submittedForm="updateReviews()"
+    <ReviewForm
+      :place-id="placeId"
+      :title="title"
+      @submittedForm="updateReviews()"
     />
 
     <li

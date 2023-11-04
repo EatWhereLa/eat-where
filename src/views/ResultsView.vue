@@ -200,6 +200,8 @@ const handleModal = (
       :title="tabulatedResults[0].name"
       :imgSrc="getRestaurantImageUrl(tabulatedResults[0])"
       :tags="['Burger', 'Fastfood', 'Halal']"
+      :rating="tabulatedResults[0].rating"
+      :distance="tabulatedResults[0].vicinity"
       v-if="tabulatedResults.length > 0"
       @click="
         handleModal(
@@ -237,6 +239,8 @@ const handleModal = (
             :title="restaurant.name"
             :imgSrc="getRestaurantImageUrl(restaurant)"
             :tags="['Burger', 'Fastfood', 'Halal']"
+            :rating="restaurant.rating"
+            :distance="restaurant.vicinity"
             @click="
               handleModal(
                 restaurant.place_id,

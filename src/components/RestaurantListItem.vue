@@ -3,16 +3,15 @@ import GenericButton from "@/components/GenericButton.vue";
 import ky from "ky";
 import { onMounted, ref } from "vue";
 
-const props = defineProps({
-  // foo: { type: String, required: true },
-  title: { type: String },
-  imgSrc: { type: String, required: true },
-  tags: { type: Array<String>, required: false },
-  price: { type: Number, required: false },
-  rating: { type: Number },
-  distance: { type: String },
-  time: { type: String },
-});
+const props = defineProps<{
+  title: string;
+  imgSrc: string;
+  tags: string[];
+  price?: number;
+  rating: number;
+  distance: string;
+  time?: string;
+}>();
 
 onMounted(async () => {
   await setImageURL(props.imgSrc);
@@ -36,7 +35,7 @@ onMounted(async () => {
 
 <template>
   <div
-    class="inline-flex gap-5 bg-white rounded-3xl shadow-default p-3 w-full mb-3"
+    class="inline-flex gap-5 bg-white rounded-3xl shadow-default p-3 w-full md:max-w-xl mb-3"
   >
     <div
       class="relative rounded-3xl min-w-[115px] min-h-[115px] overflow-hidden"
@@ -47,54 +46,49 @@ onMounted(async () => {
         class="absolute object-cover m-auto w-full h-full aspect-square"
       />
     </div>
-    <div class="p-4 w-3/5">
-        <div class="mb-2 text-3xl font-semibold flex items-center justify-between">
-          <h5 class="font-semibold text-black text-xl">{{ title }}</h5>
-          <va-icon
-            name="bookmark_outline"
-            v-if="$route.name !== 'restaurantDetail'"
-            class="flex justify-end"
-          />
-        </div>
+    <div class="p-4 w-3/5 flex flex-col justify-center">
+      <div
+        class="mb-2 text-3xl font-semibold flex items-center justify-between"
+      >
+        <h5 class="font-semibold text-black text-xl">{{ title }}</h5>
+      </div>
 
-        <ul v-if="tags" class="text-gray-secondary text-xs">
-          <li class="inline mr-2">Burger</li>
-          <li class="inline before:content-['•'] before:mr-1 before:ml-1">
-            Fastfood
-          </li>
-          <li class="inline before:content-['•'] before:mr-1 before:ml-1">
-            Halal
-          </li>
-        </ul>
-      <span class="grid grid-cols-1 mb-8 mygrid text-xs lg:grid-cols-3">
+      <ul v-if="tags" class="text-gray-secondary text-xs flex gap-2">
+        <li v-for="tag in tags" :key="tag">{{ tag }}</li>
+      </ul>
+      <span class="grid grid-cols-1 text-xs lg:grid-cols-3 gap-2">
         <div class="col-span-1">
-          <span v-for="index in rating" :key="index">
-            <font-awesome-icon icon="fa-regular fa-star" style="color: orange" />
+          <span v-for="index in Math.round(rating)" :key="index">
+            <va-icon name="star" color="primary" />
           </span>
         </div>
-        <div class="col-span-1 ">
-          <font-awesome-icon icon="fa-solid fa-person" style="color: orange" />
-          2.4km
+        <div class="col-span-1">
+          <va-icon name="location_on" color="primary" />
+          {{ distance }}
         </div>
-        <div class="col-span-1 ">
-          <font-awesome-icon icon="fa-regular fa-clock" style="color: orange;" />
+        <div class="col-span-1">
+          <va-icon name="schedule" color="primary" />
           30min
         </div>
       </span>
 
-        <span v-if="price">
-          {{
-            price.toLocaleString("en", {
-              style: "currency",
-              currency: "USD",
-            })
-          }}
-        </span>
-      </div>
-
-      <div class="ml-auto">
-        <slot />
-      </div>
+      <span v-if="price">
+        {{
+          price.toLocaleString("en", {
+            style: "currency",
+            currency: "SGD",
+          })
+        }}
+      </span>
     </div>
 
+    <div class="ml-auto flex flex-col justify-between">
+      <va-icon
+        name="bookmark_outline"
+        v-if="$route.name !== 'restaurantDetail'"
+        class="flex justify-end"
+      />
+      <slot />
+    </div>
+  </div>
 </template>

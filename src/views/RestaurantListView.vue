@@ -271,7 +271,7 @@ watch(
   },
 );
 
-const handleUpvote = (event: { stopPropagation: () => void; }, id: string) => {
+const handleUpvote = (event: { stopPropagation: () => void }, id: string) => {
   event.stopPropagation();
   const foundRestaurant: Restaurant | undefined = restaurants.restaurants.find(
     (restaurant) => restaurant.place_id === id,
@@ -348,7 +348,7 @@ const handleModal = (
 </script>
 
 <template>
-  <main>
+  <main class="overflow-y-auto h-full">
     <div class="max-w-xl min-w-full overflow-x-auto scrollbar-hide">
       <div class="inline-flex gap-3 pb-8 pt-2 px-1">
         <va-chip
@@ -401,11 +401,7 @@ const handleModal = (
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
-        @closeModal="
-          handleModal(
-              '', '', ''
-          )
-        "
+        @closeModal="handleModal('', '', '')"
       />
     </va-modal>
 
@@ -424,6 +420,8 @@ const handleModal = (
         :title="restaurants.restaurants[0].name"
         :imgSrc="getRestaurantImageUrl(restaurants.restaurants[0])"
         :tags="['Burger', 'Fastfood', 'Halal']"
+        :rating="restaurants.restaurants[0].rating"
+        :distance="restaurants.restaurants[0].vicinity"
         @click="
           handleModal(
             restaurants.restaurants[0].place_id,
@@ -486,6 +484,8 @@ const handleModal = (
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
           :tags="['Burger', 'Fastfood', 'Halal']"
+          :rating="restaurant.rating"
+          :distance="restaurant.vicinity"
           @click="
             handleModal(
               restaurant.place_id,
