@@ -10,6 +10,16 @@ const { logout } = useAuth();
 </script>
 <template>
   <VaSidebar :minimized="!showSidebar" minimized-width="0" color="white">
+    <VaSidebarItem :active="route.name === 'group'" to="/group">
+      <VaSidebarItemContent>
+        <VaSidebarItemTitle> Group Vote </VaSidebarItemTitle>
+      </VaSidebarItemContent>
+    </VaSidebarItem>
+    <VaSidebarItem :active="route.name === 'results'" to="/results">
+      <VaSidebarItemContent>
+        <VaSidebarItemTitle> Pick For Me </VaSidebarItemTitle>
+      </VaSidebarItemContent>
+    </VaSidebarItem>
     <div v-if="!isAuthenticated">
       <VaSidebarItem :active="route.name === 'Login'" to="/login">
         <VaSidebarItemContent>

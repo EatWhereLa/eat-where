@@ -54,7 +54,17 @@ function showMenuItem(itemName: string | undefined) {
         class="!hidden md:!block"
         v-if="showMenuItem($route.name?.toString())"
       >
-        <router-link to="/app" active-class="text-primary"> App </router-link>
+        <router-link to="/group" active-class="text-primary">
+          Start Vote
+        </router-link>
+      </va-navbar-item>
+      <va-navbar-item
+        class="!hidden md:!block"
+        v-if="showMenuItem($route.name?.toString())"
+      >
+        <router-link to="/results" active-class="text-primary">
+          Pick For Me
+        </router-link>
       </va-navbar-item>
     </template>
     <template #right>
