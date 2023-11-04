@@ -12,7 +12,7 @@ const count = 4;
     v-if="restaurant"
   >
     <div
-      class="relative w-2/5 shrink-0 overflow-hidden bg-white bg-clip-border text-gray-700"
+      class="relative w-2/5 shrink-0 overflow-hidden rounded-xl bg-white bg-clip-border text-gray-700"
     >
       <img
         class="h-full w-full object-cover rounded-xl rounded-r-none"

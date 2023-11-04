@@ -1,41 +1,30 @@
 <template>
-<div>
-  <div class="content">
-    <span>Choose EatWhere</span>
-    <h1>Your Ultimate Dining Decision-Maker</h1>
-    <p>
-      Say goodbye to the endless debates and countless food app searches. With EatWhere, choosing a restaurant is about to get a whole lot easier.
-    </p>
-    <ol>
-      <li>Voting Sessions</li>
-      <li>Book Your Table</li>
-      <li>Crowd Level Insights</li>
-      <li>Personalised recommendations</li>
-    </ol>
-    <a href="#">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="w-6 h-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15.75 17.25L12 21m0 0l-3.75-3.75M12 21V3"
-        />
-      </svg>
-      Scroll Down to <br />know more</a
-    >
-  </div>
-  <div class="img-container">
-    <img
-      src="../assets/images/landing/banner.gif"
-      alt=""
-    />
-    <!-- <div class="order">
+  <section>
+    <div>
+      <div class="content">
+        <span>Choose EatWhere</span>
+        <h1>Your Ultimate Dining Decision-Maker</h1>
+        <p>
+          Say goodbye to the endless debates and countless food app searches. With EatWhere, choosing a restaurant is
+          about
+          to get a whole lot easier.
+        </p>
+        <ol>
+          <li>Voting Sessions</li>
+          <li>Book Your Table</li>
+          <li>Crowd Level Insights</li>
+          <li>Personalised recommendations</li>
+        </ol>
+        <a href="#">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25L12 21m0 0l-3.75-3.75M12 21V3" />
+          </svg>
+          Scroll Down to <br />know more</a>
+      </div>
+      <div class="img-container">
+        <img src="../assets/images/landing/banner.gif" alt="" />
+        <!-- <div class="order">
       <div>
         <span>Your food box:</span>
         <div class="price">
@@ -50,12 +39,14 @@
         <a href="#">enroll now</a>
       </div>
     </div> -->
-  </div>
-</div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@300;400;500;700&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -63,6 +54,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
+
 body {
   background: #ddd6f3;
   background: -webkit--webkit-linear-gradient(left, #ff9b9b, #ffd6d5);
@@ -80,9 +72,11 @@ body {
   display: grid;
   min-height: 100vh;
   padding-block: 2em;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* 4 */
   font-weight: 300;
 }
+
 div {
   background: #F6E3E5;
   overflow: hidden;
@@ -101,6 +95,7 @@ div {
   -ms-flex-direction: column-reverse;
   flex-direction: column-reverse;
 }
+
 @media screen and (min-width: 1445px) {
   div {
     -webkit-box-orient: horizontal;
@@ -111,13 +106,14 @@ div {
     flex-direction: row;
   }
 }
+
 div .content {
   padding: 3em 2em;
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-   ;
+  ;
   display: flex;
   -webkit-box-orient: vertical;
   -moz-box-orient: vertical;
@@ -133,11 +129,13 @@ div .content {
   justify-content: center;
   color: black;
 }
+
 @media screen and (min-width: 1445px) {
   div .content {
     padding: 5em 4.5em;
   }
 }
+
 div .content a {
   text-decoration: none;
   color: #838383;
@@ -146,7 +144,7 @@ div .content a {
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-   ;
+  ;
   display: flex;
   -webkit-box-align: center;
   -moz-box-align: center;
@@ -155,9 +153,11 @@ div .content a {
   -webkit-align-items: center;
   align-items: center;
 }
+
 div .content a:hover {
   color: #eb8a88;
 }
+
 div .content span {
   text-transform: uppercase;
   font-size: 0.9rem;
@@ -165,20 +165,25 @@ div .content span {
   color: #f59e0b;
   font-weight: 500;
 }
+
 div .content h1 {
   text-transform: capitalize;
   font-size: clamp(1.5rem, 5vw, 4rem);
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 4 */
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  /* 4 */
   font-weight: 500;
   margin: 0.2em 0 0.6rem 0;
 }
+
 div .content p {
   max-width: 350px;
 }
+
 div .content svg {
   width: 26px;
   margin-right: 10px;
 }
+
 div .img-container {
   width: 100%;
   position: relative;
@@ -186,16 +191,19 @@ div .img-container {
   height: 30vh;
   background: #F6E3E5;
 }
+
 @media screen and (min-width: 1445px) {
   div .img-container {
     height: auto;
   }
 }
+
 div img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
+
 div .order {
   position: absolute;
   top: 50%;
@@ -207,10 +215,11 @@ div .order {
   transform: translate(-50%, -50%);
   background: #fff;
   padding: 2em 2em;
-  -webkit-box-shadow: 0px 6px 18px rgba(0,0,0,0.161);
-  box-shadow: 0px 6px 18px rgba(0,0,0,0.161);
+  -webkit-box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.161);
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.161);
   height: min-content;
 }
+
 @media screen and (min-width: 600px) {
   div .order {
     width: 80%;
@@ -218,10 +227,11 @@ div .order {
     display: -moz-box;
     display: -webkit-flex;
     display: -ms-flexbox;
-     ;
+    ;
     display: flex;
   }
 }
+
 @media screen and (min-width: 1445px) {
   div .order {
     min-width: 360px;
@@ -237,10 +247,12 @@ div .order {
     display: block;
   }
 }
+
 div .order p {
   color: #6b6b6b;
   max-width: 200px;
 }
+
 div .order a {
   display: inline-block;
   background: #000;
@@ -253,28 +265,33 @@ div .order a {
   margin-top: 2em;
   font-size: 0.9rem;
 }
+
 div .order a:hover {
   background: #cd7786;
 }
+
 @media screen and (min-width: 1445px) {
   div .order a {
     font-size: 1rem;
   }
 }
+
 div .order span {
   font-size: 1.3rem;
 }
+
 @media screen and (min-width: 1445px) {
   div .order span {
     font-size: 1.5rem;
   }
 }
+
 div .order .price {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-   ;
+  ;
   display: flex;
   -webkit-box-align: end;
   -moz-box-align: end;
@@ -284,29 +301,34 @@ div .order .price {
   align-items: flex-end;
   font-size: 1rem;
 }
+
 div .order .price span {
   font-size: 1.5rem;
   margin-bottom: -3px;
   font-weight: 300;
 }
+
 @media screen and (min-width: 1445px) {
   div .order .price span {
     font-size: 2.5rem;
     margin-bottom: -10px;
   }
 }
+
 div .order .price h2 {
   font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: -10px;
   margin-inline: 5px;
 }
+
 @media screen and (min-width: 1445px) {
   div .order .price h2 {
     font-size: 3rem;
     margin-bottom: -15px;
   }
 }
+
 div hr {
   background: #cecece;
   width: 30%;
@@ -315,6 +337,7 @@ div hr {
   display: block;
   margin: 4em 0 1em 0;
 }
+
 @media screen and (min-width: 600px) {
   div hr {
     -webkit-transform: rotate(90deg);
@@ -324,6 +347,7 @@ div hr {
     transform: rotate(90deg);
   }
 }
+
 @media screen and (min-width: 1445px) {
   div hr {
     -webkit-transform: rotate(0deg);
@@ -333,6 +357,7 @@ div hr {
     transform: rotate(0deg);
   }
 }
+
 ol {
   list-style: none;
   margin: 0;
@@ -340,12 +365,13 @@ ol {
   counter-reset: section;
   margin: 2em 0 2.5em 0;
 }
+
 li {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-   ;
+  ;
   display: flex;
   -webkit-box-align: center;
   -moz-box-align: center;
@@ -355,9 +381,11 @@ li {
   align-items: center;
   position: relative;
 }
+
 li+li {
   margin-top: 1em;
 }
+
 li::before {
   counter-increment: section;
   content: counters(section, '.') ' ';
@@ -367,7 +395,7 @@ li::before {
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
-   ;
+  ;
   display: flex;
   -webkit-box-pack: center;
   -moz-box-pack: center;
@@ -391,6 +419,7 @@ li::before {
   position: relative;
   z-index: 66;
 }
+
 li:not(:last-child):after {
   content: '';
   width: 1px;
