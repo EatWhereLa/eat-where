@@ -118,6 +118,10 @@ const showModalValues = ref({
   show: false,
 });
 
+function generateCrowd(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const success = async (position: LatLng) => {
   isLoadingRestaurants.value = true;
 
@@ -174,12 +178,14 @@ const success = async (position: LatLng) => {
       name: item.name,
       photos: item.photos,
       rating: item.rating,
+      crowd: generateCrowd(1, 5),
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
         lat: item.geometry.lat,
         lng: item.geometry.lng,
       },
+      category: [],
       upvote_count: 0,
     });
   });
@@ -188,35 +194,6 @@ const success = async (position: LatLng) => {
     "restaurants",
     JSON.stringify(restaurants.restaurants),
   );
-  // } else {
-  //   restaurants.restaurants = [];
-  //   console.log(
-  //     "INSIDE SESSIONSTORAGE: ",
-  //     JSON.parse(sessionStorage.getItem("restaurants") as string)
-  //   );
-  //   const restaurantsLocal: Restaurant[] = JSON.parse(
-  //     sessionStorage.getItem("restaurants") as string
-  //   );
-
-  //   console.log("restaurantsLocal: ", restaurantsLocal);
-  //   restaurantsLocal.forEach((item: Restaurant) => {
-  //     restaurants.addRestaurant({
-  //       place_id: item.place_id,
-  //       name: item.name,
-  //       photos: item.photos,
-  //       rating: item.rating,
-  //       user_ratings: item.user_ratings,
-  //       vicinity: item.vicinity,
-  //       geometry: {
-  //         location: {
-  //           lat: item.geometry.location.lat,
-  //           lng: item.geometry.location.lng,
-  //         },
-  //       },
-  //       upvote_count: 0,
-  //     });
-  //   });
-  // }
 
   isLoadingRestaurants.value = false;
 
@@ -271,7 +248,7 @@ watch(
   },
 );
 
-const handleUpvote = (event: { stopPropagation: () => void; }, id: string) => {
+const handleUpvote = (event: { stopPropagation: () => void }, id: string) => {
   event.stopPropagation();
   const foundRestaurant: Restaurant | undefined = restaurants.restaurants.find(
     (restaurant) => restaurant.place_id === id,
@@ -348,7 +325,7 @@ const handleModal = (
 </script>
 
 <template>
-  <main>
+  <main class="overflow-y-auto h-full">
     <div class="max-w-xl min-w-full overflow-x-auto scrollbar-hide">
       <div class="inline-flex gap-3 pb-8 pt-2 px-1">
         <va-chip
@@ -401,20 +378,12 @@ const handleModal = (
         :title="showModalValues.title"
         :place-id="showModalValues.placeId"
         :img-src="showModalValues.imgSrc"
-        @closeModal="
-          handleModal(
-              '', '', ''
-          )
-        "
+        @closeModal="handleModal('', '', '')"
       />
     </va-modal>
 
     <div class="flex items-center gap-2 mb-3">
       <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
-      <!-- <p>
-        COORDS: {{ currentLocation.latLng.lat }},
-        {{ currentLocation.latLng.lng }}
-      </p> -->
       <p class="text-primary font-semibold text-sm">Featured</p>
 
       <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
@@ -424,6 +393,8 @@ const handleModal = (
         :title="restaurants.restaurants[0].name"
         :imgSrc="getRestaurantImageUrl(restaurants.restaurants[0])"
         :tags="['Burger', 'Fastfood', 'Halal']"
+        :rating="restaurants.restaurants[0].rating"
+        :distance="restaurants.restaurants[0].vicinity"
         @click="
           handleModal(
             restaurants.restaurants[0].place_id,
@@ -486,6 +457,8 @@ const handleModal = (
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
           :tags="['Burger', 'Fastfood', 'Halal']"
+          :rating="restaurant.rating"
+          :distance="restaurant.vicinity"
           @click="
             handleModal(
               restaurant.place_id,

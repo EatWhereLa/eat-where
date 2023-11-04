@@ -11,6 +11,9 @@ module.exports = {
         "gray-secondary": "#999999",
         background: "#FAF1F2",
       },
+      animation: {
+        "spin-slow": "spin 3s linear infinite",
+      },
       boxShadow: {
         default: "0 7px 30px rgba(0, 0, 0, 0.1)",
         "default-sm": "0 2px 15px rgba(0, 0, 0, 0.1)",

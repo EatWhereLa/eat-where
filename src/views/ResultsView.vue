@@ -96,6 +96,10 @@ const getRestaurantImageUrl = (restaurant: Restaurant) => {
   }
 };
 
+function generateCrowd(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const success = async (position: LatLng) => {
   const latitude = position.lat;
   const longitude = position.lng;
@@ -115,12 +119,14 @@ const success = async (position: LatLng) => {
       name: item.name,
       photos: item.photos,
       rating: item.rating,
+      crowd: generateCrowd(1, 5),
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
         lat: item.geometry.lat,
         lng: item.geometry.lng,
       },
+      category: [],
       upvote_count: 0,
     });
   });
@@ -174,7 +180,7 @@ const handleModal = (
 </script>
 
 <template>
-  <main>
+  <main class="p-4 md:p-0 overflow-x-auto">
     <h2 class="text-primary mb-2.5" v-if="tabulatedResults.length > 0">
       <span class="text-3xl font-semibold mr-2">1st</span>
       place
@@ -200,6 +206,8 @@ const handleModal = (
       :title="tabulatedResults[0].name"
       :imgSrc="getRestaurantImageUrl(tabulatedResults[0])"
       :tags="['Burger', 'Fastfood', 'Halal']"
+      :rating="tabulatedResults[0].rating"
+      :distance="tabulatedResults[0].vicinity"
       v-if="tabulatedResults.length > 0"
       @click="
         handleModal(
@@ -237,6 +245,8 @@ const handleModal = (
             :title="restaurant.name"
             :imgSrc="getRestaurantImageUrl(restaurant)"
             :tags="['Burger', 'Fastfood', 'Halal']"
+            :rating="restaurant.rating"
+            :distance="restaurant.vicinity"
             @click="
               handleModal(
                 restaurant.place_id,

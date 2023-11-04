@@ -10,13 +10,16 @@ export type Restaurant = {
   name: string;
   photos: Photo;
   rating: number;
+  crowd: number;
   user_ratings: number;
   vicinity: string;
   geometry: {
     lat: number;
     lng: number;
   };
+  category: string[];
   upvote_count?: number;
+  price?: number;
 };
 
 export type FilterRestaurant = {

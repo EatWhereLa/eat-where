@@ -66,16 +66,18 @@ const modalValues: Ref<{
     ],
     dine_in: false,
   },
-  reservable: false,  
+  reservable: false,
 });
 
 const showModalValues = ref({
   title: "",
   placeId: "",
-  periods: [{
-      close: { day : 0, time: "" },
-      open: { day : 0, time: "" }
-  }],
+  periods: [
+    {
+      close: { day: 0, time: "" },
+      open: { day: 0, time: "" },
+    },
+  ],
   show: false,
   mostFreqDate: "",
   mostFreqTime: "",
@@ -196,9 +198,9 @@ onMounted(async () => {
   }
 });
 
-const updateReviews = async() => {
+const updateReviews = async () => {
   appReviews.value = await fetchPlaceReviews();
-}
+};
 
 const showForm = () => {
   return route.path === '/activity';
@@ -333,11 +335,10 @@ const handleModal = (
       />
     </va-modal>
 
-    <div style="background: black; width: 100%">
-      <va-image
-        :src="imageUrl"
-        alt="Image not found"
-        class="max-h-40 min-h-40 opacity-40 object-cover w-full"
+      <va-icon
+        name="attach_money"
+        size="1.8rem"
+        class="text-primary w-4 mr-2 float-left mb-3"
       />
     </div>
     <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
@@ -408,13 +409,34 @@ const handleModal = (
             )
           "
         >
-          <va-icon name="table_bar" size="2rem" />
-          <span class="font-semibold">
-          Reservation
-          </span>
-        </generic-button>
-      </va-card-content>
-    </va-card>
+          <ul
+            v-for="(day, idx) in modalValues.openingHours.weekday_text"
+            :key="idx"
+            class="mb-2"
+          >
+            <li class="my-1">{{ day }}</li>
+          </ul>
+        </va-collapse>
+      </div>
+
+      <div class="clear-left"></div>
+      <generic-button
+        v-if="modalValues.reservable"
+        class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
+        padding="p-0"
+        @click="
+          handleReservationModal(
+            placeId,
+            title,
+            modalValues.openingHours.periods,
+          )
+        "
+      >
+        <va-icon name="table_bar" size="2rem" />
+        <span class="font-semibold"> Reservation </span>
+      </generic-button>
+    </va-card-content>
+  </va-card>
   <section class="mt-7">
     <ReviewForm :place-id="placeId" :title="title"
     @submittedForm="updateReviews()"
