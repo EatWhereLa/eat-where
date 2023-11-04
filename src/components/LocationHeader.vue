@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { Vue3Lottie } from "vue3-lottie";
 import LandingJSON from "@/assets/lottie/landing.json";
 import LocationButton from "../components/LocationButton.vue";
