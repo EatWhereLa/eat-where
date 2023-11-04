@@ -1,24 +1,23 @@
+<script setup>
+import { Vue3Lottie } from "vue3-lottie";
+import LandingJSON from "@/assets/lottie/landing.json";
+import LocationButton from "../components/LocationButton.vue";
+import { RouterLink } from "vue-router";
+</script>
+
 <template>
   <section>
     <div>
       <div class="content">
-        <span>Choose EatWhere</span>
-        <h1>Your Ultimate Dining Decision-Maker</h1>
-        <p>
-          Say goodbye to the endless debates and countless food app searches.
-          With EatWhere, choosing a restaurant is about to get a whole lot
-          easier.
-        </p>
-        <ol>
-          <li>Voting Sessions</li>
-          <li>Book Your Table</li>
-          <li>Crowd Level Insights</li>
-          <li>Personalised recommendations</li>
-        </ol>
+        <h1>Vote Together, Eat Better!</h1>
+        <RouterLink to="/location" id="router-link">
+          <LocationButton />
+        </RouterLink>
         
       </div>
       <div class="img-container">
-        <img src="../assets/images/landing/banner.gif" alt="" />
+        <!-- <img src="../assets/images/landing/banner.gif" alt="" /> -->
+        <Vue3Lottie :animation-data="LandingJSON" :height="600" />
       </div>
     </div>
   </section>
@@ -28,11 +27,37 @@
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@300;400;500;700&display=swap");
 
 * {
-  margin: 0;
-  padding: 0;
+
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.content {
+  max-width: 600px;
+}
+
+.content h1 {
+  text-transform: capitalize;
+  font-size: clamp(1.5rem, 5vw, 4rem);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
+  /* 4 */
+  font-weight: 500;
+  margin: 0.2em 0 4rem 0;
 }
 
 body {
@@ -72,7 +97,6 @@ body {
 }
 
 div {
-  background: #f6e3e5;
   overflow: hidden;
   display: -webkit-box;
   display: -moz-box;
@@ -129,7 +153,7 @@ div .content {
   }
 }
 
-div .content a {
+/* div .content a {
   text-decoration: none;
   color: #838383;
   font-size: 0.9rem;
@@ -144,7 +168,7 @@ div .content a {
   -ms-flex-align: center;
   -webkit-align-items: center;
   align-items: center;
-}
+} */
 
 div .content a:hover {
   color: #eb8a88;
@@ -195,7 +219,6 @@ div .img-container {
   position: relative;
   min-height: 380px;
   height: 30vh;
-  background: #f6e3e5;
 }
 
 @media screen and (min-width: 1445px) {

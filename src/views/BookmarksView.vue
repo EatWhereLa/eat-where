@@ -143,7 +143,7 @@ const handleSort = () => {
       >
         <aside class="w-72 hidden lg:block h-4/5">
           <div
-            class="flex flex-col gap-4 h-full border-solid border border-primary rounded-lg p-4 pl-7"
+            class="flex flex-col gap-4 h-full shadow-md bg-white rounded-lg p-4 pl-7"
           >
             <h1 class="font-bold text-2xl">Filters</h1>
             <div>
@@ -198,7 +198,7 @@ const handleSort = () => {
               <div class="text-bold pb-1">Categories</div>
               <div class="flex gap-2 overflow-x-scroll w-full py-1">
                 <va-chip
-                  size="large"
+                  size="large"                
                   :outline="!selectedCategories.includes(category)"
                   :class="{
                     'chip-active': selectedCategories.includes(category),
