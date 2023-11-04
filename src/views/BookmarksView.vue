@@ -5,9 +5,10 @@ import { ref, onBeforeMount, type Ref, computed } from "vue";
 import type { Restaurant } from "@/types/Restaurant";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";
 import { useBookmarks } from "@/composables/useBookmarks";
+import { useAuthStore } from "@/stores/auth";
 
 const API_URL = import.meta.env.VITE_API_URL;
-// const restaurants: Ref<Restaurant[]> = ref([]); // This should directly give you the array of restaurants
+const { username } = useAuthStore();
 const { cuisineCategories, getRandomCuisineArr } = useCuisineCategories();
 const { bookmarks: restaurants, getBookmarks } = useBookmarks();
 const prices = ["$", "$$", "$$$", "$$$$", "$$$$$"];
@@ -60,7 +61,7 @@ function generateRandomPrice() {
   return Math.round(Math.random() * 5) + 1;
 }
 onBeforeMount(async () => {
-  await getBookmarks("Tester1");
+  await getBookmarks(username);
   //init the categories for restaurants
   for (const restaurant of restaurants.value) {
     restaurant.category = getRandomCuisineArr();

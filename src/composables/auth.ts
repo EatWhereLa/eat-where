@@ -1,4 +1,5 @@
 import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 import { Amplify, Auth } from "aws-amplify";
 
 Amplify.configure({
@@ -16,6 +17,7 @@ Amplify.configure({
 
 export function useAuth() {
   const { setAuth, setEmail, setUsername } = useAuthStore();
+  const router = useRouter();
   async function isLoggedIn() {
     try {
       const user = await Auth.currentAuthenticatedUser();
@@ -63,6 +65,8 @@ export function useAuth() {
     try {
       await Auth.signOut();
       setAuth(false);
+      localStorage.clear();
+      router.push("/");
     } catch (error) {
       console.log("error signing out: ", error);
     }
