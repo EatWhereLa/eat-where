@@ -181,19 +181,19 @@ onMounted(async () => {
 
   getClosingTime();
   updateReviews();
-  
+
   if (authStore.username !== "") {
     const clashes = userTimingClash();
     if (clashes) {
       init({
-                message: 'Yay this fits your preference!',
-                color: 'success',
-            });
+        message: "Yay this fits your preference!",
+        color: "success",
+      });
     } else {
       init({
-          message: 'Oops this doesnt fit your preference!',
-          color: 'danger',
-        });
+        message: "Oops this doesnt fit your preference!",
+        color: "danger",
+      });
     }
   }
 });
@@ -203,19 +203,19 @@ const updateReviews = async () => {
 };
 
 const showForm = () => {
-  return route.path === '/activity';
-}
+  return route.path === "/activity";
+};
 
 const showReservation = () => {
   if (authStore.username === "") {
     return false;
   }
-  return route.path === '/results';
-}
+  return route.path === "/results";
+};
 
 const userTimingClash = (): boolean => {
   const userTiming = voteTimingsStore.getVoteTiming(authStore.username);
-  const newTiming = userTiming.date.split('/').reverse().join('-');
+  const newTiming = userTiming.date.split("/").reverse().join("-");
   const dayOfWeek = dayjs(newTiming).day();
 
   // Convert current time to a number for easier comparison
@@ -230,17 +230,19 @@ const userTimingClash = (): boolean => {
       const closeTimeNumber = parseInt(period.close.time, 10);
 
       // Check if the current time is within the open and close times
-      if (currentTimeNumber >= openTimeNumber && currentTimeNumber <= closeTimeNumber) {
+      if (
+        currentTimeNumber >= openTimeNumber &&
+        currentTimeNumber <= closeTimeNumber
+      ) {
         return true; // The place is open
       }
     }
   }
 
   return false;
-}
+};
 
 const getCommonTimeSlot = () => {
-  
   const dateTimeFrequency: { [key: string]: number } = {};
 
   // Populate the frequency map
@@ -263,151 +265,148 @@ const getCommonTimeSlot = () => {
   for (const [key, frequency] of Object.entries(dateTimeFrequency)) {
     if (frequency >= maxFrequency) {
       maxFrequency = frequency;
-      const [date, time] = key.split('-');
+      const [date, time] = key.split("-");
       mostFrequentDateTime = { date, time };
     }
   }
 
   showModalValues.value.mostFreqDate = mostFrequentDateTime.date;
   showModalValues.value.mostFreqTime = mostFrequentDateTime.time;
-
-}
-
+};
 
 const handleModal = (
   placeId: Restaurant["place_id"],
   title: Restaurant["name"],
   openingHours: RestaurantDetails["current_opening_hours"]["periods"],
-  show: boolean
+  show: boolean,
 ) => {
   showModalValues.value.placeId = placeId;
   showModalValues.value.title = title;
   showModalValues.value.periods = openingHours;
   showModalValues.value.show = show;
 
-  if(placeId !== "" && voteTimingsStore.voteTimings.length !== 0) {
-    getCommonTimeSlot()
+  if (placeId !== "" && voteTimingsStore.voteTimings.length !== 0) {
+    getCommonTimeSlot();
   }
 };
 </script>
 
 <template>
-    <va-modal
-      v-model="showModalValues.show"
-      hide-default-actions
-      class="mx-auto"
-      size="large"
-      closeButton
-    >
-      <ReservationModal
-        :title="showModalValues.title"
-        :place-id="showModalValues.placeId"
-        :opening-hours="showModalValues.periods"
-        v-if="voteTimingsStore.voteTimings.length === 0"
-        @closeModal="
-          handleModal('', '', [
+  <va-modal
+    v-model="showModalValues.show"
+    hide-default-actions
+    class="mx-auto"
+    size="large"
+    closeButton
+  >
+    <ReservationModal
+      :title="showModalValues.title"
+      :place-id="showModalValues.placeId"
+      :opening-hours="showModalValues.periods"
+      v-if="voteTimingsStore.voteTimings.length === 0"
+      @closeModal="
+        handleModal(
+          '',
+          '',
+          [
             {
               close: { day: 0, time: '' },
               open: { day: 0, time: '' },
             },
-          ], false)
-        "
+          ],
+          false,
+        )
+      "
+    />
+    <BookingModal
+      :title="showModalValues.title"
+      :place-id="showModalValues.placeId"
+      :opening-hours="showModalValues.periods"
+      :booking-date="showModalValues.mostFreqDate"
+      :booking-time="showModalValues.mostFreqTime"
+      v-else
+      @closeFreqModal="
+        handleModal(
+          '',
+          '',
+          [
+            {
+              close: { day: 0, time: '' },
+              open: { day: 0, time: '' },
+            },
+          ],
+          false,
+        )
+      "
+      @closebookingmodal="
+        handleModal(
+          '',
+          '',
+          [
+            {
+              close: { day: 0, time: '' },
+              open: { day: 0, time: '' },
+            },
+          ],
+          false,
+        )
+      "
+    />
+  </va-modal>
+
+  <div style="background: black; width: 100%">
+    <va-image
+      :src="imageUrl"
+      alt="Image not found"
+      class="max-h-40 min-h-40 opacity-40 object-cover w-full"
+    />
+  </div>
+  <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
+    <va-card-content>
+      <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg font-semibold">
+        {{ title }}
+      </h3>
+      <va-icon
+        name="location_on"
+        size="1.8rem"
+        class="text-primary w-5 mr-2 float-left mb-3"
       />
-      <BookingModal
-        :title="showModalValues.title"
-        :place-id="showModalValues.placeId"
-        :opening-hours="showModalValues.periods"
-        :booking-date="showModalValues.mostFreqDate"
-        :booking-time="showModalValues.mostFreqTime"
-        v-else
-        @closeFreqModal=" handleModal('', '', [
-            {
-              close: { day: 0, time: '' },
-              open: { day: 0, time: '' },
-            },
-          ], false)"
-        @closebookingmodal=" handleModal('', '', [
-            {
-              close: { day: 0, time: '' },
-              open: { day: 0, time: '' },
-            },
-          ], false)"
-      />
-    </va-modal>
+      <p class="mt-1.5">{{ modalValues.location }}</p>
+      <div class="clear-left"></div>
 
       <va-icon
         name="attach_money"
         size="1.8rem"
         class="text-primary w-4 mr-2 float-left mb-3"
       />
-    </div>
-    <va-card class="w-4/6 mx-auto p-4 mt-[-40px]">
-      <va-card-content>
-        <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg font-semibold">{{ title }}</h3>
-        <va-icon
-          name="location_on"
-          size="1.8rem"
-          class="text-primary w-5 mr-2 float-left mb-3"
-        />
-        <p class="mt-1.5">{{ modalValues.location }}</p>
-        <div class="clear-left"></div>
+      <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
+      <div class="clear-left"></div>
 
-        <va-icon
-          name="attach_money"
-          size="1.8rem"
-          class="text-primary w-4 mr-2 float-left mb-3"
-        />
-        <p class="mt-1.5">{{ modalValues.priceLevel }}</p>
-        <div class="clear-left"></div>
+      <va-icon
+        name="star"
+        size="1.8rem"
+        class="text-primary w-5 mr-2 float-left mb-3"
+      />
+      <p class="mt-1.5">{{ modalValues.rating }}/5</p>
+      <div class="clear-left"></div>
 
-        <va-icon
-          name="star"
-          size="1.8rem"
-          class="text-primary w-5 mr-2 float-left mb-3"
-        />
-        <p class="mt-1.5"> {{ modalValues.rating }}/5</p>
-        <div class="clear-left"></div>
+      <va-icon
+        name="edit"
+        size="1.8rem"
+        class="text-primary w-5 mr-2 float-left"
+      />
+      <p v-if="modalValues.description !== undefined">
+        {{ modalValues.description }}
+      </p>
+      <p class="mt-2" v-else>No description found for location</p>
 
-        <va-icon
-          name="edit"
-          size="1.8rem"
-          class="text-primary w-5 mr-2 float-left"
-        />
-        <p v-if="modalValues.description !== undefined">
-          {{ modalValues.description }}
-        </p>
-        <p class="mt-2" v-else>No description found for location</p>
+      <div class="clear-left"></div>
 
-        <div class="clear-left"></div>
-
-        <div v-if="modalValues.openingHours" class="mt-2">
-          <va-collapse
-            :header="restaurantStatus"
-            icon="alarm"
-            textColor="primary"
-          >
-            <ul
-              v-for="(day, idx) in modalValues.openingHours.weekday_text"
-              :key="idx"
-              class="mb-2"
-            >
-              <li class="my-1">{{ day }}</li>
-            </ul>
-          </va-collapse>
-        </div>
-
-        <div class="clear-left"></div>
-        <generic-button v-if="showReservation() && modalValues.reservable"
-          class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
-          padding="p-0"
-          @click="
-            handleModal(
-              placeId,
-              title,
-              modalValues.openingHours.periods,
-              true,
-            )
-          "
+      <div v-if="modalValues.openingHours" class="mt-2">
+        <va-collapse
+          :header="restaurantStatus"
+          icon="alarm"
+          textColor="primary"
         >
           <ul
             v-for="(day, idx) in modalValues.openingHours.weekday_text"
@@ -421,15 +420,11 @@ const handleModal = (
 
       <div class="clear-left"></div>
       <generic-button
-        v-if="modalValues.reservable"
+        v-if="showReservation() && modalValues.reservable"
         class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
         padding="p-0"
         @click="
-          handleReservationModal(
-            placeId,
-            title,
-            modalValues.openingHours.periods,
-          )
+          handleModal(placeId, title, modalValues.openingHours.periods, true)
         "
       >
         <va-icon name="table_bar" size="2rem" />
@@ -438,9 +433,11 @@ const handleModal = (
     </va-card-content>
   </va-card>
   <section class="mt-7">
-    <ReviewForm :place-id="placeId" :title="title"
-    @submittedForm="updateReviews()"
-    v-if="showForm()"
+    <ReviewForm
+      :place-id="placeId"
+      :title="title"
+      @submittedForm="updateReviews()"
+      v-if="showForm()"
     />
 
     <li
