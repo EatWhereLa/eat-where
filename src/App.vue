@@ -26,7 +26,7 @@ onMounted(async () => {
       <SideBar :show-sidebar="showSidebar" />
     </template>
     <template #content>
-      <div class="flex justify-center items-center h-full p-4">
+      <div class="flex justify-center items-center h-full p-4 overflow-auto">
         <RouterView />
       </div>
     </template>
