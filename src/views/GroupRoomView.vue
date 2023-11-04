@@ -28,23 +28,20 @@ import { useShare, useBrowserLocation } from "@vueuse/core";
 import { useTimer } from "@/composables/useTimer";
 
 import { useVoteTimingsStore } from "@/stores/voteTimings";
-import { useAuthStore } from "@/stores/auth";
 
 const voteTimingsStore = useVoteTimingsStore();
 const authStore = useAuthStore();
 const { init } = useToast();
 
+import { useBookmarks } from "@/composables/useBookmarks";
+import { storeToRefs } from "pinia";
+import { useAuth } from "@/composables/auth";
+import { useAuthStore } from "@/stores/auth";
 
-const getRandomUsername = () => {
-  return `${randProductAdjective()} ${randAnimal()}`;
-};
-const gerRoomId = () => {
-  return `${randProductAdjective()}-${randAnimalType()}-${randNumber({
-    min: 0,
-    max: 999,
-  })}`;
-};
 const { milliseconds } = useTimer();
+const { getBookmarks } = useBookmarks();
+const { isLoggedIn } = useAuth();
+const { isAuthenticated, username } = storeToRefs(useAuthStore());
 const { share } = useShare();
 const time = ref(60);
 const minutes = ref(0);
@@ -71,7 +68,6 @@ const tabs = [
     ),
   },
 ];
-
 const timings = [
   { timeInMilliseconds: 60000, displayTime: "1:00" },
   { timeInMilliseconds: 120000, displayTime: "2:00" },
@@ -79,11 +75,26 @@ const timings = [
   { timeInMilliseconds: 300000, displayTime: "5:00" },
 ];
 
+
 const showTimingModal = ref(true);
 
-onBeforeMount(() => {
+const getRandomUsername = () => {
+  return `${randProductAdjective()} ${randAnimal()}`;
+};
+const getRoomId = () => {
+  return `${randProductAdjective()}-${randAnimalType()}-${randNumber({
+    min: 0,
+    max: 999,
+  })}`;
+};
+
+onBeforeMount(async () => {
   currUser.value = getRandomUsername();
-  roomId.value = gerRoomId();
+  roomId.value = getRoomId();
+  if (!isAuthenticated.value) {
+    await isLoggedIn();
+  }
+  await getBookmarks(username.value);
   if (route.query.shareId) {
     roomId.value = route.query.shareId.toString();
   } else {
