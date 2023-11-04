@@ -234,7 +234,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="sliderRef" class="slider">
+  <div ref="sliderRef" class="slider rounded-xl mb-8">
     <div class="nav">
       <div ref="nextRef" class="next"></div>
       <div ref="prevRef" class="prev"></div>
@@ -258,60 +258,9 @@ onMounted(() => {
           >
             <img :src="`${displayImage}`" />
           </div>
-          <!-- <div class="img img-2">
-            <img src="@/assets/images/landing/korean.jpg" />
-          </div>
-          <div class="img img-3">
-            <img src="@/assets/images/landing/max.jpg" />
-          </div>
-          <div class="img img-4">
-            <img src="@/assets/images/landing/western.jpeg" />
-          </div> -->
         </div>
       </div>
     </div>
-    <!-- <div class="item" ref="itemsRef">
-      <div class="content">
-        <div class="wrap text-xs">Collaborate</div>
-      </div>
-      <div class="imgs">
-        <div class="grid">
-          <div class="img img-1">
-            <img src="../assets/images/landing/friends.jpg" />
-          </div>
-          <div class="img img-2">
-            <img src="../assets/images/landing/table.jpg" />
-          </div>
-          <div class="img img-3">
-            <img src="../assets/images/landing/round.jpg" />
-          </div>
-          <div class="img img-4">
-            <img src="../assets/images/landing/dine.jpg" />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="item" ref="itemsRef">
-      <div class="content">
-        <div class="wrap text-xs">New Places</div>
-      </div>
-      <div class="imgs">
-        <div class="grid">
-          <div class="img img-1">
-            <img src="../assets/images/landing/dintaifeng.jpeg" />
-          </div>
-          <div class="img img-2">
-            <img src="../assets/images/landing/collins.jpg" />
-          </div>
-          <div class="img img-3">
-            <img src="../assets/images/landing/ajisan.jpeg" />
-          </div>
-          <div class="img img-4">
-            <img src="../assets/images/landing/thw.jpg" />
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </template>
 
