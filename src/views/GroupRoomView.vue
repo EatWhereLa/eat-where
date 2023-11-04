@@ -127,7 +127,7 @@ const startVoting = async () => {
       event: "start",
       payload: { time: milliseconds.value },
     });
-    // router.push("/vote");
+    router.push("/vote");
   } catch (error) {
     console.log(error);
   }

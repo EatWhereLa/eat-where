@@ -12,12 +12,14 @@ import { useRestaurantsStore } from "@/stores/restaurants";
 import { useCurrentLocationStore } from "@/stores/currentLocation";
 import { channel, isLeader, users } from "@/apis/supabase";
 import { useTimer } from "@/composables/useTimer";
+import { useUpvoteRestaurantsStore } from "@/stores/upvoteRestaurants";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const groupUpvoteRestaurantsStore = useGroupUpvoteRestaurantsStore();
+const upvoteRestaurantsStore = useUpvoteRestaurantsStore();
 const restaurants = useRestaurantsStore();
 const currentLocation = useCurrentLocationStore();
-const { milliseconds } = useTimer();
+const { milliseconds, killTimers } = useTimer();
 const router = useRouter();
 
 const tabulatedResults = computed<Restaurant[]>(() => {
@@ -142,11 +144,14 @@ const success = async (position: LatLng) => {
 onBeforeMount(async () => {
   if (groupUpvoteRestaurantsStore.restaurants.length === 0)
     await getRestaurants();
+
+  killTimers();
 });
 
 onBeforeUnmount(() => {
   restaurants.clearRestaurants();
   groupUpvoteRestaurantsStore.clearRestaurants();
+  upvoteRestaurantsStore.clearRestaurants();
 });
 
 const handleTryAgain = async () => {
