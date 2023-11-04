@@ -75,7 +75,6 @@ const timings = [
   { timeInMilliseconds: 300000, displayTime: "5:00" },
 ];
 
-
 const showTimingModal = ref(true);
 
 const getRandomUsername = () => {
@@ -128,7 +127,7 @@ const startVoting = async () => {
       event: "start",
       payload: { time: milliseconds.value },
     });
-    router.push("/vote");
+    // router.push("/vote");
   } catch (error) {
     console.log(error);
   }
@@ -137,7 +136,7 @@ const startVoting = async () => {
 const getUserTimingChosen = () => {
   const userval = voteTimingsStore.getVoteTiming(authStore.username);
   return userval;
-}
+};
 
 watch(
   () => selectedTime.value,
@@ -148,22 +147,18 @@ watch(
 </script>
 
 <template>
-    <va-modal
-          v-model="showTimingModal"
-          hide-default-actions
-          class="mx-auto"
-          size="medium"
-          closeButton
-          v-if="authStore.username !== ''"
-          >
-    <ChooseTimingModal
-      @closeChoseTiming="
-          showTimingModal = !showTimingModal
-      "
-    />
+  <va-modal
+    v-model="showTimingModal"
+    hide-default-actions
+    class="mx-auto"
+    size="medium"
+    closeButton
+    v-if="authStore.username !== ''"
+  >
+    <ChooseTimingModal @closeChoseTiming="showTimingModal = !showTimingModal" />
   </va-modal>
-  <main class="w-full md:w-2/5 h-full relative">
-    <div class="text-center text-2xl text-primary pt-20 mb-44 max-h-14 px-3">
+  <main class="w-full md:w-2/5 h-full relative flex flex-col gap-8">
+    <div class="text-center text-2xl text-primary px-3">
       <div class="bg-white p-2 rounded-2xl shadow-default">
         <p>Room ID:</p>
         <p>{{ roomId }}</p>
@@ -180,19 +175,20 @@ watch(
             <va-icon name="schedule" />
           </template>
         </va-select>
-        <p v-if="getUserTimingChosen() !== undefined" >
-          Your Preferred Time: Date: {{getUserTimingChosen().date }} Time: {{getUserTimingChosen().time }}
+        <p v-if="getUserTimingChosen() !== undefined">
+          Your Preferred Time: Date: {{ getUserTimingChosen().date }} Time:
+          {{ getUserTimingChosen().time }}
         </p>
       </div>
     </div>
-    <div class="inline-flex w-full justify-center gap-5 px-3 flex-wrap">
+    <div class="flex w-full justify-center gap-3 px-3 flex-wrap">
       <generic-button
         bgColor="bg-white"
         titleColor="text-black"
         icon="content_copy"
         iconColour="primary"
         shadowColor="shadow-default"
-        class="w-1/2"
+        class="w-full md:w-2/5"
         @click="shareRoomLink"
       >
         Room Link
@@ -203,7 +199,7 @@ watch(
         icon="access_time"
         iconColour="primary"
         shadowColor="shadow-default"
-        class="w-1/2"
+        class="w-full md:w-2/5"
         @click="showTimingModal = !showTimingModal"
         v-if="authStore.username !== ''"
       >
@@ -214,7 +210,7 @@ watch(
         titleColor="text-white"
         icon="arrow_forward"
         iconRight
-        class="w-1/2"
+        class="w-full md:w-2/5"
         shadowColor="shadow-custom-primary"
         :disabled="!isLeader"
         @click="startVoting"
