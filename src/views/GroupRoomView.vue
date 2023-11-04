@@ -120,7 +120,7 @@ watch(
 </script>
 
 <template>
-  <main class="w-full md:w-2/5 h-screen relative">
+  <main class="w-full md:w-2/5 h-full relative">
     <div class="text-center text-2xl text-primary pt-20 mb-44 max-h-14 px-3">
       <div class="bg-white p-2 rounded-2xl shadow-default">
         <p>Room ID:</p>
