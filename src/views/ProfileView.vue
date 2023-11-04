@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { createAvatar } from "@dicebear/core";
 import { adventurer } from "@dicebear/collection";
-import { computed, onBeforeMount, ref, type Ref } from "vue";
+import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth";
-import restaurantsData from "@/data/restaurants.json"; // Adjust this path to where your data resides
+import { useCuisineCategories } from "@/composables/useCuisineCategories";
+import { useUserSettingsStore } from "@/stores/userSettings";
 
 const { username, email } = storeToRefs(useAuthStore());
 
-const categories: Ref<string[]> = ref([]);
-const selectedCategories: Ref<string[]> = ref([]);
-const selectedTime = ref("1:00");
+const { cuisineCategories: categories } = useCuisineCategories();
+const { selectedCategories, selectedTime, selectedDist } = storeToRefs(
+  useUserSettingsStore(),
+);
+const { setCategories } = useUserSettingsStore();
 const timings = ["1:00", "2:00", "3:00", "5:00"];
-const selectedDist = ref("500m");
 const distances = ["500m", "1km", "2km", "5km"];
 
 const avatar = computed(() => {
@@ -30,22 +32,11 @@ function deleteCategory(category: string) {
   const categoryIdx = selectedCategories.value.findIndex(
     (val) => val === category,
   );
-  console.log(categoryIdx);
   if (categoryIdx >= 0) {
-    selectedCategories.value = selectedCategories.value.filter(
-      (val) => val !== category,
-    );
+    const newArray = selectedCategories.value.filter((val) => val !== category);
+    setCategories(newArray);
   }
 }
-
-onBeforeMount(() => {
-  //init the categories
-  const categorySet = new Set<string>();
-  for (const restaurant of restaurantsData.restaurants) {
-    restaurant.category.forEach((category) => categorySet.add(category));
-  }
-  categories.value = Array.from(categorySet);
-});
 </script>
 
 <template>
@@ -202,17 +193,7 @@ onBeforeMount(() => {
               </va-select>
             </div>
           </div>
-          <div class="flex">
-            <div class="ml-auto">
-                <button
-                  class="rounded-lg bg-orange-500 px-4 py-2 text-white inline-flex"
-                >
-                  Change
-                </button>
-            </div>
-          </div>
-          <br>
-          
+          <br />
         </div>
       </div>
     </div>
