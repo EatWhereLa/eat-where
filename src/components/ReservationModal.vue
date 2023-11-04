@@ -27,7 +27,10 @@ const showBookingModalValues = ref({
 });
 
 
-const emit = defineEmits();
+const emit = defineEmits<{
+  (e: "closeModal"): void;
+  (e: "closebookingmodal"): void;
+}>();
 
 const dateValue = ref(new Date());
 const daysArr = new Array(7).fill(false);
@@ -154,7 +157,7 @@ const handleBookingModal = (
 
 <template>
   <section class="mt-7 max-w-xl">
-    <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg">Make A Reservation</h3>
+    <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg font-medium">Make A Reservation</h3>
 
     <va-modal
       v-model="showBookingModalValues.show"
@@ -172,6 +175,7 @@ const handleBookingModal = (
           handleBookingModal(
             '', '', '', ''
           )
+          emit('closeModal');
         "
       />
     </va-modal>
@@ -183,6 +187,7 @@ const handleBookingModal = (
           mode="single"
           statefuls
           :allowed-days="(date) => daysArr[date.getDay()]"
+          :start-year="dayjs().year()"
         />
         <h1 class="text-xl pb-3">Choose Your Timing</h1>
     </div>  

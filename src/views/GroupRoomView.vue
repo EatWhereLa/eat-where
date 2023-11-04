@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import GenericButton from "@/components/GenericButton.vue";
+import ChooseTimingModal from "@/components/ChooseTimingModal.vue";
+import { useToast } from "vuestic-ui";
 import {
   ref,
   onBeforeMount,
@@ -24,6 +26,14 @@ import {
 } from "@ngneat/falso";
 import { useShare, useBrowserLocation } from "@vueuse/core";
 import { useTimer } from "@/composables/useTimer";
+
+import { useVoteTimingsStore } from "@/stores/voteTimings";
+import { useAuthStore } from "@/stores/auth";
+
+const voteTimingsStore = useVoteTimingsStore();
+const authStore = useAuthStore();
+const { init } = useToast();
+
 
 const getRandomUsername = () => {
   return `${randProductAdjective()} ${randAnimal()}`;
@@ -69,6 +79,8 @@ const timings = [
   { timeInMilliseconds: 300000, displayTime: "5:00" },
 ];
 
+const showTimingModal = ref(true);
+
 onBeforeMount(() => {
   currUser.value = getRandomUsername();
   roomId.value = gerRoomId();
@@ -111,6 +123,11 @@ const startVoting = async () => {
   }
 };
 
+const getUserTimingChosen = () => {
+  const userval = voteTimingsStore.getVoteTiming(authStore.username);
+  return userval;
+}
+
 watch(
   () => selectedTime.value,
   (newTime, oldTime) => {
@@ -120,6 +137,20 @@ watch(
 </script>
 
 <template>
+    <va-modal
+          v-model="showTimingModal"
+          hide-default-actions
+          class="mx-auto"
+          size="medium"
+          closeButton
+          v-if="authStore.username !== ''"
+          >
+    <ChooseTimingModal
+      @closeChoseTiming="
+          showTimingModal = !showTimingModal
+      "
+    />
+  </va-modal>
   <main class="w-full md:w-2/5 h-full relative">
     <div class="text-center text-2xl text-primary pt-20 mb-44 max-h-14 px-3">
       <div class="bg-white p-2 rounded-2xl shadow-default">
@@ -138,9 +169,12 @@ watch(
             <va-icon name="schedule" />
           </template>
         </va-select>
+        <p v-if="getUserTimingChosen() !== undefined" >
+          Your Preferred Time: Date: {{getUserTimingChosen().date }} Time: {{getUserTimingChosen().time }}
+        </p>
       </div>
     </div>
-    <div class="inline-flex w-full justify-center gap-5 px-3">
+    <div class="inline-flex w-full justify-center gap-5 px-3 flex-wrap">
       <generic-button
         bgColor="bg-white"
         titleColor="text-black"
@@ -151,6 +185,18 @@ watch(
         @click="shareRoomLink"
       >
         Room Link
+      </generic-button>
+      <generic-button
+        bgColor="bg-white"
+        titleColor="text-black"
+        icon="access_time"
+        iconColour="primary"
+        shadowColor="shadow-default"
+        class="w-1/2"
+        @click="showTimingModal = !showTimingModal"
+        v-if="authStore.username !== ''"
+      >
+        Preferred Time
       </generic-button>
       <generic-button
         bgColor="bg-primary"
