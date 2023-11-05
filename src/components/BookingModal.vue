@@ -3,10 +3,14 @@ import { ref, watch, type Ref, onMounted, defineEmits } from "vue";
 import { useForm, useToast } from "vuestic-ui";
 import GenericButton from "./GenericButton.vue";
 import ReservationModal from "@/components/ReservationModal.vue";
+import Paypal from "@/components/Paypal.vue"
 import ky from "ky";
 
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone"
+
+// const randomBool = Math.random() > 0.5 ? true : false;
+const randomBool = true;
 
 dayjs.extend(timezone)
 dayjs.tz.setDefault("Asia/Singapore")
@@ -108,6 +112,7 @@ const handleReservationModal = () => {
             Enter Reservation Details
         </h3>
 
+        <h2  v-if="randomBool">* This reservation requires a $50 booking fee</h2>
         <va-form immediate hide-error-messages ref="myForm" class="flex flex-col gap-2 mb-2">
             <va-input label="Restaurant Name" v-model="form.title" name="restaurantName" disabled />
             <va-input label="Booking Date" v-model="form.bookingDate" name="bookingDate" disabled />
@@ -126,7 +131,20 @@ const handleReservationModal = () => {
                 </div>
         </va-form>
     </section>
-    <div class="self-end flex justify-center">
+    <div v-if="randomBool" class="self-end grid place-items-center">
+        <generic-button v-if="openingHours !== undefined" 
+            titleColor="text-primary" 
+            bgColor="bg-white"
+            class="border border-solid border-primary ml-2"
+            @click="handleReservationModal()"
+        >
+            Choose Another Time
+        </generic-button>
+        <br>
+        <Paypal :form="form"></Paypal>
+    </div>
+
+    <div v-else class="self-end flex justify-center">
         <generic-button titleColor="text-white" bgColor="bg-primary" @click="submitReservation()">
             Make Reservation
         </generic-button>
@@ -138,7 +156,8 @@ const handleReservationModal = () => {
         >
             Choose Another Time
         </generic-button>
-    </div>
+    </div>   
+
 </template>
 
 <style></style>
