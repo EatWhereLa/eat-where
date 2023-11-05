@@ -110,12 +110,13 @@ const onApprove = async (data:any, actions:any) => {
     await submitReservation();
     console.log('Order complete!');
 
-    // Use Vue Router for navigation instead of window.location.href
     router.push("/activity");
   } catch (error) {
     console.error('Error during order capture or reservation submission:', error);
-    // createToast({ message: 'Error processing payment or reservation.', type: 'error' });
-    // Handle any errors, such as showing a message to the user
+    init({
+          message: 'Booking failed!',
+          color: 'danger',
+    });
   }
 };
 
