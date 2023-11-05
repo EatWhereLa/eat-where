@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { loadScript } from '@paypal/paypal-js'
+import { useRouter } from "vue-router";
 import { onBeforeMount, ref } from 'vue'
 import ky from "ky";
 import { useForm, useToast } from "vuestic-ui";
@@ -9,16 +10,26 @@ import timezone from "dayjs/plugin/timezone"
 dayjs.extend(timezone)
 dayjs.tz.setDefault("Asia/Singapore")
 
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
+
 const props = defineProps({
-  form: Object
+  title: { type: String, required: true },
+  numPeople: { type: String, required: true },
+  bookingDate: { type: String, required: true },
+  bookingTime: { type: String, required: true },
+  placeId: { type: String, required: true },
 })
 
 const { init } = useToast();
 
+const router = useRouter();
+
 const submitReservation = async() => {
     const URL = `https://ns6tzwwmuy.ap-southeast-1.awsapprunner.com/reservation`;
     
-    const dateString = `${props.form.value.bookingDate.split('/').reverse().join('-')} ${props.form.value.bookingTime.slice(0, 2)}:${props.form.value.bookingTime.slice(2)}`;
+    const dateString = `${props.bookingDate.split('/').reverse().join('-')} ${props.bookingTime.slice(0, 2)}:${props.bookingTime.slice(2)}`;
 
     const unixDateTime = dayjs(dateString, "YYYY-MM-DD HH:mm").unix();
 
@@ -27,13 +38,13 @@ const submitReservation = async() => {
             `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
             {   
                 json: {
-                    user_id: "1",
+                    user_id: authStore.username,
                     place_id: props.placeId,
                     reservation_time: unixDateTime,
-                    reservation_pax: parseInt(props.form.value.numPeople),
+                    reservation_pax: parseInt(props.numPeople),
                 },
             });
-
+            console.log('aaaaaaa')
             init({
                 message: 'Booking Success!',
                 color: 'success',
@@ -55,38 +66,59 @@ const CLIENT_ID = 'test'
 const paid  = ref(false)
 
 onBeforeMount(function() {
-    loadScript({ 'client-id': CLIENT_ID }).then((paypal) => {
-      paypal
-        .Buttons({
-          createOrder: createOrder,
-          onApprove: onApprove,
-        })
-        .render('#paypal-button-container')
+    loadScript({ clientId: CLIENT_ID })
+    .then((paypal) => {
+      if (!paypal) {
+        console.error('Failed to load the PayPal SDK');
+        return;
+      }
+      if (paypal.Buttons !== undefined) {
+        paypal.Buttons({
+          createOrder,
+          onApprove: (data, actions) => onApprove(data, actions), // Pass the reference of onApprove
+        }).render('#paypal-button-container')
+          .catch((err) => {
+            console.error('PayPal Buttons failed to render:', err);
+        });
+      }
     })
-  })
+    .catch((error) => {
+      console.error('Failed to load the PayPal SDK:', error);
+    });
+})
 
-   function createOrder(data, actions) {
-      console.log('Creating order...')
+const createOrder = (data:any, actions:any) => {
+      // Define how the order will be created
       return actions.order.create({
         purchase_units: [
           {
             amount: {
-              value: 50,
+              value: '1',
             },
           },
         ],
-      })
-    }
+      });
+};
 
-function onApprove(data, actions) {
-  console.log('Order approved...')
-  return actions.order.capture().then(() => {
-    paid.value = true
-    submitReservation()
-    window.location.href = "/"
-    console.log('Order complete!')
-  })
-}
+const onApprove = async (data:any, actions:any) => {
+  console.log('Order approved...');
+  try {
+    const order = await actions.order.capture();
+    console.log('Order captured:', order);
+    
+    paid.value = true;
+    await submitReservation();
+    console.log('Order complete!');
+
+    // Use Vue Router for navigation instead of window.location.href
+    router.push("/activity");
+  } catch (error) {
+    console.error('Error during order capture or reservation submission:', error);
+    // createToast({ message: 'Error processing payment or reservation.', type: 'error' });
+    // Handle any errors, such as showing a message to the user
+  }
+};
+
 </script>
 
 <template>

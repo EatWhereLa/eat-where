@@ -30,6 +30,7 @@ const showBookingModalValues = ref({
 const emit = defineEmits<{
   (e: "closeModal"): void;
   (e: "closebookingmodal"): void;
+  (e: "chooseAnotherClose"): void;
 }>();
 
 const dateValue = ref(new Date());

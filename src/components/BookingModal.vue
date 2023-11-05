@@ -9,7 +9,7 @@ import ky from "ky";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone"
 
-const randomBool = Math.random() > 0.5 ? true : false;
+// const randomBool = Math.random() > 0.5 ? true : false;
 
 dayjs.extend(timezone)
 dayjs.tz.setDefault("Asia/Singapore")
@@ -22,7 +22,7 @@ const props = defineProps({
     openingHours: {type: Array, required: false },
 });
 
-const emit = defineEmits(["closeFreqModal","closebookingmodal"]);
+const emit = defineEmits(["closeFreqModal","closebookingmodal", "chooseAnotherClose"]);
 
 const form = ref({
     title: props.title,
@@ -38,7 +38,6 @@ const showReservationModal = ref({
     bookingTime: props.bookingTime,
     show: false
 });
-
 
 const { errorMessagesNamed } = useForm("myForm");
 
@@ -111,7 +110,7 @@ const handleReservationModal = () => {
             Enter Reservation Details
         </h3>
 
-        <h2  v-if="randomBool">* This reservation requires a $50 booking fee</h2>
+        <h2>* Reservation requires a $1 booking fee</h2>
         <va-form immediate hide-error-messages ref="myForm" class="flex flex-col gap-2 mb-2">
             <va-input label="Restaurant Name" v-model="form.title" name="restaurantName" disabled />
             <va-input label="Booking Date" v-model="form.bookingDate" name="bookingDate" disabled />
@@ -130,32 +129,30 @@ const handleReservationModal = () => {
                 </div>
         </va-form>
     </section>
-    <div v-if="randomBool" class="self-end grid place-items-center">
-        <generic-button v-if="openingHours !== undefined" 
-            titleColor="text-primary" 
-            bgColor="bg-white"
-            class="border border-solid border-primary ml-2"
-            @click="handleReservationModal()"
-        >
-            Choose Another Time
-        </generic-button>
-        <br>
-        <Paypal :form="form"></Paypal>
-    </div>
 
-    <div v-else class="self-end flex justify-center">
-        <generic-button titleColor="text-white" bgColor="bg-primary" @click="submitReservation()">
+    <div class="self-end flex justify-center">
+        <!-- <generic-button titleColor="text-white" bgColor="bg-primary" @click="submitReservation()">
             Make Reservation
-        </generic-button>
+        </generic-button> -->
         <generic-button v-if="openingHours !== undefined" 
             titleColor="text-primary" 
             bgColor="bg-white"
             class="border border-solid border-primary ml-2"
             @click="handleReservationModal()"
+            @chooseAnotherClose="handleReservationModal();"
         >
             Choose Another Time
         </generic-button>
     </div>   
+    <div>
+        <Paypal 
+            :title="title"
+            :num-people="showReservationModal.numPeople"
+            :booking-date="bookingDate"
+            :booking-time="bookingTime"
+            :place-id="placeId"
+        />
+    </div>
 
 </template>
 
