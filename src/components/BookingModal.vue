@@ -144,7 +144,11 @@ const handleReservationModal = () => {
             Choose Another Time
         </generic-button>
     </div>   
-    <div>
+    <div class="mt-2">
+        <h3
+        class="pb-2 mt-7 lg:text-xl sm:text-l text-lg font-medium text-center">
+            Proceed With Payment
+        </h3>
         <Paypal 
             :title="title"
             :num-people="showReservationModal.numPeople"
