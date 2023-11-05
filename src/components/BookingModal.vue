@@ -9,8 +9,7 @@ import ky from "ky";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone"
 
-// const randomBool = Math.random() > 0.5 ? true : false;
-const randomBool = true;
+const randomBool = Math.random() > 0.5 ? true : false;
 
 dayjs.extend(timezone)
 dayjs.tz.setDefault("Asia/Singapore")
