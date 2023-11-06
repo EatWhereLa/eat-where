@@ -2,7 +2,7 @@
 import { useRouter } from "vue-router";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import GenericButton from "@/components/GenericButton.vue";
-import { ref, computed, watch, onMounted, type Ref } from "vue";
+import { ref, computed, watch, onMounted, type Ref, onUnmounted } from "vue";
 import { useGeolocation } from "../composables/useGeolocation";
 import { useTimer } from "@/composables/useTimer";
 import RestaurantModal from "@/components/RestaurantModal.vue";
@@ -203,7 +203,7 @@ onMounted(async () => {
     selectFilter.setSelectedDistance(userSettingsStore.selectedDist);
   }
   if (userSettingsStore.selectedCategories.length > 0) {
-    selectedCategories.value = userSettingsStore.selectedCategories;
+    selectedCategories.value = [...userSettingsStore.selectedCategories];
   }
   getRestaurants();
   init();
@@ -294,9 +294,9 @@ const handleGoToResults = async () => {
   router.push("/results");
 };
 
-const getRemainingList = () => {
-  return restaurants.restaurants.slice(1);
-};
+onUnmounted(() => {
+  killTimers();
+});
 
 const filterList = computed(() => {
   let resultArray = restaurants.restaurants.filter(
