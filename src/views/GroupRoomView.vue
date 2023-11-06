@@ -11,6 +11,7 @@ import {
   defineAsyncComponent,
   type Ref,
   watch,
+  onMounted,
 } from "vue";
 import {
   openOrCreateChannel,
@@ -37,11 +38,13 @@ import { useBookmarks } from "@/composables/useBookmarks";
 import { storeToRefs } from "pinia";
 import { useAuth } from "@/composables/auth";
 import { useAuthStore } from "@/stores/auth";
+import { useUserSettingsStore } from "@/stores/userSettings";
 
 const { milliseconds } = useTimer();
 const { getBookmarks } = useBookmarks();
 const { isLoggedIn } = useAuth();
 const { isAuthenticated, username } = storeToRefs(useAuthStore());
+const userSettingsStore = useUserSettingsStore();
 const { share } = useShare();
 const time = ref(60);
 const minutes = ref(0);
@@ -100,6 +103,17 @@ onBeforeMount(async () => {
     isLeader.value = true;
   }
   openOrCreateChannel(roomId.value, currUser.value);
+});
+
+onMounted(() => {
+  if (userSettingsStore.selectedTime) {
+    const foundTiming = timings.find(
+      (val) => val.displayTime === userSettingsStore.selectedTime,
+    );
+    if (foundTiming) {
+      selectedTime.value = foundTiming.timeInMilliseconds;
+    }
+  }
 });
 
 onUnmounted(() => {
