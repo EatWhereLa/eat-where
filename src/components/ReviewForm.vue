@@ -22,12 +22,14 @@ const reviewVal = ref({
     description: ""
 });;
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const submitReview = async() => {
-    const URL = `https://ns6tzwwmuy.ap-southeast-1.awsapprunner.com/review`;
+    const URL = `${API_URL}/review`;
 
     try {
         await ky.post(
-            `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
+            URL,
             {   
                 json: {
                     user_id: username,

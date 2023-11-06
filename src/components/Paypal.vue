@@ -24,10 +24,12 @@ const props = defineProps({
 
 const { init } = useToast();
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const router = useRouter();
 
 const submitReservation = async() => {
-    const URL = `https://ns6tzwwmuy.ap-southeast-1.awsapprunner.com/reservation`;
+    const URL = `${API_URL}/reservation`;
     
     const dateString = `${props.bookingDate.split('/').reverse().join('-')} ${props.bookingTime.slice(0, 2)}:${props.bookingTime.slice(2)}`;
 
@@ -35,7 +37,7 @@ const submitReservation = async() => {
 
     try {
         await ky.post(
-            `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
+            URL,
             {   
                 json: {
                     user_id: authStore.username,

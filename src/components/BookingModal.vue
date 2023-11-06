@@ -45,8 +45,10 @@ const { errorMessagesNamed } = useForm("myForm");
 
 const { init } = useToast();
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const submitReservation = async() => {
-    const URL = `https://ns6tzwwmuy.ap-southeast-1.awsapprunner.com/reservation`;
+    const URL = `${API_URL}/reservation`;
     
     const dateString = `${form.value.bookingDate.split('/').reverse().join('-')} ${form.value.bookingTime.slice(0, 2)}:${form.value.bookingTime.slice(2)}`;
 
@@ -54,7 +56,7 @@ const submitReservation = async() => {
 
     try {
         await ky.post(
-            `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
+            URL,
             {   
                 json: {
                     user_id: authStore.username,
