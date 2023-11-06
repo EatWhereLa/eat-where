@@ -13,6 +13,8 @@ import { useCurrentLocationStore } from "@/stores/currentLocation";
 import { channel, isLeader, users } from "@/apis/supabase";
 import { useTimer } from "@/composables/useTimer";
 import { useUpvoteRestaurantsStore } from "@/stores/upvoteRestaurants";
+import { useVoting } from "@/composables/useVoting";
+import type { VotedPlace, VotingHistory } from "@/types/Voting";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const groupUpvoteRestaurantsStore = useGroupUpvoteRestaurantsStore();
@@ -20,6 +22,7 @@ const upvoteRestaurantsStore = useUpvoteRestaurantsStore();
 const restaurants = useRestaurantsStore();
 const currentLocation = useCurrentLocationStore();
 const { milliseconds, killTimers } = useTimer();
+const { addVotingHistory } = useVoting();
 const router = useRouter();
 
 const tabulatedResults = computed<Restaurant[]>(() => {
@@ -52,7 +55,6 @@ const tabulatedResults = computed<Restaurant[]>(() => {
       return b.upvote_count - a.upvote_count;
     } else return 0;
   });
-
   return retArr;
 });
 
@@ -145,6 +147,21 @@ onBeforeMount(async () => {
   if (groupUpvoteRestaurantsStore.restaurants.length === 0)
     await getRestaurants();
 
+  if (
+    users.value.size > 0 &&
+    tabulatedResults.value.length > 0 &&
+    isLeader.value
+  ) {
+    const votedPlaces: VotedPlace[] = tabulatedResults.value.map((val) => {
+      return { place_id: val.place_id, vote_count: val.upvote_count ?? 0 };
+    });
+    const historyEntry: VotingHistory = {
+      user_ids: Array.from(users.value),
+      vote_timestamp: Math.round(Date.now() / 1000),
+      voted_places: votedPlaces,
+    };
+    await addVotingHistory(historyEntry);
+  }
   killTimers();
 });
 
