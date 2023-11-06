@@ -10,6 +10,16 @@ const { logout } = useAuth();
 </script>
 <template>
   <VaSidebar :minimized="!showSidebar" minimized-width="0" color="white">
+    <VaSidebarItem :active="route.name === 'profile'" to="/profile">
+      <VaSidebarItemContent>
+        <VaSidebarItemTitle> Profile </VaSidebarItemTitle>
+      </VaSidebarItemContent>
+    </VaSidebarItem>
+    <VaSidebarItem :active="route.name === 'bookmarks'" to="/bookmarks">
+      <VaSidebarItemContent>
+        <VaSidebarItemTitle> Bookmarks </VaSidebarItemTitle>
+      </VaSidebarItemContent>
+    </VaSidebarItem>
     <VaSidebarItem :active="route.name === 'group'" to="/group">
       <VaSidebarItemContent>
         <VaSidebarItemTitle> Group Vote </VaSidebarItemTitle>

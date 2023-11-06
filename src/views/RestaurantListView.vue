@@ -20,6 +20,8 @@ import type { Restaurant } from "@/types/Restaurant";
 import type { LatLng } from "@/types/location";
 import ky from "ky";
 import { useBookmarks } from "@/composables/useBookmarks";
+import { useGroupBookmarksStore } from "@/stores/groupBookmarks";
+import { useCuisineCategories } from "@/composables/useCuisineCategories";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -29,12 +31,13 @@ const currentLocation = useCurrentLocationStore();
 const restaurants = useRestaurantsStore();
 const upvotedRestaurants = useUpvoteRestaurantsStore();
 const groupUpvotedRestaurants = useGroupUpvoteRestaurantsStore();
-const { bookmarks, getBookmarks } = useBookmarks();
+const { groupBookmarks } = storeToRefs(useGroupBookmarksStore());
 
 const { restaurants: upvotedRestaurantsVal } = storeToRefs(upvotedRestaurants);
 const { restaurants: groupUpvotedRestaurantsVal } = storeToRefs(
   groupUpvotedRestaurants,
 );
+const { getRandomCuisineArr } = useCuisineCategories();
 
 const filterTags = ["All", "Fastfood", "Halal", "Japanese", "Korean"];
 const prices = [
@@ -135,10 +138,9 @@ const success = async (position: LatLng) => {
     )}&maxprice=${calcPriceValue(selectFilter.selectedPrice)}`;
   }
 
-  const query = `location=${locationSetCoords.value.lat},${
-    locationSetCoords.value.lng
-  }
-  &radius=${
+  const query = `location=${encodeURIComponent(
+    `${locationSetCoords.value.lat},${locationSetCoords.value.lng}`,
+  )}&radius=${
     calcDistanceValue(selectFilter.selectedDistance) * 1000
   }&type=restaurant${priceQuery}${
     selectFilter.selectedTag !== "All"
@@ -183,7 +185,7 @@ const success = async (position: LatLng) => {
         lat: item.geometry.lat,
         lng: item.geometry.lng,
       },
-      category: [],
+      category: getRandomCuisineArr(),
       upvote_count: 0,
     });
   });
@@ -378,81 +380,19 @@ const handleModal = (
       />
     </va-modal>
 
-    <div>
+    <div v-if="groupBookmarks.length > 0">
       <div class="flex items-center gap-2 mb-3">
         <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
         <p class="text-primary font-semibold text-sm">Bookmarked</p>
         <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
       </div>
-      <div v-if="restaurants.restaurants.length > 0">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <RestaurantListItem
-          :title="restaurants.restaurants[0].name"
-          :imgSrc="getRestaurantImageUrl(restaurants.restaurants[0])"
-          :tags="['Burger', 'Fastfood', 'Halal']"
-          :rating="restaurants.restaurants[0].rating"
-          :distance="restaurants.restaurants[0].vicinity"
-          @click="
-            handleModal(
-              restaurants.restaurants[0].place_id,
-              restaurants.restaurants[0].name,
-              getRestaurantImageUrl(restaurants.restaurants[0]),
-            )
-          "
-        >
-          <generic-button
-            title-color="text-gray-500"
-            :bg-color="
-              !isUpvoted(restaurants.restaurants[0].place_id)
-                ? 'bg-neutral-400/30'
-                : 'bg-primary'
-            "
-            padding="py-2 px-3"
-            @click="handleUpvote($event, restaurants.restaurants[0].place_id)"
-          >
-            <va-icon
-              v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
-              name="arrow_upward"
-              size="1.5rem"
-            />
-            <va-icon
-              v-else
-              class="text-white"
-              name="arrow_downward"
-              size="1.5rem"
-            />
-
-            <!-- <span class="font-semibold">100</span> -->
-            <span
-              v-if="!isUpvoted(restaurants.restaurants[0].place_id)"
-              class="font-semibold uppercase tracking-widest text-xs"
-            >
-              Upvote
-            </span>
-            <span
-              v-else
-              class="font-semibold uppercase tracking-widest text-xs text-white"
-            >
-              Downvote
-            </span>
-          </generic-button>
-        </RestaurantListItem>
-      </div>
-      <hr class="h-px my-2 mb-3 bg-primary w-full m-auto" />
-    </div>
-    <ul
-      class="flex flex-col gap-4 mb-16"
-      v-if="restaurants.restaurants.length > 1"
-    >
-      <div v-if="isLoadingRestaurants">Loading...</div>
-      <li
-        v-else
-        v-for="restaurant in getRemainingList()"
-        :key="restaurant.place_id"
-      >
-        <RestaurantListItem
+          v-for="restaurant in groupBookmarks"
+          :key="restaurant.place_id"
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
-          :tags="['Burger', 'Fastfood', 'Halal']"
+          :tags="restaurant.category"
           :rating="restaurant.rating"
           :distance="restaurant.vicinity"
           @click="
@@ -500,8 +440,71 @@ const handleModal = (
             </span>
           </generic-button>
         </RestaurantListItem>
-      </li>
-    </ul>
+      </div>
+      <hr class="h-px my-2 mb-3 bg-primary w-full m-auto" />
+    </div>
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-16"
+      v-if="restaurants.restaurants.length > 0"
+    >
+      <div v-if="isLoadingRestaurants">Loading...</div>
+      <div
+        v-else
+        v-for="restaurant in getRemainingList()"
+        :key="restaurant.place_id"
+      >
+        <RestaurantListItem
+          :title="restaurant.name"
+          :imgSrc="getRestaurantImageUrl(restaurant)"
+          :tags="restaurant.category"
+          :rating="restaurant.rating"
+          :distance="restaurant.vicinity"
+          class="col-span-1 h-full"
+          @click="
+            handleModal(
+              restaurant.place_id,
+              restaurant.name,
+              getRestaurantImageUrl(restaurant),
+            )
+          "
+        >
+          <generic-button
+            title-color="text-gray-500"
+            :bg-color="
+              !isUpvoted(restaurant.place_id)
+                ? 'bg-neutral-400/30'
+                : 'bg-primary'
+            "
+            padding="py-2 px-3"
+            @click="handleUpvote($event, restaurant.place_id)"
+          >
+            <va-icon
+              v-if="!isUpvoted(restaurant.place_id)"
+              name="arrow_upward"
+              size="1.5rem"
+            />
+            <va-icon
+              v-else
+              class="text-white"
+              name="arrow_downward"
+              size="1.5rem"
+            />
+            <span
+              v-if="!isUpvoted(restaurant.place_id)"
+              class="font-semibold uppercase tracking-widest text-xs"
+            >
+              Upvote
+            </span>
+            <span
+              v-else
+              class="font-semibold uppercase tracking-widest text-xs text-white"
+            >
+              Downvote
+            </span>
+          </generic-button>
+        </RestaurantListItem>
+      </div>
+    </div>
 
     <div
       class="w-full fixed bottom-8 left-0 right-0 inline-flex justify-center gap-4"

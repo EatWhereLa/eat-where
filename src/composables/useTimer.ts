@@ -19,8 +19,6 @@ export function useTimer() {
       seconds = seconds % 60;
       minutes = minutes % 60;
       initdayJsData(minutes, seconds);
-      // displayTime.value = dayJsData.value.format("mm:ss");
-
       const { stop: endVoteStop } = useTimeoutFn(async () => {
         try {
           if (isLeader.value) {
@@ -45,6 +43,8 @@ export function useTimer() {
     } else {
       const millisecondsToTimeout =
         dayJsData.minute() * 1000 * 60 + dayJsData.second() * 1000;
+      console.log("minutes", dayJsData.minute());
+      console.log("seconds", dayJsData.minute());
       const { stop: endVoteStop } = useTimeoutFn(async () => {
         try {
           if (isLeader.value) {
