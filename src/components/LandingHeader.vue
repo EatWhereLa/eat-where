@@ -19,26 +19,6 @@
         <li>Crowd Level Insights</li>
         <li>Personalised recommendations</li>
       </ol>
-      <a
-        class="no-underline text-gray-400 text-sm flex items-center hover:text-primary transition-colors"
-        href="#"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6 mr-2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 17.25L12 21m0 0l-3.75-3.75M12 21V3"
-          />
-        </svg>
-        Scroll Down to <br />know more</a
-      >
     </div>
     <div class="w-full relative min-h-[380px] h-[30vh] bg-[#f6e3e5] 2xl:h-auto">
       <img
