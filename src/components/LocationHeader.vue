@@ -28,5 +28,4 @@ import { RouterLink } from "vue-router";
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@300;400;500;700&display=swap");
 </style>
