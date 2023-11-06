@@ -18,15 +18,14 @@ export function useBookmarks() {
   }
   async function addBookmark(user_id: string, place_id: string) {
     try {
-      const res = (await api
-        .post(`bookmark/restaurants`, {
+      await api
+        .post(`bookmark`, {
           json: {
             user_id,
             place_id,
           },
         })
-        .json()) as Restaurant[];
-      bookmarks.value = res;
+        .text();
     } catch (error) {
       console.error(error);
     }
