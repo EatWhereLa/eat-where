@@ -247,8 +247,8 @@ const renderCharts = (votingSessions) => {
 </style>
 
 <template>
-  <main>
-    <NavHeader />
+  <main class="m-auto">
+    <!-- <NavHeader /> -->
     <section>
       <div class="bb ye ki xn vq jb jo">
         <h1
