@@ -10,6 +10,8 @@ import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewItem from "@/components/ReviewItem.vue";
 import ReservationModal from "@/components/ReservationModal.vue";
 import BookingModal from "@/components/BookingModal.vue";
+
+import { isLeader } from "@/apis/supabase";
 import dayjs from "dayjs";
 
 import { useRoute } from "vue-router";
@@ -99,7 +101,7 @@ const appReviews: Ref<
   },
 ]);
 
-const restaurantStatus = ref("");
+const restaurantStatus = ref("Open 24 Hours");
 
 const priceLevels = [
   "Free",
@@ -191,8 +193,8 @@ onMounted(async () => {
       });
     } else {
       init({
-        message: "Oops this doesnt fit your preference!",
-        color: "danger",
+        message: "This restaurant does not fit your current timing",
+        color: "warning",
       });
     }
   }
@@ -420,7 +422,7 @@ const handleModal = (
 
       <div class="clear-left"></div>
       <generic-button
-        v-if="showReservation() && modalValues.reservable"
+        v-if="showReservation() && modalValues.reservable && isLeader"
         class="inline-flex align-center gap-2 text-primary mt-3 p-2 border-2 border-current hover:bg-primary hover:text-white ease-in duration-300"
         padding="p-0"
         @click="

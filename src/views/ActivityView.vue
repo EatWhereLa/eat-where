@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RestaurantModal from "@/components/RestaurantModal.vue";
+import GroupVotes from "@/components/GroupVotes.vue";
 import GenericButton from "@/components/GenericButton.vue";
 import { ref, onBeforeMount, type Ref, computed } from "vue";
 import type { Restaurant } from "@/types/Restaurant";
@@ -164,7 +165,6 @@ const cancelBooking = async (event: { stopPropagation: () => void }, placeId: st
   event.stopPropagation();
 
   const URL = `${API_URL}/reservation?user_id=${username}&place_id=${placeId}`;
-  console.log(URL)
   try {
     await ky.delete(URL);
 
@@ -231,7 +231,7 @@ const handleModal = (
     
     <section class="container mx-auto h-full w-full">
       <h3 class="py-7 mt-7 lg:text-6xl sm:text-3xl text-xl font-semibold">
-      Booking History
+      Booking Activity
     </h3>
       <div v-if="isLoading">Loading...</div>
       <div
@@ -255,7 +255,7 @@ const handleModal = (
         />
         
         <va-card-content>
-          <h3 class="pb-6 lg:text-3xl sm:text-2xl text-lg font-semibold">
+          <h3 class="pb-6 lg:text-xl sm:text-2xl text-lg font-semibold">
             {{ bookingItemValues[idx].name }}
           </h3>
           <p>  Place booked for: {{ booking.reservation_pax }} </p>
@@ -269,6 +269,8 @@ const handleModal = (
       </va-card>
       </div>
     </section>
+
+    <GroupVotes/>
   </main>
 </template>
 

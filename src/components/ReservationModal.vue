@@ -190,12 +190,13 @@ const handleBookingModal = (
           :allowed-days="(date) => daysArr[date.getDay()]"
           :start-year="dayjs().year()"
         />
-        <h1 class="text-xl pb-3">Choose Your Timing</h1>
+      <h1 v-if="hourButtons.length > 0" class="text-xl pb-3">Choose Your Timing</h1>
     </div>  
     <va-scroll-container
       color="#262824"
       horizontal
       size="large"
+      v-if="hourButtons.length > 0"
     >
       <div class="flex my-2  px-2">
           <generic-button 
