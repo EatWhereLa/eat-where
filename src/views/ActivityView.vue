@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, type Ref, computed, defineAsyncComponent } from "vue";
+import { ref, computed, defineAsyncComponent } from "vue";
 
 
-const tabValue = ref("Activity History");
+const tabValue = ref("Booking Activity");
 
 const tabs = [
   {
-    title: "Activity History",
-    icon: "group",
+    title: "Booking Activity",
+    icon: "eventseat",
     content: defineAsyncComponent(
       () => import("@/components/ActivityCard.vue"),
     ),
   },
   {
     title: "Group Vote History",
-    icon: "user",
+    icon: "group",
     content: defineAsyncComponent(
       () => import("@/components/GroupVotes.vue"),
     ),

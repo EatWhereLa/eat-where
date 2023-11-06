@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import RestaurantModal from "@/components/RestaurantModal.vue";
-import GroupVotes from "@/components/GroupVotes.vue";
 import GenericButton from "@/components/GenericButton.vue";
 import { ref, onBeforeMount, type Ref, computed, defineAsyncComponent } from "vue";
 import type { Restaurant } from "@/types/Restaurant";
@@ -220,7 +219,7 @@ const handleModal = (
             <h3 class="py-7 mt-7 lg:text-6xl sm:text-3xl text-xl font-semibold">
                 Booking Activity
             </h3>
-            <div v-if="isLoading">Loading...</div>
+            <div v-if="isLoading" class="text-center mt-10 font-bold">Loading Booking Data...</div>
             <div v-else class="flex gap-4 px-8 h-full w-full flex-wrap">
                 <va-card class="lg:w-1/4 mx-auto w-full" v-for="(booking, idx) in bookingItems" :key="idx" @click="
                     handleModal(
@@ -239,7 +238,7 @@ const handleModal = (
                         <p> Time booked: {{ dayjs(booking.reservation_timestamp * 1000).format("DD/MM/YYYY HH:mm:ss") }}
                         </p>
                         <div class="self-end flex justify-center">
-                            <generic-button titleColor="text-white" bgColor="bg-primary"
+                            <generic-button titleColor="text-white" bgColor="bg-primary" class="mt-5"
                                 @click="cancelBooking($event, booking.place_id)">
                                 Cancel Booking
                             </generic-button>

@@ -11,7 +11,7 @@ import type { VoteHistory } from '@/types/VoteHistory';
 import dayjs from "dayjs";
 
 import "billboard.js/dist/billboard.css";
-import bb, {bar} from "billboard.js";
+import bb, { bar } from "billboard.js";
 
 const authStore = useAuthStore();
 
@@ -19,11 +19,12 @@ const voteHistories = ref<VoteHistory[]>([]);
 
 const chartsContainer = ref(null);
 
-const items: Ref<SVGAElement[]> = ref([]); 
+const isLoading = ref(true);
 
 onMounted(async () => {
-    await getActivities();
-    createCharts();
+  await getActivities();
+  createCharts();
+  isLoading.value = false;
 });
 
 async function getActivities() {
@@ -59,10 +60,10 @@ function createCharts() {
 }
 
 function createChart(voteHistory: VoteHistory, index: number) {
-    const columns = voteHistory.voted_places.map(element => {
-      return [element.place_id,element.vote_count]
-    });
-    bb.generate({
+  const columns = voteHistory.voted_places.map(element => {
+    return [element.place_id, element.vote_count]
+  });
+  bb.generate({
     data: {
       columns,
       type: bar(), // for ESM specify as: bar()
@@ -79,15 +80,10 @@ function createChart(voteHistory: VoteHistory, index: number) {
 </script>
 
 <template>
-  <div ref="chartsContainer" class="flex flex-wrap gap-2 justify-center overflow-y-auto h-full">
-    
+  <div v-if="isLoading" class="text-center mt-10 font-bold">Loading Chart Data...</div>
+  <div ref="chartsContainer" class="flex flex-wrap gap-2 justify-center overflow-y-auto h-full mt-5">
     <!-- Iterate over voteHistories to create multiple cards -->
-    <va-card
-      v-for="(voteHistory, index) in voteHistories"
-      :key="index"
-      class="lg:w-1/3 w-full"
-      outlined
-    >
+    <va-card v-for="(voteHistory, index) in voteHistories" :key="index" class="lg:w-1/3 w-full" outlined>
       <va-card-content>
         <p class="text-center font-bold">Voting Result</p>
         <!-- The SVG charts will be appended here -->
@@ -95,7 +91,8 @@ function createChart(voteHistory: VoteHistory, index: number) {
           <div :id="`chart-${index}`"></div>
         </div>
         <div class="voting-details">
-          <p class="font-bold">Voting Date/Time: {{ dayjs(voteHistory.vote_timestamp * 1000).format("DD/MM/YYYY HH:mm:ss") }}</p>
+          <p class="font-bold">Voting Date/Time: {{ dayjs(voteHistory.vote_timestamp * 1000).format("DD/MM/YYYY HH:mm:ss")
+          }}</p>
           <p class="font-thin italic">Participants: {{ voteHistory.user_ids.join(", ") }}</p>
         </div>
       </va-card-content>
