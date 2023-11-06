@@ -91,7 +91,11 @@ const getRoomId = () => {
 };
 
 onBeforeMount(async () => {
-  currUser.value = getRandomUsername();
+  if (username.value !== "") {
+    currUser.value = username.value;
+  } else {
+    currUser.value = getRandomUsername();
+  }
   roomId.value = getRoomId();
   if (!isAuthenticated.value) {
     await isLoggedIn();
