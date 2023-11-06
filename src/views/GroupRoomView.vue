@@ -127,7 +127,7 @@ const startVoting = async () => {
       event: "start",
       payload: { time: milliseconds.value },
     });
-    // router.push("/vote");
+    router.push("/vote");
   } catch (error) {
     console.log(error);
   }
@@ -175,8 +175,8 @@ watch(
             <va-icon name="schedule" />
           </template>
         </va-select>
-        <p v-if="getUserTimingChosen() !== undefined">
-          Your Preferred Time: Date: {{ getUserTimingChosen().date }} Time:
+        <p v-if="getUserTimingChosen() !== undefined" class="text-lg">
+          You Chose: Date: {{ getUserTimingChosen().date }} Time:
           {{ getUserTimingChosen().time }}
         </p>
       </div>

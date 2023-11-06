@@ -38,6 +38,7 @@ export type RestaurantDetails = {
   formatted_address: string;
   formatted_phone_number: string;
   photos: Photo[];
+  place_id: string,
   price_level: number;
   rating: number;
   reviews: Review[];

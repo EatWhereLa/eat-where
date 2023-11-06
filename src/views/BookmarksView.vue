@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SortButtonOnSide from "@/components/ForRestaurantBookmark/SortButtonOnSide.vue";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
+import RestaurantModal from "@/components/RestaurantModal.vue";
 import { ref, onBeforeMount, type Ref, computed } from "vue";
 import type { Restaurant } from "@/types/Restaurant";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";

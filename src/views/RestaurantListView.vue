@@ -378,7 +378,7 @@ const handleModal = (
       />
     </va-modal>
 
-    <div v-if="">
+    <div>
       <div class="flex items-center gap-2 mb-3">
         <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
         <p class="text-primary font-semibold text-sm">Bookmarked</p>

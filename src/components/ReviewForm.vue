@@ -4,6 +4,10 @@ import { ref, defineEmits } from "vue";
 import { useToast } from "vuestic-ui";
 import GenericButton from "./GenericButton.vue";
 
+import { useAuthStore } from "@/stores/auth";
+
+const { username } = useAuthStore();
+
 const { init } = useToast();
 
 const emit = defineEmits();
@@ -26,7 +30,7 @@ const submitReview = async() => {
             `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
             {   
                 json: {
-                    user_id: "1",
+                    user_id: username,
                     place_id: props.placeId,
                     rating: reviewVal.value.rating,
                     description: reviewVal.value.description,
