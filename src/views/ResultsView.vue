@@ -15,12 +15,15 @@ import { useTimer } from "@/composables/useTimer";
 import { useUpvoteRestaurantsStore } from "@/stores/upvoteRestaurants";
 import { useVoting } from "@/composables/useVoting";
 import type { VotedPlace, VotingHistory } from "@/types/Voting";
+import { useAuthStore } from "@/stores/auth";
+import { storeToRefs } from "pinia";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const groupUpvoteRestaurantsStore = useGroupUpvoteRestaurantsStore();
 const upvoteRestaurantsStore = useUpvoteRestaurantsStore();
 const restaurants = useRestaurantsStore();
 const currentLocation = useCurrentLocationStore();
+const { username } = storeToRefs(useAuthStore());
 const { milliseconds, killTimers } = useTimer();
 const { addVotingHistory } = useVoting();
 const router = useRouter();
@@ -202,7 +205,7 @@ const handleModal = (
 </script>
 
 <template>
-  <main class="p-4 md:p-0 overflow-x-auto">
+  <main class="p-4 md:p-0 overflow-y-auto h-full">
     <h2 class="text-primary mb-2.5" v-if="tabulatedResults.length > 0">
       <span class="text-3xl font-semibold mr-2">1st</span>
       place
@@ -227,7 +230,9 @@ const handleModal = (
     <RestaurantListItem
       :title="tabulatedResults[0].name"
       :imgSrc="getRestaurantImageUrl(tabulatedResults[0])"
-      :tags="['Burger', 'Fastfood', 'Halal']"
+      :place-id="tabulatedResults[0].place_id"
+      :user-id="username"
+      :tags="tabulatedResults[0].category"
       :rating="tabulatedResults[0].rating"
       :distance="tabulatedResults[0].vicinity"
       v-if="tabulatedResults.length > 0"
@@ -266,7 +271,9 @@ const handleModal = (
           <RestaurantListItem
             :title="restaurant.name"
             :imgSrc="getRestaurantImageUrl(restaurant)"
-            :tags="['Burger', 'Fastfood', 'Halal']"
+            :place-id="restaurant.place_id"
+            :user-id="username"
+            :tags="restaurant.category"
             :rating="restaurant.rating"
             :distance="restaurant.vicinity"
             @click="

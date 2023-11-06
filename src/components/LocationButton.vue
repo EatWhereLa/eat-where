@@ -34,7 +34,7 @@ const displayLocation = computed(() => {
         border-radius: 10px;
       "
     >
-      Create lobby
+    Start Vote
     </va-button>
 
     <br />
@@ -47,7 +47,7 @@ const displayLocation = computed(() => {
     text-color="white"
     style="display: none; border-radius: 10px"
   >
-    <div class="mx-auto">Create lobby</div>
+    <div class="mx-auto">Start Vote</div>
   </va-button>
 </template>
 

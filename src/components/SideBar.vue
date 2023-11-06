@@ -27,7 +27,7 @@ const { logout } = useAuth();
     </VaSidebarItem>
     <VaSidebarItem :active="route.name === 'group'" to="/group">
       <VaSidebarItemContent>
-        <VaSidebarItemTitle> Group Vote </VaSidebarItemTitle>
+        <VaSidebarItemTitle> Start Vote </VaSidebarItemTitle>
       </VaSidebarItemContent>
     </VaSidebarItem>
     <VaSidebarItem :active="route.name === 'results'" to="/results">

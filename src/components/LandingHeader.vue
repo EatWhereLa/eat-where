@@ -1,6 +1,6 @@
 <template>
   <section
-    class="flex flex-col md:flex-row bg-[#f6e3e5] overflow-hidden rounded-xl items-center"
+    class="flex flex-col-reverse lg:flex-row bg-[#f6e3e5] overflow-hidden rounded-xl items-center"
   >
     <div class="px-12 py-8 flex flex-col justify-center 2xl:px-20 2xl:py-16">
       <span class="uppercase text-sm tracking-widest text-primary font-medium">
@@ -31,8 +31,6 @@
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@300;400;500;700&display=swap");
-
 li {
   @apply flex items-center relative;
 }

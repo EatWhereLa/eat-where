@@ -236,7 +236,7 @@ watch(
         Start Now
       </generic-button>
     </div>
-    <div class="bg-white rounded-t-[30px] w-full p-5 absolute bottom-0">
+    <div class="bg-white rounded-t-[30px] w-full p-5 grow">
       <va-tabs v-model="tabValue" grow>
         <template #tabs>
           <va-tab v-for="tab in tabs" :key="tab.title" :name="tab.title">
