@@ -21,6 +21,7 @@ import type { LatLng } from "@/types/location";
 import ky from "ky";
 import { useBookmarks } from "@/composables/useBookmarks";
 import { useGroupBookmarksStore } from "@/stores/groupBookmarks";
+import { useCuisineCategories } from "@/composables/useCuisineCategories";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -36,6 +37,7 @@ const { restaurants: upvotedRestaurantsVal } = storeToRefs(upvotedRestaurants);
 const { restaurants: groupUpvotedRestaurantsVal } = storeToRefs(
   groupUpvotedRestaurants,
 );
+const { getRandomCuisineArr } = useCuisineCategories();
 
 const filterTags = ["All", "Fastfood", "Halal", "Japanese", "Korean"];
 const prices = [
@@ -136,9 +138,9 @@ const success = async (position: LatLng) => {
     )}&maxprice=${calcPriceValue(selectFilter.selectedPrice)}`;
   }
 
-  const query = `location=${locationSetCoords.value.lat},${
-    locationSetCoords.value.lng
-  }&radius=${
+  const query = `location=${encodeURIComponent(
+    `${locationSetCoords.value.lat},${locationSetCoords.value.lng}`,
+  )}&radius=${
     calcDistanceValue(selectFilter.selectedDistance) * 1000
   }&type=restaurant${priceQuery}${
     selectFilter.selectedTag !== "All"
@@ -183,7 +185,7 @@ const success = async (position: LatLng) => {
         lat: item.geometry.lat,
         lng: item.geometry.lng,
       },
-      category: [],
+      category: getRandomCuisineArr(),
       upvote_count: 0,
     });
   });
