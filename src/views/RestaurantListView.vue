@@ -22,6 +22,7 @@ import ky from "ky";
 import { useAuthStore } from "@/stores/auth";
 import { useGroupBookmarksStore } from "@/stores/groupBookmarks";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";
+import { useUserSettingsStore } from "@/stores/userSettings";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -31,6 +32,7 @@ const currentLocation = useCurrentLocationStore();
 const restaurants = useRestaurantsStore();
 const upvotedRestaurants = useUpvoteRestaurantsStore();
 const groupUpvotedRestaurants = useGroupUpvoteRestaurantsStore();
+const userSettingsStore = useUserSettingsStore();
 const { groupBookmarks } = storeToRefs(useGroupBookmarksStore());
 const { username } = storeToRefs(useAuthStore());
 
@@ -40,7 +42,6 @@ const { restaurants: groupUpvotedRestaurantsVal } = storeToRefs(
 );
 const { getRandomCuisineArr, cuisineCategories } = useCuisineCategories();
 
-const filterTags = ["All", "Fastfood", "Halal", "Japanese", "Korean"];
 const selectedCategories: Ref<string[]> = ref([]);
 const prices = [
   "All",
@@ -198,6 +199,12 @@ const getRestaurants = async () => {
 };
 
 onMounted(async () => {
+  if (userSettingsStore.selectedDist) {
+    selectFilter.setSelectedDistance(userSettingsStore.selectedDist);
+  }
+  if (userSettingsStore.selectedCategories.length > 0) {
+    selectedCategories.value = userSettingsStore.selectedCategories;
+  }
   getRestaurants();
   init();
 });
@@ -297,7 +304,7 @@ const filterList = computed(() => {
       !groupBookmarks.value.some((item1) => item1.place_id === item2.place_id),
   );
   if (selectedCategories.value.length > 0) {
-    resultArray.filter((val) =>
+    resultArray = resultArray.filter((val) =>
       val.category.some((cat) => selectedCategories.value.includes(cat)),
     );
   }
