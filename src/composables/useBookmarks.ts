@@ -16,5 +16,20 @@ export function useBookmarks() {
       console.error(error);
     }
   }
-  return { bookmarks, getBookmarks };
+  async function addBookmark(user_id: string, place_id: string) {
+    try {
+      const res = (await api
+        .post(`bookmark/restaurants`, {
+          json: {
+            user_id,
+            place_id,
+          },
+        })
+        .json()) as Restaurant[];
+      bookmarks.value = res;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return { bookmarks, getBookmarks, addBookmark };
 }

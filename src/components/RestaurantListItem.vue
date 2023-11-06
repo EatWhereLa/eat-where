@@ -2,16 +2,21 @@
 import GenericButton from "@/components/GenericButton.vue";
 import ky from "ky";
 import { onMounted, ref } from "vue";
+import { useBookmarks } from "@/composables/useBookmarks";
 
 const props = defineProps<{
   title: string;
   imgSrc: string;
+  placeId?: string;
+  userId?: string;
   tags?: string[];
   price?: number | undefined;
   rating?: number;
   distance?: string;
   time?: string;
 }>();
+
+const { addBookmark } = useBookmarks();
 
 const crowd = ref(0);
 
@@ -38,6 +43,12 @@ onMounted(async () => {
   await setImageURL(props.imgSrc);
   generateCrowd(1, 5);
 });
+
+function handleBookmark() {
+  if (props.userId && props.placeId) {
+    addBookmark(props.userId, props.placeId);
+  }
+}
 </script>
 
 <template>
@@ -63,7 +74,8 @@ onMounted(async () => {
         <va-icon
           name="bookmark_outline"
           v-if="$route.name !== 'restaurantDetail'"
-          class="flex justify-end"
+          class="flex justify-end z-50"
+          @click.stop="handleBookmark"
         />
       </div>
 

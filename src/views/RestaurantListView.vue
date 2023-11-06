@@ -2,7 +2,7 @@
 import { useRouter } from "vue-router";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import GenericButton from "@/components/GenericButton.vue";
-import { type Ref, ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useGeolocation } from "../composables/useGeolocation";
 import { useTimer } from "@/composables/useTimer";
 import RestaurantModal from "@/components/RestaurantModal.vue";
@@ -19,7 +19,7 @@ import { channel, isLeader } from "@/apis/supabase";
 import type { Restaurant } from "@/types/Restaurant";
 import type { LatLng } from "@/types/location";
 import ky from "ky";
-import { useBookmarks } from "@/composables/useBookmarks";
+import { useAuthStore } from "@/stores/auth";
 import { useGroupBookmarksStore } from "@/stores/groupBookmarks";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";
 
@@ -32,6 +32,7 @@ const restaurants = useRestaurantsStore();
 const upvotedRestaurants = useUpvoteRestaurantsStore();
 const groupUpvotedRestaurants = useGroupUpvoteRestaurantsStore();
 const { groupBookmarks } = storeToRefs(useGroupBookmarksStore());
+const { username } = storeToRefs(useAuthStore());
 
 const { restaurants: upvotedRestaurantsVal } = storeToRefs(upvotedRestaurants);
 const { restaurants: groupUpvotedRestaurantsVal } = storeToRefs(
@@ -391,6 +392,8 @@ const handleModal = (
           v-for="restaurant in groupBookmarks"
           :key="restaurant.place_id"
           :title="restaurant.name"
+          :place-id="restaurant.place_id"
+          :user-id="username"
           :imgSrc="getRestaurantImageUrl(restaurant)"
           :tags="restaurant.category"
           :rating="restaurant.rating"
@@ -456,6 +459,8 @@ const handleModal = (
         <RestaurantListItem
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
+          :place-id="restaurant.place_id"
+          :user-id="username"
           :tags="restaurant.category"
           :rating="restaurant.rating"
           :distance="restaurant.vicinity"
