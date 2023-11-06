@@ -7,6 +7,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { useCurrentLocationStore } from "@/stores/currentLocation";
 import { computed, ref, type Ref, onMounted, onUnmounted, watch } from "vue";
 import ky from "ky";
+import { useRouter } from "vue-router";
 
 type Position = {
   coords: {
@@ -34,6 +35,7 @@ const isNotificationVisible = ref(false);
 
 const isDisabled = ref(false);
 const loader = new Loader({ apiKey: MAP_KEY });
+const router = useRouter();
 const mapRef: Ref<HTMLElement | null> = ref(null);
 const map: Ref<google.maps.Map | null> = ref(null);
 let clickListener: object | any = null;
@@ -158,11 +160,9 @@ const handleSubmit = () => {
 
   isDisabled.value = true;
   isNotificationVisible.value = true;
-};
 
-// watchEffect(() => {
-//   console.log(currPos.value);
-// });
+  router.push("/");
+};
 </script>
 
 <template>
