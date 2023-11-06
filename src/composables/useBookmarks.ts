@@ -1,20 +1,39 @@
 import type { Restaurant } from "@/types/Restaurant";
 import { rand } from "@ngneat/falso";
+import { useCuisineCategories } from "@/composables/useCuisineCategories";
 import ky from "ky";
 import { type Ref, ref } from "vue";
 
 const api = ky.create({ prefixUrl: import.meta.env.VITE_API_URL });
 const bookmarks: Ref<Restaurant[]> = ref([]);
+const { getRandomCuisineArr } = useCuisineCategories();
 export function useBookmarks() {
   async function getBookmarks(user_id: string) {
     try {
       const res = (await api
         .get(`bookmark/restaurants?user_id=${user_id}`)
         .json()) as Restaurant[];
+      for (const restaurant of res) {
+        restaurant.category = getRandomCuisineArr();
+      }
       bookmarks.value = res;
     } catch (error) {
       console.error(error);
     }
   }
-  return { bookmarks, getBookmarks };
+  async function addBookmark(user_id: string, place_id: string) {
+    try {
+      await api
+        .post(`bookmark`, {
+          json: {
+            user_id,
+            place_id,
+          },
+        })
+        .text();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return { bookmarks, getBookmarks, addBookmark };
 }

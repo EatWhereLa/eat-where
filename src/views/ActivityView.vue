@@ -21,6 +21,7 @@ const tabs = [
   },
 ];
 
+
 const currentTab = computed(() => {
   return tabs.find(({ title }) => title === tabValue.value);
 });
@@ -38,6 +39,7 @@ const currentTab = computed(() => {
       </template>
     </va-tabs>
     <component :is="currentTab?.content" />
+
   </main>
 </template>
 
@@ -48,4 +50,3 @@ const currentTab = computed(() => {
   @apply shadow-custom-primary-sm;
 }
 </style>
-

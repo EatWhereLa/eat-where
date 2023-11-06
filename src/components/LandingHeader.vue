@@ -1,6 +1,6 @@
 <template>
   <section
-    class="flex flex-col md:flex-row bg-[#f6e3e5] overflow-hidden rounded-xl items-center"
+    class="flex flex-col-reverse lg:flex-row bg-[#f6e3e5] overflow-hidden rounded-xl items-center"
   >
     <div class="px-12 py-8 flex flex-col justify-center 2xl:px-20 2xl:py-16">
       <span class="uppercase text-sm tracking-widest text-primary font-medium">
@@ -19,26 +19,6 @@
         <li>Crowd Level Insights</li>
         <li>Personalised recommendations</li>
       </ol>
-      <a
-        class="no-underline text-gray-400 text-sm flex items-center hover:text-primary transition-colors"
-        href="#"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6 mr-2"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 17.25L12 21m0 0l-3.75-3.75M12 21V3"
-          />
-        </svg>
-        Scroll Down to <br />know more</a
-      >
     </div>
     <div class="w-full relative min-h-[380px] h-[30vh] bg-[#f6e3e5] 2xl:h-auto">
       <img
@@ -51,8 +31,6 @@
 </template>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&family=Poppins:wght@300;400;500;700&display=swap");
-
 li {
   @apply flex items-center relative;
 }

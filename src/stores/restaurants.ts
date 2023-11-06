@@ -1,9 +1,9 @@
-import { ref } from "vue";
+import { ref, type Ref } from "vue";
 import { defineStore } from "pinia";
 import type { Restaurant } from "@/types/Restaurant";
 
 export const useRestaurantsStore = defineStore("restaurants", () => {
-  const restaurants = ref<Restaurant[]>([]);
+  const restaurants: Ref<Restaurant[]> = ref([]);
   function addRestaurant(restaurant: Restaurant) {
     restaurant.upvote_count = 0;
     restaurants.value.push(restaurant);

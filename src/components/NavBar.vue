@@ -71,6 +71,11 @@ function showMenuItem(itemName: string[]) {
         </router-link>
       </va-navbar-item>
       <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
+        <router-link to="/activity" active-class="text-primary">
+          Activity
+        </router-link>
+      </va-navbar-item>
+      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
         <router-link to="/group" active-class="text-primary">
           Start Vote
         </router-link>
@@ -84,14 +89,14 @@ function showMenuItem(itemName: string[]) {
     <template #right>
       <div class="flex gap-2">
         <div v-if="!isAuthenticated" class="flex gap-2">
-          <div class="hidden sm:block">
+          <div class="hidden md:block">
             <va-navbar-item>
               <va-button to="/login" preset="secondary" border-color="primary">
                 Login
               </va-button>
             </va-navbar-item>
           </div>
-          <div class="hidden sm:block">
+          <div class="hidden md:block">
             <va-navbar-item>
               <va-button to="/register" text-color="white">
                 Register
@@ -99,13 +104,13 @@ function showMenuItem(itemName: string[]) {
             </va-navbar-item>
           </div>
         </div>
-        <div v-else class="hidden sm:block">
+        <div v-else class="hidden md:block">
           <va-navbar-item>
             <va-button text-color="white" @click="logout"> Logout </va-button>
           </va-navbar-item>
         </div>
 
-        <div class="block sm:hidden">
+        <div class="block md:hidden">
           <va-navbar-item>
             <va-button
               :icon="showSidebar ? 'menu_open' : 'menu'"

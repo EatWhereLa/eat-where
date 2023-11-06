@@ -7,7 +7,6 @@ import type { Restaurant } from "@/types/Restaurant";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";
 import { useBookmarks } from "@/composables/useBookmarks";
 import { useAuthStore } from "@/stores/auth";
-import type { FilterRestaurant } from "@/types/Restaurant";
 import ButtonUp from "@/components/ButtonUp.vue";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -250,12 +249,9 @@ const handleSort = () => {
             </div>
           </div>
 
-          <div
-            class="overflow-y-auto grow h-full flex justify-center items-center"
-          >
-            <div class="grid grid-cols-1 lg:grid-cols-2 xl:gap-10 gap-1 h-full">
+          <div class="overflow-y-auto grow h-full flex justify-center">
+            <div class="grid grid-cols-1 h-1/5 lg:grid-cols-2 xl:gap-10 gap-1">
               <RestaurantListItem
-                class="h-1/4"
                 v-for="(restaurant, idx) in filteredList"
                 :key="idx"
                 :title="restaurant.name"
