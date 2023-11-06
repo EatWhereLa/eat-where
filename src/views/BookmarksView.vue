@@ -131,7 +131,7 @@ const handleSort = () => {
 </script>
 
 <template>
-  <main class="h-full flex flex-col w-full">
+  <main class="p-4 h-full flex flex-col w-full">
     <va-modal
       v-model="showModalValues.show"
       hide-default-actions
@@ -147,11 +147,11 @@ const handleSort = () => {
         @closeModal="handleModal('', '', '')"
       />
     </va-modal>
-    <section class="container mx-auto h-full w-full">
+    <section class="mx-auto h-full w-full">
       <div
-        class="flex gap-4 px-8 justify-center items-center h-full w-full overflow-y-auto"
+        class="flex gap-4 justify-center items-center h-full w-full overflow-y-auto"
       >
-        <aside class="w-72 hidden lg:block h-4/5">
+        <aside class="w-72 hidden xl:block h-4/5">
           <div
             class="flex flex-col gap-4 h-full shadow-md bg-white rounded-lg p-4 pl-7"
           >
@@ -203,7 +203,7 @@ const handleSort = () => {
         <div
           class="h-full sm:h-4/5 w-full flex flex-col justify-center items-center gap-4"
         >
-          <div class="lg:hidden flex flex-col gap-2 w-full pt-3">
+          <div class="flex flex-col xl:hidden gap-2 w-full pt-3">
             <div>
               <div class="text-bold pb-1">Categories</div>
               <div class="flex gap-2 overflow-x-scroll w-full py-1">
@@ -221,10 +221,10 @@ const handleSort = () => {
                 </va-chip>
               </div>
             </div>
-            <div class="flex">
-              <div class="p-1 lg:hidden">
+            <div class="flex w-full">
+              <div class="p-1 lg:hidden w-full">
                 <div class="text-bold lg:hidden pb-1">Sort by</div>
-                <div class="relative inline-flex items-center">
+                <div class="relative flex items-center">
                   <va-select
                     v-model="selectedOption"
                     class="!rounded-md"
