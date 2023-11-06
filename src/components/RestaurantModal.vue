@@ -149,7 +149,7 @@ async function setImageURL(url: string) {
 const fetchPlaceReviews = async () => {
   const URL = `${API_URL}/review/restaurant?place_id=${props.placeId}`;
   return (await ky(
-    `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
+    URL,
   ).json()) as typeof appReviews.value;
 };
 

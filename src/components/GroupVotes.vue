@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, onBeforeMount, nextTick } from 'vue';
+import { onMounted, ref, onBeforeMount, nextTick, watch, type Ref } from 'vue';
 import * as d3 from 'd3';
 import ky from 'ky';
 
@@ -8,18 +8,22 @@ const API_URL = import.meta.env.VITE_API_URL;
 import { useAuthStore } from '@/stores/auth';
 import type { VoteHistory } from '@/types/VoteHistory';
 
+import dayjs from "dayjs";
+
+import "billboard.js/dist/billboard.css";
+import bb, {bar} from "billboard.js";
+
 const authStore = useAuthStore();
 
-const voteHistories = ref<any[]>([]);
+const voteHistories = ref<VoteHistory[]>([]);
 
 const chartsContainer = ref(null);
 
-onMounted(async () => {
-  await getActivities();
-  nextTick(() => {
-    createCharts(); // Now create the charts
-  });
+const items: Ref<SVGAElement[]> = ref([]); 
 
+onMounted(async () => {
+    await getActivities();
+    createCharts();
 });
 
 async function getActivities() {
@@ -42,7 +46,6 @@ async function getActivities() {
 
     // Wait for all voteHistories to be updated
     voteHistories.value = await Promise.all(voteHistoryPromises);
-    createCharts();
   } catch (error) {
     console.error(error);
   }
@@ -50,81 +53,52 @@ async function getActivities() {
 
 
 function createCharts() {
-  // Cleanup existing SVG elements before creating new charts
-  d3.select(chartsContainer.value).selectAll("*").remove();
-
   voteHistories.value.forEach((voteHistory, index) => {
-    createChart(voteHistory, index) 
+    createChart(voteHistory, index)
   });
 }
 
 function createChart(voteHistory: VoteHistory, index: number) {
-  const margin = { top: 20, right: 30, bottom: 40, left: 90 },
-        width = 460 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
-
-  const svg = d3.select(`#chart-${index}`)
-                .append("svg")
-                  .attr("width", width + margin.left + margin.right)
-                  .attr("height", height + margin.top + margin.bottom)
-                  .attr("class", `chart-${index}`) // Add a class for styling if necessary
-                .append("g")
-                  .attr("transform", `translate(${margin.left},${margin.top})`);
-
-  // Process data for the specific voteHistory
-  const votedPlaces = voteHistory.voted_places;
-  const x = d3.scaleLinear()
-              .domain([0, d3.max(votedPlaces, d => d.vote_count)!])
-              .range([0, width]);
-  
-  const xAxis = d3.axisBottom(x)
-      .ticks(d3.max(votedPlaces, d => d.vote_count)) // Set the number of ticks to the maximum vote count
-      .tickFormat(d3.format('d')); // Use 'd' for decimal formatting which omits the fractional part
-
-  svg.append("g")
-     .attr("transform", `translate(0,${height})`)
-     .call(xAxis) // Use the xAxis variable here
-     .selectAll("text")
-     .style("text-anchor", "end");
-
-  const y = d3.scaleBand()
-              .range([0, height])
-              .domain(votedPlaces.map(d => d.place_id))
-              .padding(.1);
-
-  svg.append("g").call(d3.axisLeft(y));
-
-  svg.selectAll("rect")
-     .data(votedPlaces)
-     .join("rect")
-     .attr("x", x(0))
-     .attr("y", d => y(d.place_id)!)
-     .attr("width", d => x(d.vote_count))
-     .attr("height", y.bandwidth())
-     .attr("fill", "#ff914f");
-
-
-     console.log(svg);
+    const columns = voteHistory.voted_places.map(element => {
+      return [element.place_id,element.vote_count]
+    });
+    bb.generate({
+    data: {
+      columns,
+      type: bar(), // for ESM specify as: bar()
+    },
+    bar: {
+      width: {
+        ratio: 0.5
+      }
+    },
+    bindto: `#chart-${index}`
+  });
 }
+
 </script>
 
 <template>
-  <div ref="chartsContainer">
+  <div ref="chartsContainer" class="flex flex-wrap gap-2 justify-center overflow-y-auto h-full">
     
     <!-- Iterate over voteHistories to create multiple cards -->
     <va-card
       v-for="(voteHistory, index) in voteHistories"
       :key="index"
-      class="ma-2"
+      class="lg:w-1/3 w-full"
       outlined
     >
-    <va-card-content>
-        <p>{{index}}</p>
+      <va-card-content>
+        <p class="text-center font-bold">Voting Result</p>
         <!-- The SVG charts will be appended here -->
-        <p :id="`chart-${index}`"></p>
-        <div class="voting-details">
+        <div class="flex justify-center">
+          <div :id="`chart-${index}`"></div>
         </div>
-    </va-card-content>
-  </va-card>
+        <div class="voting-details">
+          <p class="font-bold">Voting Date/Time: {{ dayjs(voteHistory.vote_timestamp * 1000).format("DD/MM/YYYY HH:mm:ss") }}</p>
+          <p class="font-thin italic">Participants: {{ voteHistory.user_ids.join(", ") }}</p>
+        </div>
+      </va-card-content>
+    </va-card>
   </div>
 </template>
