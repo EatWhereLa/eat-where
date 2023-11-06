@@ -20,6 +20,11 @@ const { logout } = useAuth();
         <VaSidebarItemTitle> Bookmarks </VaSidebarItemTitle>
       </VaSidebarItemContent>
     </VaSidebarItem>
+    <VaSidebarItem :active="route.name === 'activity'" to="/activity">
+      <VaSidebarItemContent>
+        <VaSidebarItemTitle> Activity </VaSidebarItemTitle>
+      </VaSidebarItemContent>
+    </VaSidebarItem>
     <VaSidebarItem :active="route.name === 'group'" to="/group">
       <VaSidebarItemContent>
         <VaSidebarItemTitle> Group Vote </VaSidebarItemTitle>
