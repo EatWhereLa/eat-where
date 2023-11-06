@@ -145,7 +145,11 @@ router.beforeEach(async (to) => {
     }
   }
 
-  if (to.name === "bookmarks" || to.name === "profile") {
+  if (
+    to.name === "bookmarks" ||
+    to.name === "profile" ||
+    to.name === "activity"
+  ) {
     if (!isAuthenticated.value) {
       // We try to check if there the user is authenticated
       await isLoggedIn();
