@@ -62,7 +62,9 @@ async function handleLogin() {
           </form>
           <p class="text-center text-lg font-light">
             Don't have an account?
-            <a class="text-primary" href="signup.html"> Sign up </a>
+            <router-link to="/register">
+              <a class="text-primary"> Sign up </a>
+            </router-link>
           </p>
         </div>
       </div>

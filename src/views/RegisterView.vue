@@ -104,7 +104,9 @@ async function handleCode() {
           </form>
           <p class="text-center text-lg font-light">
             Already have an account?
-            <a class="text-primary" href="signup.html"> Sign in </a>
+            <router-link to="/login">
+              <a class="text-primary"> Sign in </a>
+            </router-link>
           </p>
         </div>
       </div>
