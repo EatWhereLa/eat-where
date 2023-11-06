@@ -193,8 +193,8 @@ watch(
             <va-icon name="schedule" />
           </template>
         </va-select>
-        <p v-if="getUserTimingChosen() !== undefined">
-          Your Preferred Time: Date: {{ getUserTimingChosen().date }} Time:
+        <p v-if="getUserTimingChosen() !== undefined" class="text-lg">
+          You Chose: Date: {{ getUserTimingChosen().date }} Time:
           {{ getUserTimingChosen().time }}
         </p>
       </div>

@@ -9,7 +9,9 @@ import ky from "ky";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone"
 
-// const randomBool = Math.random() > 0.5 ? true : false;
+import { useAuthStore } from "@/stores/auth";
+
+const authStore = useAuthStore();
 
 dayjs.extend(timezone)
 dayjs.tz.setDefault("Asia/Singapore")
@@ -55,7 +57,7 @@ const submitReservation = async() => {
             `https://corsproxy.syoongy.workers.dev/?apiurl=${encodeURIComponent(URL)}`,
             {   
                 json: {
-                    user_id: "1",
+                    user_id: authStore.username,
                     place_id: props.placeId,
                     reservation_time: unixDateTime,
                     reservation_pax: parseInt(form.value.numPeople),

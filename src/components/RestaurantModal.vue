@@ -182,7 +182,7 @@ onMounted(async () => {
   getClosingTime();
   updateReviews();
 
-  if (authStore.username !== "") {
+  if (authStore.username !== "" && route.path !== "/activity") {
     const clashes = userTimingClash();
     if (clashes) {
       init({
