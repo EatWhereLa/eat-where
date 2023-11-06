@@ -157,7 +157,7 @@ watch(
   >
     <ChooseTimingModal @closeChoseTiming="showTimingModal = !showTimingModal" />
   </va-modal>
-  <main class="w-full md:w-2/5 h-full relative flex flex-col gap-8">
+  <main class="w-full md:w-3/5 h-full relative flex flex-col gap-8">
     <div class="text-center text-2xl text-primary px-3">
       <div class="bg-white p-2 rounded-2xl shadow-default">
         <p>Room ID:</p>

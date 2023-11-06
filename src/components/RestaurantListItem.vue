@@ -45,7 +45,7 @@ onMounted(async () => {
     class="flex gap-5 relative bg-white rounded-3xl shadow-sm p-3 w-full md:max-w-xl mb-3"
   >
     <div class="flex items-center">
-      <div class="w-32 h-32 overflow-hidden justify-center hidden xl:flex">
+      <div class="w-32 h-32 overflow-hidden justify-center hidden md:flex">
         <img
           :src="imageUrl"
           alt="Image not found"

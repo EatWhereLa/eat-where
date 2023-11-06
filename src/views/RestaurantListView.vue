@@ -138,8 +138,7 @@ const success = async (position: LatLng) => {
 
   const query = `location=${locationSetCoords.value.lat},${
     locationSetCoords.value.lng
-  }
-  &radius=${
+  }&radius=${
     calcDistanceValue(selectFilter.selectedDistance) * 1000
   }&type=restaurant${priceQuery}${
     selectFilter.selectedTag !== "All"
