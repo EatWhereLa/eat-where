@@ -12,12 +12,17 @@ import { useRestaurantsStore } from "@/stores/restaurants";
 import { useCurrentLocationStore } from "@/stores/currentLocation";
 import { channel, isLeader, users } from "@/apis/supabase";
 import { useTimer } from "@/composables/useTimer";
+import { useUpvoteRestaurantsStore } from "@/stores/upvoteRestaurants";
+import { useVoting } from "@/composables/useVoting";
+import type { VotedPlace, VotingHistory } from "@/types/Voting";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const groupUpvoteRestaurantsStore = useGroupUpvoteRestaurantsStore();
+const upvoteRestaurantsStore = useUpvoteRestaurantsStore();
 const restaurants = useRestaurantsStore();
 const currentLocation = useCurrentLocationStore();
-const { milliseconds } = useTimer();
+const { milliseconds, killTimers } = useTimer();
+const { addVotingHistory } = useVoting();
 const router = useRouter();
 
 const tabulatedResults = computed<Restaurant[]>(() => {
@@ -50,7 +55,6 @@ const tabulatedResults = computed<Restaurant[]>(() => {
       return b.upvote_count - a.upvote_count;
     } else return 0;
   });
-
   return retArr;
 });
 
@@ -96,6 +100,10 @@ const getRestaurantImageUrl = (restaurant: Restaurant) => {
   }
 };
 
+function generateCrowd(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const success = async (position: LatLng) => {
   const latitude = position.lat;
   const longitude = position.lng;
@@ -115,12 +123,14 @@ const success = async (position: LatLng) => {
       name: item.name,
       photos: item.photos,
       rating: item.rating,
+      crowd: generateCrowd(1, 5),
       user_ratings: item.user_ratings,
       vicinity: item.vicinity,
       geometry: {
         lat: item.geometry.lat,
         lng: item.geometry.lng,
       },
+      category: [],
       upvote_count: 0,
     });
   });
@@ -136,11 +146,29 @@ const success = async (position: LatLng) => {
 onBeforeMount(async () => {
   if (groupUpvoteRestaurantsStore.restaurants.length === 0)
     await getRestaurants();
+
+  if (
+    users.value.size > 0 &&
+    tabulatedResults.value.length > 0 &&
+    isLeader.value
+  ) {
+    const votedPlaces: VotedPlace[] = tabulatedResults.value.map((val) => {
+      return { place_id: val.place_id, vote_count: val.upvote_count ?? 0 };
+    });
+    const historyEntry: VotingHistory = {
+      user_ids: Array.from(users.value),
+      vote_timestamp: Math.round(Date.now() / 1000),
+      voted_places: votedPlaces,
+    };
+    await addVotingHistory(historyEntry);
+  }
+  killTimers();
 });
 
 onBeforeUnmount(() => {
   restaurants.clearRestaurants();
   groupUpvoteRestaurantsStore.clearRestaurants();
+  upvoteRestaurantsStore.clearRestaurants();
 });
 
 const handleTryAgain = async () => {
@@ -174,7 +202,7 @@ const handleModal = (
 </script>
 
 <template>
-  <main>
+  <main class="p-4 md:p-0 overflow-x-auto">
     <h2 class="text-primary mb-2.5" v-if="tabulatedResults.length > 0">
       <span class="text-3xl font-semibold mr-2">1st</span>
       place
@@ -200,6 +228,8 @@ const handleModal = (
       :title="tabulatedResults[0].name"
       :imgSrc="getRestaurantImageUrl(tabulatedResults[0])"
       :tags="['Burger', 'Fastfood', 'Halal']"
+      :rating="tabulatedResults[0].rating"
+      :distance="tabulatedResults[0].vicinity"
       v-if="tabulatedResults.length > 0"
       @click="
         handleModal(
@@ -237,6 +267,8 @@ const handleModal = (
             :title="restaurant.name"
             :imgSrc="getRestaurantImageUrl(restaurant)"
             :tags="['Burger', 'Fastfood', 'Halal']"
+            :rating="restaurant.rating"
+            :distance="restaurant.vicinity"
             @click="
               handleModal(
                 restaurant.place_id,

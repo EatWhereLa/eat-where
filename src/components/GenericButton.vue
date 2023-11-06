@@ -44,7 +44,7 @@ const props = defineProps({
     :class="`${props.titleColor} ${props.shadowColor} ${props.padding} ${
       disabled ? 'bg-gray-300' : `${props.bgColor}`
     }`"
-    class="rounded-3xl inline-flex justify-center align-center gap-x-3 w-fit min-w-[3rem] min-h-[2rem] max-h-[3rem]"
+    class="rounded-3xl inline-flex justify-center items-center gap-x-3 w-fit min-w-[3rem] min-h-[2rem] max-h-[3rem]"
     :disabled="disabled"
   >
     <span v-if="props.icon && !iconRight">
@@ -54,7 +54,7 @@ const props = defineProps({
         :color="props.iconColour"
       />
     </span>
-    <span class="font-medium inline-flex align-center gap-1.5"><slot /></span>
+    <span class="font-medium inline-flex items-center gap-1.5"><slot /></span>
     <span v-if="props.icon && iconRight">
       <va-icon
         :name="`${props.icon}`"

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import GenericButton from "@/components/GenericButton.vue";
+import ChooseTimingModal from "@/components/ChooseTimingModal.vue";
+import { useToast } from "vuestic-ui";
 import {
   ref,
   onBeforeMount,
@@ -9,6 +11,7 @@ import {
   defineAsyncComponent,
   type Ref,
   watch,
+  onMounted,
 } from "vue";
 import {
   openOrCreateChannel,
@@ -25,16 +28,23 @@ import {
 import { useShare, useBrowserLocation } from "@vueuse/core";
 import { useTimer } from "@/composables/useTimer";
 
-const getRandomUsername = () => {
-  return `${randProductAdjective()} ${randAnimal()}`;
-};
-const gerRoomId = () => {
-  return `${randProductAdjective()}-${randAnimalType()}-${randNumber({
-    min: 0,
-    max: 999,
-  })}`;
-};
+import { useVoteTimingsStore } from "@/stores/voteTimings";
+
+const voteTimingsStore = useVoteTimingsStore();
+const authStore = useAuthStore();
+const { init } = useToast();
+
+import { useBookmarks } from "@/composables/useBookmarks";
+import { storeToRefs } from "pinia";
+import { useAuth } from "@/composables/auth";
+import { useAuthStore } from "@/stores/auth";
+import { useUserSettingsStore } from "@/stores/userSettings";
+
 const { milliseconds } = useTimer();
+const { getBookmarks } = useBookmarks();
+const { isLoggedIn } = useAuth();
+const { isAuthenticated, username } = storeToRefs(useAuthStore());
+const userSettingsStore = useUserSettingsStore();
 const { share } = useShare();
 const time = ref(60);
 const minutes = ref(0);
@@ -61,7 +71,6 @@ const tabs = [
     ),
   },
 ];
-
 const timings = [
   { timeInMilliseconds: 60000, displayTime: "1:00" },
   { timeInMilliseconds: 120000, displayTime: "2:00" },
@@ -69,15 +78,46 @@ const timings = [
   { timeInMilliseconds: 300000, displayTime: "5:00" },
 ];
 
-onBeforeMount(() => {
-  currUser.value = getRandomUsername();
-  roomId.value = gerRoomId();
+const showTimingModal = ref(true);
+
+const getRandomUsername = () => {
+  return `${randProductAdjective()} ${randAnimal()}`;
+};
+const getRoomId = () => {
+  return `${randProductAdjective()}-${randAnimalType()}-${randNumber({
+    min: 0,
+    max: 999,
+  })}`;
+};
+
+onBeforeMount(async () => {
+  if (username.value !== "") {
+    currUser.value = username.value;
+  } else {
+    currUser.value = getRandomUsername();
+  }
+  roomId.value = getRoomId();
+  if (!isAuthenticated.value) {
+    await isLoggedIn();
+  }
+  await getBookmarks(username.value);
   if (route.query.shareId) {
     roomId.value = route.query.shareId.toString();
   } else {
     isLeader.value = true;
   }
   openOrCreateChannel(roomId.value, currUser.value);
+});
+
+onMounted(() => {
+  if (userSettingsStore.selectedTime) {
+    const foundTiming = timings.find(
+      (val) => val.displayTime === userSettingsStore.selectedTime,
+    );
+    if (foundTiming) {
+      selectedTime.value = foundTiming.timeInMilliseconds;
+    }
+  }
 });
 
 onUnmounted(() => {
@@ -111,6 +151,11 @@ const startVoting = async () => {
   }
 };
 
+const getUserTimingChosen = () => {
+  const userval = voteTimingsStore.getVoteTiming(authStore.username);
+  return userval;
+};
+
 watch(
   () => selectedTime.value,
   (newTime, oldTime) => {
@@ -120,8 +165,18 @@ watch(
 </script>
 
 <template>
-  <main class="w-full -mt-20 h-screen relative">
-    <div class="text-center text-2xl text-primary pt-20 mb-44 max-h-14 px-3">
+  <va-modal
+    v-model="showTimingModal"
+    hide-default-actions
+    class="mx-auto"
+    size="medium"
+    closeButton
+    v-if="authStore.username !== ''"
+  >
+    <ChooseTimingModal @closeChoseTiming="showTimingModal = !showTimingModal" />
+  </va-modal>
+  <main class="w-full md:w-3/5 h-full relative flex flex-col gap-8">
+    <div class="text-center text-2xl text-primary px-3">
       <div class="bg-white p-2 rounded-2xl shadow-default">
         <p>Room ID:</p>
         <p>{{ roomId }}</p>
@@ -138,26 +193,42 @@ watch(
             <va-icon name="schedule" />
           </template>
         </va-select>
+        <p v-if="getUserTimingChosen() !== undefined" class="text-lg">
+          You Chose: Date: {{ getUserTimingChosen().date }} Time:
+          {{ getUserTimingChosen().time }}
+        </p>
       </div>
     </div>
-    <div class="inline-flex w-full justify-center gap-5 px-3">
+    <div class="flex w-full justify-center gap-3 px-3 flex-wrap">
       <generic-button
         bgColor="bg-white"
         titleColor="text-black"
         icon="content_copy"
         iconColour="primary"
         shadowColor="shadow-default"
-        class="w-1/2"
+        class="w-full md:w-2/5"
         @click="shareRoomLink"
       >
         Room Link
+      </generic-button>
+      <generic-button
+        bgColor="bg-white"
+        titleColor="text-black"
+        icon="access_time"
+        iconColour="primary"
+        shadowColor="shadow-default"
+        class="w-full md:w-2/5"
+        @click="showTimingModal = !showTimingModal"
+        v-if="authStore.username !== ''"
+      >
+        Preferred Time
       </generic-button>
       <generic-button
         bgColor="bg-primary"
         titleColor="text-white"
         icon="arrow_forward"
         iconRight
-        class="w-1/2"
+        class="w-full md:w-2/5"
         shadowColor="shadow-custom-primary"
         :disabled="!isLeader"
         @click="startVoting"

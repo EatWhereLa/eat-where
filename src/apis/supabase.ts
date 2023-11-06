@@ -6,6 +6,8 @@ import type { TrackData } from "@/types/supabase";
 import router from "@/router/index";
 import type { Restaurant } from "@/types/Restaurant";
 import { useTimer } from "@/composables/useTimer";
+import { useBookmarks } from "@/composables/useBookmarks";
+import { useGroupBookmarksStore } from "@/stores/groupBookmarks";
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
@@ -24,6 +26,7 @@ const currUser = ref("");
 const users = ref(new Set<string>());
 const isLeader = ref(false);
 const { milliseconds, killTimers } = useTimer();
+const { bookmarks } = useBookmarks();
 
 const openOrCreateChannel = (channelName: string, username: string) => {
   users.value.clear();
@@ -45,6 +48,16 @@ const openOrCreateChannel = (channelName: string, username: string) => {
           locationStore.setLocationLatLng(userData.location);
 
           locationStore.setLocationAddress(userData.address);
+        }
+      }
+    }
+    const channelState = currChannel.presenceState();
+    for (const [userKey, data] of Object.entries(channelState)) {
+      const userData = data[0] as any;
+      if (userData.bookmarked) {
+        const { addGroupBookmark } = useGroupBookmarksStore();
+        for (const bookmark of userData.bookmarked) {
+          addGroupBookmark(bookmark);
         }
       }
     }
@@ -87,6 +100,7 @@ const openOrCreateChannel = (channelName: string, username: string) => {
     if (status === "SUBSCRIBED") {
       const trackObject: TrackData = {
         upvoted: [],
+        bookmarked: bookmarks.value,
       };
       if (isLeader.value) {
         const locationStore = useCurrentLocationStore();

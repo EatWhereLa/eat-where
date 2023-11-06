@@ -1,169 +1,88 @@
 <script setup lang="ts">
-import NavHeader from "@/components/NavHeader.vue";
 import SlideShow from "@/components/SlideshowHeader.vue";
 import LandingHeader from "@/components/LandingHeader.vue";
+import LocationHeader from "../components/LocationHeader.vue";
 </script>
 
 <template>
-  <NavHeader />
+  <!-- <NavHeader /> -->
 
-  <main>
+  <main class="m-auto">
     <!-- ===== Hero Start ===== -->
+
+    <LocationHeader />
 
     <LandingHeader />
     <br />
-
-    <!-- <section class="gj do ir hj sp jr i pg">
-
-      <div class="xc fn zd/2 2xl:ud-w-187.5 bd 2xl:ud-h-171.5 h q r">
-        <img
-          src="/src/assets/images/shape-01.svg"
-          alt="shape"
-          class="xc 2xl:ud-block h t -ud-left-[10%] ua"
-        />
-        <img
-          src="/src/assets/images/shape-02.svg"
-          alt="shape"
-          class="xc 2xl:ud-block h u p va"
-        />
-        <img
-          src="/src/assets/images/shape-03.svg"
-          alt="shape"
-          class="xc 2xl:ud-block h v w va"
-        />
-        <img src="/src/assets/images/shape-04.svg" alt="shape" class="h q r" />
-        <img src="/src/assets/images/hero.png" alt="Woman" class="h q r ua" />
-      </div>
-
-      <div class="bb ze ki xn 2xl:ud-px-0">
-        <div class="tc _o">
-          <div class="animate_left jn/2">
-            <h1 class="fk vj zp or kk wm wb">
-              We specialize in UI/UX, Web Development, Digital Marketing.
-            </h1>
-            <p class="fq">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-              fringilla magna mauris. Nulla fermentum viverra sem eu rhoncus
-              consequat varius nisi quis, posuere magna.
-            </p>
-
-            <div class="tc tf yo zf mb">
-              <a href="#" class="ek jk lk gh gi hi rg ml il vc _d _l"
-                >Get Started Now</a
-              >
-
-              <span class="tc sf">
-                <a href="#" class="inline-block ek xj kk wm">
-                  Call us (0123) 456 – 789
-                </a>
-                <span class="inline-block">For any question or concern</span>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
-    <!-- ===== Hero End ===== -->
-
-    <!-- ===== Small Features Start ===== -->
-    <!-- <section id="features">
-      <div class="bb ze ki yn 2xl:ud-px-12.5">
-        <div class="tc uf zo xf ap zf bp mq">
-          
-          <div class="animate_top kn to/3 tc cg oq">
-            <div class="tc wf xf cf ae cd rg mh">
-              <img src="/src/assets/images/icon-01.svg" alt="Icon" />
-            </div>
-            <div>
-              <h4 class="ek yj go kk wm xb">24/7 Support</h4>
-              <p>Lorem ipsum dolor sit amet conse adipiscing elit.</p>
-            </div>
-          </div>
-
-          
-          <div class="animate_top kn to/3 tc cg oq">
-            <div class="tc wf xf cf ae cd rg nh">
-              <img src="/src/assets/images/icon-02.svg" alt="Icon" />
-            </div>
-            <div>
-              <h4 class="ek yj go kk wm xb">Take Ownership</h4>
-              <p>Lorem ipsum dolor sit amet conse adipiscing elit.</p>
-            </div>
-          </div>
-
-          
-          <div class="animate_top kn to/3 tc cg oq">
-            <div class="tc wf xf cf ae cd rg oh">
-              <img src="/src/assets/images/icon-03.svg" alt="Icon" />
-            </div>
-            <div>
-              <h4 class="ek yj go kk wm xb">Team Work</h4>
-              <p>Lorem ipsum dolor sit amet conse adipiscing elit.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section> -->
     <!-- ===== Small Features End ===== -->
 
     <!-- ===== About Start ===== -->
-    <section class="ji gp uq 2xl:ud-py-35 pg">
-      <div class="bb ze ki xn wq">
-        <div class="tc wf gg qq">
+    <section class="px-12 py-8">
+      <div class="mx-auto p-4 lg:p-9">
+        <div class="flex items-center gap-8 lg:gap-28">
           <!-- About Images -->
-          <div class="animate_left xc gn gg jn/2 i">
+          <div class="relative hidden md:w-1/2 md:flex md:gap-8">
             <div>
               <img
                 src="/src/assets/images/shape-05.svg"
                 alt="Shape"
-                class="h -ud-left-5 x"
+                class="top-5 -left-5 absolute"
               />
               <img
-                src="/src/assets/images/about-01.png"
+                src="/src/assets/images/landing/decide.jpg"
                 alt="About"
-                class="ib"
+                class="mb-8 rounded-md h-15 w-auto"
               />
-              <img src="/src/assets/images/about-02.png" alt="About" />
+              <img
+                src="/src/assets/images/landing/dining.jpg"
+                class="rounded-md"
+                alt="About"
+              />
             </div>
             <div>
               <img src="/src/assets/images/shape-06.svg" alt="Shape" />
               <img
-                src="/src/assets/images/about-03.png"
+                src="/src/assets/images/landing/women.jpg"
                 alt="About"
-                class="ob gb"
+                class="mt-7 mb-5 rounded-md"
               />
               <img
                 src="/src/assets/images/shape-07.svg"
                 alt="Shape"
-                class="bb"
+                class="mx-auto"
               />
             </div>
           </div>
 
           <!-- About Content -->
-          <div class="animate_right jn/2">
-            <h4 class="ek yj mk gb" style="color: #f59e0b">Our Mission</h4>
-            <h2 class="fk vj zp pr kk wm qb">Save Time, Eat Better</h2>
-            <p class="uo">
+          <div class="md:w-1/2">
+            <h4 class="text-primary font-medium text-xl leading-relaxed mb-5">
+              Our Mission
+            </h4>
+            <h2
+              class="mb-7 text-black font-semibold text-3xl leading-9 md:text-4xl md:leading-10 xl:text-5xl xl:leading-[2.75rem]"
+            >
+              Save Time, Eat Better
+            </h2>
+            <p>
               Our mission is simple – to help you decide where to eat and save
               you time while doing it. No more endless group chats or
               last-minute Google searches. With EatWhere, you'll make dining
               decisions in a snap.
             </p>
-
-            <a
-              href="https://www.youtube.com/watch?v=xcJtL7QggTI"
-              data-fslightbox
-              class="vc wf hg mb"
-            >
-              <!-- <svg fill="#f59e0b" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71px" height="71px" viewBox="0 0 408.221 408.221" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.816442"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M204.11,0C91.388,0,0,91.388,0,204.111c0,112.725,91.388,204.11,204.11,204.11c112.729,0,204.11-91.385,204.11-204.11 C408.221,91.388,316.839,0,204.11,0z M286.547,229.971l-126.368,72.471c-17.003,9.75-30.781,1.763-30.781-17.834V140.012 c0-19.602,13.777-27.575,30.781-17.827l126.368,72.466C303.551,204.403,303.551,220.217,286.547,229.971z"></path> </g> </g> </g></svg>             -->
-
-              <span class="tc wf xf be dd rg i gh ua">
-                <span class="nf h vc yc vd rg gh qk -ud-z-1"></span>
-                <img src="/src/assets/images/icon-play.svg" alt="Play" />
-              </span>
-              <span class="kk">TRY IT OUT</span>
-            </a>
+            <router-link to="/group">
+              <a class="inline-flex items-center gap-6 mt-10">
+                <span
+                  class="bg-primary rounded-full justify-center items-center w-12 h-12 flex z-10 relative"
+                >
+                  <span
+                    class="opacity-75 bg-primary rounded-full w-full h-full animate-ping inline-flex -z-10 absolute"
+                  ></span>
+                  <img src="/src/assets/images/icon-play.svg" alt="Play" />
+                </span>
+                <span>TRY IT OUT</span>
+              </a>
+            </router-link>
           </div>
         </div>
       </div>
@@ -172,43 +91,5 @@ import LandingHeader from "@/components/LandingHeader.vue";
 
     <!-- ===== Animations ===== -->
     <SlideShow />
-
-
-    <section class="i pg qh rm ji hp">
-      <img
-        src="/src/assets/images/shape-11.svg"
-        alt="Shape"
-        class="of h ga ha ke"
-      />
-      <img
-        src="/src/assets/images/shape-07.svg"
-        alt="Shape"
-        class="h ia o ae jf"
-      />
-      <img src="/src/assets/images/shape-14.svg" alt="Shape" class="h ja ka" />
-      <img src="/src/assets/images/shape-15.svg" alt="Shape" class="h q p" />
-
-      <div class="bb ze i va ki xn br">
-        <div class="tc uf sn tn xf un gg">
-          <div class="animate_top me/5 ln rj">
-            <h2 class="gk vj zp or kk wm hc">785</h2>
-            <p class="ek bk aq">Global Brands</p>
-          </div>
-          <div class="animate_top me/5 ln rj">
-            <h2 class="gk vj zp or kk wm hc">533</h2>
-            <p class="ek bk aq">Happy Clients</p>
-          </div>
-          <div class="animate_top me/5 ln rj">
-            <h2 class="gk vj zp or kk wm hc">865</h2>
-            <p class="ek bk aq">Winning Award</p>
-          </div>
-          <div class="animate_top me/5 ln rj">
-            <h2 class="gk vj zp or kk wm hc">346</h2>
-            <p class="ek bk aq">Happy Clients</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
   </main>
 </template>
