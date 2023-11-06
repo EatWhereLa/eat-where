@@ -205,7 +205,7 @@ const handleModal = (
 </script>
 
 <template>
-  <main class="p-4 md:p-0 overflow-x-auto">
+  <main class="p-4 md:p-0 overflow-y-auto h-full">
     <h2 class="text-primary mb-2.5" v-if="tabulatedResults.length > 0">
       <span class="text-3xl font-semibold mr-2">1st</span>
       place
