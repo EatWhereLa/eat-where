@@ -1,6 +1,6 @@
 <template>
   <section
-    class="flex flex-col md:flex-row bg-[#f6e3e5] overflow-hidden rounded-xl items-center"
+    class="flex flex-col-reverse lg:flex-row bg-[#f6e3e5] overflow-hidden rounded-xl items-center"
   >
     <div class="px-12 py-8 flex flex-col justify-center 2xl:px-20 2xl:py-16">
       <span class="uppercase text-sm tracking-widest text-primary font-medium">
