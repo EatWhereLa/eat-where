@@ -2,7 +2,7 @@
 import { useRouter } from "vue-router";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import GenericButton from "@/components/GenericButton.vue";
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted, type Ref, onUnmounted } from "vue";
 import { useGeolocation } from "../composables/useGeolocation";
 import { useTimer } from "@/composables/useTimer";
 import RestaurantModal from "@/components/RestaurantModal.vue";
@@ -22,6 +22,7 @@ import ky from "ky";
 import { useAuthStore } from "@/stores/auth";
 import { useGroupBookmarksStore } from "@/stores/groupBookmarks";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";
+import { useUserSettingsStore } from "@/stores/userSettings";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -31,6 +32,7 @@ const currentLocation = useCurrentLocationStore();
 const restaurants = useRestaurantsStore();
 const upvotedRestaurants = useUpvoteRestaurantsStore();
 const groupUpvotedRestaurants = useGroupUpvoteRestaurantsStore();
+const userSettingsStore = useUserSettingsStore();
 const { groupBookmarks } = storeToRefs(useGroupBookmarksStore());
 const { username } = storeToRefs(useAuthStore());
 
@@ -38,9 +40,9 @@ const { restaurants: upvotedRestaurantsVal } = storeToRefs(upvotedRestaurants);
 const { restaurants: groupUpvotedRestaurantsVal } = storeToRefs(
   groupUpvotedRestaurants,
 );
-const { getRandomCuisineArr } = useCuisineCategories();
+const { getRandomCuisineArr, cuisineCategories } = useCuisineCategories();
 
-const filterTags = ["All", "Fastfood", "Halal", "Japanese", "Korean"];
+const selectedCategories: Ref<string[]> = ref([]);
 const prices = [
   "All",
   "Inexpensive",
@@ -84,22 +86,8 @@ const calcDistanceValue = (selectedValue: string) => {
   return distanceVal;
 };
 
-const toggleTag = (tag: string) => (selectFilter.selectedTag = tag);
-
 const isUpvoted = (id: string) =>
   upvotedRestaurants.restaurants.find((result) => result.place_id === id);
-
-const isLocationChanged = () =>
-  currentLocation.address !== currentLocation.oldAddress;
-
-const isPriceChanged = () =>
-  selectFilter.selectedPrice !== selectFilter.oldSelectedPrice;
-
-const isDistanceChanged = () =>
-  selectFilter.selectedDistance !== selectFilter.oldSelectedDistance;
-
-const isTagChanged = () =>
-  selectFilter.selectedTag !== selectFilter.oldSelectedTag;
 
 const { coords, address } = useGeolocation();
 const currPos = computed(() => ({
@@ -150,13 +138,6 @@ const success = async (position: LatLng) => {
   }`;
   const URL = `${API_URL}/google?${query}`;
 
-  // if (
-  //   sessionStorage.getItem("restaurants") === null ||
-  //   isLocationChanged() ||
-  //   isPriceChanged() ||
-  //   isDistanceChanged() ||
-  //   isTagChanged()
-  // ) {
   const data = (await ky(URL).json()) as Restaurant[];
 
   currentLocation.setLocationAddress(currentLocation.address);
@@ -218,6 +199,12 @@ const getRestaurants = async () => {
 };
 
 onMounted(async () => {
+  if (userSettingsStore.selectedDist) {
+    selectFilter.setSelectedDistance(userSettingsStore.selectedDist);
+  }
+  if (userSettingsStore.selectedCategories.length > 0) {
+    selectedCategories.value = [...userSettingsStore.selectedCategories];
+  }
   getRestaurants();
   init();
 });
@@ -307,9 +294,23 @@ const handleGoToResults = async () => {
   router.push("/results");
 };
 
-const getRemainingList = () => {
-  return restaurants.restaurants.slice(1);
-};
+onUnmounted(() => {
+  killTimers();
+});
+
+const filterList = computed(() => {
+  let resultArray = restaurants.restaurants.filter(
+    (item2) =>
+      !groupBookmarks.value.some((item1) => item1.place_id === item2.place_id),
+  );
+  if (selectedCategories.value.length > 0) {
+    resultArray = resultArray.filter((val) =>
+      val.category.some((cat) => selectedCategories.value.includes(cat)),
+    );
+  }
+
+  return resultArray;
+});
 
 const handleModal = (
   placeId: Restaurant["place_id"],
@@ -321,6 +322,16 @@ const handleModal = (
   showModalValues.value.imgSrc = imgSrc;
   showModalValues.value.show = !showModalValues.value.show;
 };
+
+const toggleSelected = (category: string) => {
+  const res = selectedCategories.value.findIndex((item) => item === category);
+  if (res >= 0) {
+    // The item is already in the list, we want to remove it
+    selectedCategories.value.splice(res, 1);
+  } else {
+    selectedCategories.value.push(category);
+  }
+};
 </script>
 
 <template>
@@ -328,15 +339,16 @@ const handleModal = (
     <div class="max-w-xl min-w-full overflow-x-auto scrollbar-hide">
       <div class="inline-flex gap-3 pb-8 pt-2 px-1">
         <va-chip
-          v-for="filter in filterTags"
-          :key="filter"
-          color="white"
-          :class="{ 'chip-active': selectFilter.selectedTag === filter }"
           size="large"
-          class="shadow-default-sm"
-          @click="toggleTag(filter)"
+          :outline="!selectedCategories.includes(category)"
+          :class="{
+            'chip-active': selectedCategories.includes(category),
+          }"
+          v-for="(category, idx) in cuisineCategories"
+          :key="idx"
+          @click="toggleSelected(category)"
         >
-          <span class="text-base px-2">{{ filter }}</span>
+          <span class="text-base">{{ category }}</span>
         </va-chip>
       </div>
     </div>
@@ -451,11 +463,7 @@ const handleModal = (
       v-if="restaurants.restaurants.length > 0"
     >
       <div v-if="isLoadingRestaurants">Loading...</div>
-      <div
-        v-else
-        v-for="restaurant in getRemainingList()"
-        :key="restaurant.place_id"
-      >
+      <div v-else v-for="restaurant in filterList" :key="restaurant.place_id">
         <RestaurantListItem
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
