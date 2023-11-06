@@ -21,14 +21,6 @@ function getAvatarURI(username: string) {
       >
         <p>{{ user }}</p>
       </div>
-      <div class="flex items-center justify-center">
-        <va-icon
-          class="text-red-600 col-span-1"
-          name="close"
-          style="display: contents"
-          size="0.625rem"
-        />
-      </div>
     </div>
   </div>
 </template>
