@@ -340,7 +340,7 @@ const handleModal = (
       </div>
     </div>
 
-    <div class="flex gap-4">
+    <div class="flex flex-col md:flex-row gap-4">
       <va-select
         v-model="selectFilter.selectedPrice"
         class="mb-6"

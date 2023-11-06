@@ -255,7 +255,7 @@ const handleSort = () => {
           >
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:gap-10 gap-1 h-full">
               <RestaurantListItem
-                class="h-1/4"
+                class="h-1/2 md:h-1/4"
                 v-for="(restaurant, idx) in filteredList"
                 :key="idx"
                 :title="restaurant.name"
