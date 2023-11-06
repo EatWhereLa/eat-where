@@ -194,6 +194,7 @@ const handleSubmit = () => {
               placeholder="Current Location"
               class="w-full bg-transparent"
               :value="currentLocation.address"
+              disabled
             />
           </div>
           <generic-button
