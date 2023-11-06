@@ -386,13 +386,13 @@ const handleModal = (
         <p class="text-primary font-semibold text-sm">Bookmarked</p>
         <hr class="h-px my-2 bg-primary w-2/5 m-auto" />
       </div>
-      <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <RestaurantListItem
           v-for="restaurant in groupBookmarks"
           :key="restaurant.place_id"
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
-          :tags="['Burger', 'Fastfood', 'Halal']"
+          :tags="restaurant.category"
           :rating="restaurant.rating"
           :distance="restaurant.vicinity"
           @click="
@@ -443,12 +443,12 @@ const handleModal = (
       </div>
       <hr class="h-px my-2 mb-3 bg-primary w-full m-auto" />
     </div>
-    <ul
-      class="flex flex-col gap-4 mb-16"
+    <div
+      class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-16"
       v-if="restaurants.restaurants.length > 0"
     >
       <div v-if="isLoadingRestaurants">Loading...</div>
-      <li
+      <div
         v-else
         v-for="restaurant in getRemainingList()"
         :key="restaurant.place_id"
@@ -456,9 +456,10 @@ const handleModal = (
         <RestaurantListItem
           :title="restaurant.name"
           :imgSrc="getRestaurantImageUrl(restaurant)"
-          :tags="['Burger', 'Fastfood', 'Halal']"
+          :tags="restaurant.category"
           :rating="restaurant.rating"
           :distance="restaurant.vicinity"
+          class="col-span-1 h-full"
           @click="
             handleModal(
               restaurant.place_id,
@@ -488,8 +489,6 @@ const handleModal = (
               name="arrow_downward"
               size="1.5rem"
             />
-
-            <!-- <span class="font-semibold">100</span> -->
             <span
               v-if="!isUpvoted(restaurant.place_id)"
               class="font-semibold uppercase tracking-widest text-xs"
@@ -504,8 +503,8 @@ const handleModal = (
             </span>
           </generic-button>
         </RestaurantListItem>
-      </li>
-    </ul>
+      </div>
+    </div>
 
     <div
       class="w-full fixed bottom-8 left-0 right-0 inline-flex justify-center gap-4"
