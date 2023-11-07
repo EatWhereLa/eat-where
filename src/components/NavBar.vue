@@ -32,9 +32,7 @@ function showMenuItem(itemName: string[]) {
     </template>
     <template #center>
       <va-navbar-item class="!hidden md:!block" v-if="$route.name === 'app'">
-        <h1
-          class="uppercase text-3xl text-primary text-center font-semibold flex justify-center items-center"
-        >
+        <h1 class="uppercase text-3xl text-primary text-center font-semibold flex justify-center items-center">
           EatWhere!?
         </h1>
       </va-navbar-item>
@@ -60,17 +58,17 @@ function showMenuItem(itemName: string[]) {
           </p> -->
         </h1>
       </va-navbar-item>
-      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
+      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote']) && isAuthenticated">
         <router-link to="/profile" active-class="text-primary">
           Profile
         </router-link>
       </va-navbar-item>
-      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
+      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote']) && isAuthenticated">
         <router-link to="/bookmarks" active-class="text-primary">
           Bookmarks
         </router-link>
       </va-navbar-item>
-      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
+      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote']) && isAuthenticated">
         <router-link to="/activity" active-class="text-primary">
           Activity
         </router-link>
@@ -112,11 +110,7 @@ function showMenuItem(itemName: string[]) {
 
         <div class="block md:hidden">
           <va-navbar-item>
-            <va-button
-              :icon="showSidebar ? 'menu_open' : 'menu'"
-              preset="secondary"
-              @click="$emit('toggleSidebar')"
-            />
+            <va-button :icon="showSidebar ? 'menu_open' : 'menu'" preset="secondary" @click="$emit('toggleSidebar')" />
           </va-navbar-item>
         </div>
       </div>
