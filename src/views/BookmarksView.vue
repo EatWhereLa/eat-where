@@ -256,6 +256,7 @@ const handleSort = () => {
                 :key="idx"
                 :title="restaurant.name"
                 :imgSrc="getRestaurantImageUrl(restaurant)"
+                :place-id="restaurant.place_id"
                 :tags="restaurant.category"
                 :rating="restaurant.rating"
                 :distance="restaurant.vicinity"

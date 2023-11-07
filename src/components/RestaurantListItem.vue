@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import GenericButton from "@/components/GenericButton.vue";
 import ky from "ky";
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useBookmarks } from "@/composables/useBookmarks";
-
 const props = defineProps<{
   title: string;
   imgSrc: string;
@@ -16,7 +15,7 @@ const props = defineProps<{
   time?: string;
 }>();
 
-const { addBookmark } = useBookmarks();
+const { addBookmark, bookmarks } = useBookmarks();
 
 const crowd = ref(0);
 
@@ -25,7 +24,9 @@ onMounted(async () => {
 });
 
 const imageUrl = ref("");
-
+const isBookmarked = computed(() => {
+  return bookmarks.value.some((val) => val.place_id === props.placeId);
+});
 async function setImageURL(url: string) {
   try {
     const res = (await ky(url).json()) as { image_url: string };
@@ -71,12 +72,14 @@ function handleBookmark() {
         class="mb-2 text-xl lg:text-3xl font-semibold flex items-center justify-between"
       >
         <h5 class="font-semibold text-black text-xl">{{ title }}</h5>
-        <va-icon
-          name="bookmark_outline"
-          v-if="$route.name !== 'restaurantDetail'"
-          class="flex justify-end z-50"
-          @click.stop="handleBookmark"
-        />
+        <div @click.once="handleBookmark">
+          <va-icon
+            name="bookmark_outline"
+            v-if="$route.name !== 'restaurantDetail'"
+            class="flex justify-end z-50"
+            :color="isBookmarked ? 'primary' : '#000'"
+          />
+        </div>
       </div>
 
       <ul v-if="tags" class="text-gray-secondary text-xs flex gap-2">

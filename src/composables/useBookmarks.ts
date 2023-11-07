@@ -3,18 +3,22 @@ import { rand } from "@ngneat/falso";
 import { useCuisineCategories } from "@/composables/useCuisineCategories";
 import ky from "ky";
 import { type Ref, ref } from "vue";
+import { useToast } from "vuestic-ui";
 
 const api = ky.create({ prefixUrl: import.meta.env.VITE_API_URL });
 const bookmarks: Ref<Restaurant[]> = ref([]);
 const { getRandomCuisineArr } = useCuisineCategories();
 export function useBookmarks() {
+  const { init } = useToast();
   async function getBookmarks(user_id: string) {
     try {
       const res = (await api
         .get(`bookmark/restaurants?user_id=${user_id}`)
         .json()) as Restaurant[];
       for (const restaurant of res) {
-        restaurant.category = getRandomCuisineArr();
+        if (restaurant.category === undefined) {
+          restaurant.category = getRandomCuisineArr();
+        }
       }
       bookmarks.value = res;
     } catch (error) {
@@ -31,8 +35,18 @@ export function useBookmarks() {
           },
         })
         .text();
+      await getBookmarks(user_id);
+      init({
+        message: "Successfully added bookmark!",
+        color: "success",
+      });
     } catch (error) {
       console.error(error);
+      const err = error as Error;
+      init({
+        message: err.message,
+        color: "danger",
+      });
     }
   }
   return { bookmarks, getBookmarks, addBookmark };

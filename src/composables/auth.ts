@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
 import { Amplify, Auth } from "aws-amplify";
+import { useToast } from "vuestic-ui";
 
 Amplify.configure({
   Auth: {
@@ -18,6 +19,7 @@ Amplify.configure({
 export function useAuth() {
   const { setAuth, setEmail, setUsername } = useAuthStore();
   const router = useRouter();
+  const { init } = useToast();
   async function isLoggedIn() {
     try {
       const user = await Auth.currentAuthenticatedUser();
@@ -34,8 +36,14 @@ export function useAuth() {
       setAuth(true);
       setEmail(user.attributes.email);
       setUsername(user.username);
+      router.push("/");
     } catch (error) {
+      const err = error as Error;
       console.log("error signing in", error);
+      init({
+        message: err.message,
+        color: "danger",
+      });
     }
   }
 
@@ -49,6 +57,13 @@ export function useAuth() {
       return res;
     } catch (error) {
       console.log("error signing in", error);
+
+      const err = error as Error;
+
+      init({
+        message: err.message,
+        color: "danger",
+      });
     }
   }
 
@@ -58,6 +73,13 @@ export function useAuth() {
       return res;
     } catch (error) {
       console.log("error signing in", error);
+
+      const err = error as Error;
+
+      init({
+        message: err.message,
+        color: "danger",
+      });
     }
   }
 
