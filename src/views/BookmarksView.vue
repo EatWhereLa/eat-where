@@ -27,6 +27,23 @@ const showModalValues = ref({
 });
 
 const search = ref("");
+const filtercuisineCategories: Ref<string[]> = ref([]);
+
+
+const searchfunction = () => {
+  const searchTerm = search.value.toLowerCase(); // Convert search value to lowercase for case-insensitive search
+  console.log(searchTerm);
+  filtercuisineCategories.value = cuisineCategories.filter(category => category.toLowerCase().includes(searchTerm));
+  console.log(filtercuisineCategories.value);
+  
+};
+
+// const searchfunction = () => {
+//   const searchValue = search.value.toLowerCase(); // Convert search value to lowercase for case-insensitive search
+//   getRandomCuisineArr = cuisineCategories.filter(category => category.toLowerCase().includes(searchValue));
+// };
+
+
 
 const isAscending = ref(false);
 const isDescending = ref(false);
@@ -185,10 +202,20 @@ const toggleSelectedPrice = (price: string) => {
                   id="exampleSearch2"
                   placeholder="Cuisine"
                   v-model="search"
+                  @input="searchfunction"
                 />
               </div>
             </div>
-            <div class="flex flex-col gap-4 grow overflow-y-scroll">
+            <div v-if="filtercuisineCategories.length > 0" class="flex flex-col gap-4 grow overflow-y-scroll">
+              <va-checkbox
+                v-for="(category, idx) in filtercuisineCategories"
+                :key="idx"
+                v-model="selectedCategories"
+                :label="category"
+                :array-value="category"
+              />
+            </div>
+            <div v-else class="flex flex-col gap-4 grow overflow-y-scroll">
               <va-checkbox
                 v-for="(category, idx) in cuisineCategories"
                 :key="idx"
