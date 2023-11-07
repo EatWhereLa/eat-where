@@ -103,6 +103,8 @@ const appReviews: Ref<
 
 const restaurantStatus = ref("Open 24 Hours");
 
+const clashes = ref(false);
+
 const priceLevels = [
   "Free",
   "Inexpensive",
@@ -147,7 +149,7 @@ const getClosingTime = () => {
       }
     }
   } else {
-    restaurantStatus.value = "Opening Hours (Closed)";
+    restaurantStatus.value = "Opening Hours (Currently Closed)";
   }
 };
 
@@ -167,8 +169,8 @@ onMounted(async () => {
   updateReviews();
 
   if (authStore.username !== "" && route.path !== "/activity" && route.path !== "/bookmarks") {
-    const clashes = userTimingClash();
-    if (clashes) {
+    clashes.value = userTimingClash();
+    if (clashes.value) {
       init({
         message: "Yay this fits your preference!",
         color: "success",
@@ -271,6 +273,7 @@ const handleModal = (
       :place-id="showModalValues.placeId"
       :opening-hours="showModalValues.periods"
       :choosing-modal="modalValues"
+      :clashes="clashes"
       v-else
       @closeFreqModal="
         handleModal(

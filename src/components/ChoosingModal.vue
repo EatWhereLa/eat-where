@@ -17,6 +17,7 @@ const props = defineProps({
   placeId: { type: String, required: true },
   openingHours: {type: Array, required: true},
   choosingModal: {type: Object, required: true},
+  clashes: {type: Boolean, required: false},
 });
 
 const modalValues: Ref<{
@@ -185,8 +186,10 @@ const handleModal = (
   </va-modal>
   
   <p>Most Popular: Date: {{ showModalValues.mostFreqDate }} Time: {{ showModalValues.mostFreqTime }}</p>
+  <p v-if="!clashes">(Restaurant is not opened in most popular timing)</p>
   <div class="flex flex-wrap justify-center mt-2"> 
   <generic-button 
+      v-if="clashes"
       titleColor="text-white"
       bgColor="bg-primary"
       class="min-w-1/2 max-w-1/2 mx-1 my-1"

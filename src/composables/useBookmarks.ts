@@ -49,5 +49,25 @@ export function useBookmarks() {
       });
     }
   }
-  return { bookmarks, getBookmarks, addBookmark };
+
+  async function deleteBookmark(user_id: string, place_id: string) {
+    try {
+      await api
+        .delete(`bookmark/remove?user_id=${user_id}&place_id=${place_id}`)
+        .text();  
+      await getBookmarks(user_id);
+      init({
+        message: "Successfully deleted bookmark",
+        color: "success",
+      });
+    } catch (error) {
+      console.error(error);
+      const err = error as Error;
+      init({
+        message: err.message,
+        color: "danger",
+      });
+    }
+  }
+  return { bookmarks, getBookmarks, addBookmark, deleteBookmark };
 }

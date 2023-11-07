@@ -15,7 +15,7 @@ const props = defineProps<{
   time?: string;
 }>();
 
-const { addBookmark, bookmarks } = useBookmarks();
+const { addBookmark, bookmarks, deleteBookmark } = useBookmarks();
 
 const crowd = ref(0);
 
@@ -45,9 +45,17 @@ onMounted(async () => {
   generateCrowd(1, 5);
 });
 
-function handleBookmark() {
+function handleBookmark(event: { stopPropagation: () => void }) {
+  event.stopPropagation();
   if (props.userId && props.placeId) {
     addBookmark(props.userId, props.placeId);
+  }
+}
+
+function removeBookmark(event: { stopPropagation: () => void }) {
+  event.stopPropagation();
+  if (props.userId && props.placeId) {
+    deleteBookmark(props.userId, props.placeId);
   }
 }
 </script>
@@ -72,12 +80,18 @@ function handleBookmark() {
         class="mb-2 text-xl lg:text-3xl font-semibold flex items-center justify-between"
       >
         <h5 class="font-semibold text-black text-xl">{{ title }}</h5>
-        <div @click.once="handleBookmark">
+        <div @click="handleBookmark($event)" v-if="!isBookmarked">
           <va-icon
             name="bookmark_outline"
-            v-if="$route.name !== 'restaurantDetail'"
             class="flex justify-end z-50"
-            :color="isBookmarked ? 'primary' : '#000'"
+            :color="'primary'"
+          />
+        </div>
+        <div @click="removeBookmark($event)" v-else>
+          <va-icon
+            name="bookmark"
+            class="flex justify-end z-50"
+            :color="'primary'"
           />
         </div>
       </div>
