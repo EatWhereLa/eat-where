@@ -83,7 +83,7 @@ function handleBookmark() {
       </div>
 
       <ul v-if="tags" class="text-gray-secondary text-xs flex gap-2">
-        <li v-for="tag in tags" :key="tag">{{ tag }}</li>
+        <li v-for="tag in tags" :key="placeId + tag">{{ tag }}</li>
       </ul>
       <span class="grid grid-cols-1 text-xs lg:grid-cols-3 gap-2">
         <div class="col-span-1">

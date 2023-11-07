@@ -236,11 +236,19 @@ watch(
 
 const handleUpvote = (event: { stopPropagation: () => void }, id: string) => {
   event.stopPropagation();
-  const foundRestaurant: Restaurant | undefined = restaurants.restaurants.find(
+  let foundRestaurant: Restaurant | undefined = restaurants.restaurants.find(
     (restaurant) => restaurant.place_id === id,
   );
 
-  if (foundRestaurant == undefined) return;
+  if (foundRestaurant === undefined) {
+    foundRestaurant = groupBookmarks.value.find(
+      (restaurant) => restaurant.place_id === id,
+    );
+  }
+
+  if (foundRestaurant === undefined) {
+    return;
+  }
 
   const foundUpvotedRestaurant = upvotedRestaurants.restaurants.find(
     (restaurant) => restaurant.place_id === id,
