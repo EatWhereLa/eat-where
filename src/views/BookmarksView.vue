@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import SortButtonOnSide from "@/components/ForRestaurantBookmark/SortButtonOnSide.vue";
 import RestaurantListItem from "@/components/RestaurantListItem.vue";
 import RestaurantModal from "@/components/RestaurantModal.vue";
 import { ref, onBeforeMount, type Ref, computed } from "vue";
@@ -16,8 +15,8 @@ const { bookmarks: restaurants, getBookmarks } = useBookmarks();
 const prices = ["$", "$$", "$$$", "$$$$", "$$$$$"];
 
 const selectedCategories: Ref<string[]> = ref([]);
-const selectOptions = ref(["Name", "Distance", "Price"]);
-const selectedOption = ref("");
+const selectOptions = ref(["Name", "Price", "Rating"]);
+const selectedOption = ref("Name");
 const priceFilters: Ref<string[]> = ref([]);
 
 const showModalValues = ref({
@@ -38,7 +37,7 @@ const filteredList = computed(() => {
     priceFilters.value.length === 0 &&
     selectedCategories.value.length === 0
   ) {
-    return restaurants.value;
+    return getSortedRestaurants(restaurants.value);
   }
 
   const selectedCategoriesSet = new Set(selectedCategories.value);
@@ -55,9 +54,31 @@ const filteredList = computed(() => {
       (priceFiltersSet.size === 0 ||
         priceFiltersSet.has(restaurant.price ?? 1)),
   );
-
-  return restaurantsFiltered;
+  return getSortedRestaurants(restaurantsFiltered);
 });
+
+function getSortedRestaurants(restaurantsFiltered: Restaurant[]) {
+  switch (selectedOption.value) {
+    case "Price":
+      return restaurantsFiltered.sort(
+        (a, b) => (a.price ?? 0) - (b.price ?? 0),
+      );
+
+    case "Rating":
+      return restaurantsFiltered.sort((a, b) => b.rating - a.rating);
+
+    default:
+      return restaurantsFiltered.sort((a, b) => {
+        if (a.name > b.name) {
+          return -1;
+        }
+        if (a.name < b.name) {
+          return 1;
+        }
+        return 0;
+      });
+  }
+}
 
 function generateRandomPrice() {
   return Math.round(Math.random() * 5) + 1;
@@ -119,17 +140,6 @@ const toggleSelectedPrice = (price: string) => {
     priceFilters.value.push(price);
   }
 };
-
-// const handleBookmarkToggle = (id: string) => {
-//   const res = restaurants.value.find((restaurant) => restaurant.id === id);
-//   if (res) {
-//     res.bookmark = !res.bookmark;
-//   }
-// };
-
-const handleSort = () => {
-  // Handle sort here
-};
 </script>
 
 <template>
@@ -160,7 +170,11 @@ const handleSort = () => {
             <h1 class="font-bold text-2xl">Filters</h1>
             <div>
               <div class="fold-black text-black">Sort By</div>
-              <SortButtonOnSide @select-sort="handleSort" />
+              <va-option-list
+                v-model="selectedOption"
+                type="radio"
+                :options="selectOptions"
+              />
             </div>
             <div>
               <div class="fold-black text-black">Categories</div>
