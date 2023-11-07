@@ -43,34 +43,28 @@ function showMenuItem(itemName: string[]) {
           <p class="text-primary">
             {{ displayTime }}
           </p>
-          <!-- <p
-            v-if="currentLocation.address === ''"
-            class="text-xs text-gray-500"
-          >
-            <va-icon name="near_me" size="1rem" class="mr-2 text-primary" />
-            {{ currPos.address }}
-          </p>
-          <p
-            v-else-if="currentLocation.address !== ''"
-            class="text-xs text-gray-500"
-          >
-            <va-icon name="near_me" size="1rem" class="mr-2 text-primary" />{{
-              currentLocation.address
-            }}
-          </p> -->
         </h1>
       </va-navbar-item>
-      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
+      <va-navbar-item
+        class="!hidden md:!block"
+        v-if="showMenuItem(['vote']) && isAuthenticated"
+      >
         <router-link to="/profile" active-class="text-primary">
           Profile
         </router-link>
       </va-navbar-item>
-      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
+      <va-navbar-item
+        class="!hidden md:!block"
+        v-if="showMenuItem(['vote']) && isAuthenticated"
+      >
         <router-link to="/bookmarks" active-class="text-primary">
           Bookmarks
         </router-link>
       </va-navbar-item>
-      <va-navbar-item class="!hidden md:!block" v-if="showMenuItem(['vote'])">
+      <va-navbar-item
+        class="!hidden md:!block"
+        v-if="showMenuItem(['vote']) && isAuthenticated"
+      >
         <router-link to="/activity" active-class="text-primary">
           Activity
         </router-link>
