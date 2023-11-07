@@ -111,24 +111,6 @@ const priceLevels = [
   "Very Expensive",
 ];
 
-const restaurantMenuItems = [
-  {
-    title: "Big Mac® Upsized Meal",
-    imgSrc: "/src/assets/restaurant_menu_item_1.webp",
-    price: 7.5,
-  },
-  {
-    title: "Big Mac® Upsized Meal",
-    imgSrc: "/src/assets/restaurant_menu_item_1.webp",
-    price: 7.5,
-  },
-  {
-    title: "Big Mac® Upsized Meal",
-    imgSrc: "/src/assets/restaurant_menu_item_1.webp",
-    price: 7.5,
-  },
-];
-
 const fetchPlaceInfo = async () => {
   const URL = `${API_URL}/google/place-details?place_id=${props.placeId}`;
   const res = (await ky(URL).json()) as { result: RestaurantDetails };
@@ -184,7 +166,7 @@ onMounted(async () => {
   getClosingTime();
   updateReviews();
 
-  if (authStore.username !== "" && route.path !== "/activity") {
+  if (authStore.username !== "" && route.path !== "/activity" && route.path !== "/bookmarks") {
     const clashes = userTimingClash();
     if (clashes) {
       init({
