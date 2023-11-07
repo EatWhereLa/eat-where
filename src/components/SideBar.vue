@@ -16,6 +16,7 @@ defineEmits(["close-sidebar"]);
       :active="route.name === 'profile'"
       to="/profile"
       @click="$emit('close-sidebar')"
+      v-if="isAuthenticated"
     >
       <VaSidebarItemContent>
         <VaSidebarItemTitle> Profile </VaSidebarItemTitle>
@@ -25,6 +26,7 @@ defineEmits(["close-sidebar"]);
       :active="route.name === 'bookmarks'"
       to="/bookmarks"
       @click="$emit('close-sidebar')"
+      v-if="isAuthenticated"
     >
       <VaSidebarItemContent>
         <VaSidebarItemTitle> Bookmarks </VaSidebarItemTitle>
@@ -34,6 +36,7 @@ defineEmits(["close-sidebar"]);
       :active="route.name === 'activity'"
       to="/activity"
       @click="$emit('close-sidebar')"
+      v-if="isAuthenticated"
     >
       <VaSidebarItemContent>
         <VaSidebarItemTitle> Activity </VaSidebarItemTitle>
