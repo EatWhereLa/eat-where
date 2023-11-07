@@ -290,8 +290,8 @@ const toggleSelectedPrice = (price: string) => {
           <div class="overflow-y-auto grow h-full flex justify-center">
             <div class="grid grid-cols-1 h-1/5 lg:grid-cols-2 xl:gap-10 gap-1">
               <RestaurantListItem
-                v-for="(restaurant, idx) in filteredList"
-                :key="idx"
+              v-for="restaurant in filteredList"
+                :key="restaurant.place_id"
                 :title="restaurant.name"
                 :imgSrc="getRestaurantImageUrl(restaurant)"
                 :place-id="restaurant.place_id"
