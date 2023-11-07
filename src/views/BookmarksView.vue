@@ -32,10 +32,7 @@ const filtercuisineCategories: Ref<string[]> = ref([]);
 
 const searchfunction = () => {
   const searchTerm = search.value.toLowerCase(); // Convert search value to lowercase for case-insensitive search
-  console.log(searchTerm);
   filtercuisineCategories.value = cuisineCategories.filter(category => category.toLowerCase().includes(searchTerm));
-  console.log(filtercuisineCategories.value);
-  
 };
 
 // const searchfunction = () => {
