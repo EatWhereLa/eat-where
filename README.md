@@ -15,8 +15,9 @@ volta install node@20
 # install pnpm
 volta install pnpm
 ```
-3. Ensure you have a [supabase](https://supabase.com/) project created and retrieve the API url and key under `project settings > API > Project URL / Project API keys`
-4. Ensure you have an AWS account with AWS Cognito configured along with an App Client (Everything default)
+3. Ensure that you have a [Google Maps API](https://developers.google.com/maps) Key
+4. Ensure you have a [supabase](https://supabase.com/) project created and retrieve the API url and key under `project settings > API > Project URL / Project API keys`
+5. Ensure you have an AWS account with AWS Cognito configured along with an App Client (Everything default)
 
 ### Make sure to populate the `.env` file based on the `.env.example` provided in the repository
 
