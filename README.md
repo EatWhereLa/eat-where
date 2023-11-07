@@ -1,29 +1,9 @@
-# eat-where-la
-
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+# eat-where
 
 ## Setting up the project repository on local machine
 
-1. Make sure you have `node`@20 and `pnpm` installed in your local machine
+1. Make sure you have `node`@20 and [pnpm](https://pnpm.io/installation) installed in your local machine
+
 2. Run this command to install them using volta as the package manager
 ```
 # install Volta
@@ -37,7 +17,6 @@ volta install pnpm
 ```
 3. Ensure you have a [supabase](https://supabase.com/) project created and retrieve the API url and key under `project settings > API > Project URL / Project API keys`
 4. Ensure you have an AWS account with AWS Cognito configured along with an App Client (Everything default)
-
 
 ### Make sure to populate the `.env` file based on the `.env.example` provided in the repository
 
@@ -69,14 +48,13 @@ pnpm dev
 pnpm build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-pnpm test:unit
-```
-
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh
 pnpm lint
 ```
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
