@@ -82,31 +82,9 @@ const submitReservation = async() => {
     emit("closebookingmodal");
 }
 
-const handleReservationModal = () => {
-  showReservationModal.value.show = !showReservationModal.value.show;
-};
 </script>
 
 <template>
-    <va-modal
-      v-model="showReservationModal.show"
-      hide-default-actions
-      class="mx-auto"
-      size="large"
-      v-if="openingHours !== undefined"
-      closeButton
-    >
-      <ReservationModal
-        :title="props.title"
-        :place-id="props.placeId"
-        :opening-hours="props.openingHours!"
-        @closeParent="emit('closebookingmodal')"
-        @closeModal="{
-            handleReservationModal();
-            emit('closeFreqModal');
-        }"
-      />
-    </va-modal>
 
     <section class="mt-7">
         <h3
@@ -138,15 +116,6 @@ const handleReservationModal = () => {
         <!-- <generic-button titleColor="text-white" bgColor="bg-primary" @click="submitReservation()">
             Make Reservation
         </generic-button> -->
-        <generic-button v-if="openingHours !== undefined" 
-            titleColor="text-primary" 
-            bgColor="bg-white"
-            class="border border-solid border-primary ml-2"
-            @click="handleReservationModal()"
-            @chooseAnotherClose="handleReservationModal();"
-        >
-            Choose Another Time
-        </generic-button>
     </div>   
     <div class="mt-2">
         <h3
