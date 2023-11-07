@@ -23,7 +23,10 @@ onMounted(async () => {
       />
     </template>
     <template #right>
-      <SideBar :show-sidebar="showSidebar" />
+      <SideBar
+        :show-sidebar="showSidebar"
+        @close-sidebar="showSidebar = false"
+      />
     </template>
     <template #content>
       <div class="flex justify-center items-center h-full p-4 overflow-auto">
