@@ -46,7 +46,6 @@ const submitReservation = async() => {
                     reservation_pax: parseInt(props.numPeople),
                 },
             });
-            console.log('aaaaaaa')
             init({
                 message: 'Booking Success!',
                 color: 'success',
@@ -69,7 +68,7 @@ const paid  = ref(false)
 
 onBeforeMount(function() {
     loadScript({ clientId: CLIENT_ID })
-    .then((paypal) => {
+    .then((paypal:any) => {
       if (!paypal) {
         console.error('Failed to load the PayPal SDK');
         return;
@@ -77,14 +76,14 @@ onBeforeMount(function() {
       if (paypal.Buttons !== undefined) {
         paypal.Buttons({
           createOrder,
-          onApprove: (data, actions) => onApprove(data, actions), // Pass the reference of onApprove
+          onApprove: (data:any, actions:any) => onApprove(data, actions), // Pass the reference of onApprove
         }).render('#paypal-button-container')
-          .catch((err) => {
+          .catch((err:any) => {
             console.error('PayPal Buttons failed to render:', err);
         });
       }
     })
-    .catch((error) => {
+    .catch((error:any) => {
       console.error('Failed to load the PayPal SDK:', error);
     });
 })

@@ -36,6 +36,10 @@ export function useAuth() {
       setAuth(true);
       setEmail(user.attributes.email);
       setUsername(user.username);
+      init({
+        message: `Logged In with ${user.username}`,
+        color: "success",
+      });
       router.push("/");
     } catch (error) {
       const err = error as Error;
@@ -88,9 +92,19 @@ export function useAuth() {
       await Auth.signOut();
       setAuth(false);
       localStorage.clear();
+      setEmail('');
+      setUsername('');
+      init({
+        message: "Successfully Logged Out",
+        color: "success",
+      });
       router.push("/");
     } catch (error) {
       console.log("error signing out: ", error);
+      init({
+        message: "Error Logging out",
+        color: "danger",
+      });
     }
   }
 

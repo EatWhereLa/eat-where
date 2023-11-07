@@ -9,7 +9,7 @@ import type { Restaurant } from "@/types/Restaurant";
 import ReviewForm from "@/components/ReviewForm.vue";
 import ReviewItem from "@/components/ReviewItem.vue";
 import ReservationModal from "@/components/ReservationModal.vue";
-import BookingModal from "@/components/BookingModal.vue";
+import ChoosingModal from "@/components/ChoosingModal.vue";
 
 import { isLeader } from "@/apis/supabase";
 import dayjs from "dayjs";
@@ -226,38 +226,6 @@ const userTimingClash = (): boolean => {
   return false;
 };
 
-const getCommonTimeSlot = () => {
-  const dateTimeFrequency: { [key: string]: number } = {};
-
-  // Populate the frequency map
-  voteTimingsStore.voteTimings.forEach((activity) => {
-    const dateTimeKey = `${activity.date}-${activity.time}`;
-    if (!dateTimeFrequency[dateTimeKey]) {
-      dateTimeFrequency[dateTimeKey] = 1;
-    } else {
-      dateTimeFrequency[dateTimeKey]++;
-    }
-  });
-
-  // Find the most frequent date-time combination
-  let mostFrequentDateTime = {
-    date: "",
-    time: "",
-  };
-  let maxFrequency = 0;
-
-  for (const [key, frequency] of Object.entries(dateTimeFrequency)) {
-    if (frequency >= maxFrequency) {
-      maxFrequency = frequency;
-      const [date, time] = key.split("-");
-      mostFrequentDateTime = { date, time };
-    }
-  }
-
-  showModalValues.value.mostFreqDate = mostFrequentDateTime.date;
-  showModalValues.value.mostFreqTime = mostFrequentDateTime.time;
-};
-
 const handleModal = (
   placeId: Restaurant["place_id"],
   title: Restaurant["name"],
@@ -268,10 +236,6 @@ const handleModal = (
   showModalValues.value.title = title;
   showModalValues.value.periods = openingHours;
   showModalValues.value.show = show;
-
-  if (placeId !== "" && voteTimingsStore.voteTimings.length !== 0) {
-    getCommonTimeSlot();
-  }
 };
 </script>
 
@@ -302,12 +266,11 @@ const handleModal = (
         )
       "
     />
-    <BookingModal
+    <ChoosingModal
       :title="showModalValues.title"
       :place-id="showModalValues.placeId"
       :opening-hours="showModalValues.periods"
-      :booking-date="showModalValues.mostFreqDate"
-      :booking-time="showModalValues.mostFreqTime"
+      :choosing-modal="modalValues"
       v-else
       @closeFreqModal="
         handleModal(
