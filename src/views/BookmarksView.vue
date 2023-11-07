@@ -297,6 +297,7 @@ const toggleSelectedPrice = (price: string) => {
                 :place-id="restaurant.place_id"
                 :tags="restaurant.category"
                 :rating="restaurant.rating"
+                :user-id="username"
                 :distance="restaurant.vicinity"
                 :price="restaurant.price"
                 @click="
