@@ -239,7 +239,7 @@ const toggleSelectedPrice = (price: string) => {
             </div>
             <div class="flex w-full">
               <div class="p-1 lg:hidden w-full">
-                <div class="text-bold lg:hidden pb-1">Sort by</div>
+                <div class="text-bold xl:hidden pb-1">Sort by</div>
                 <div class="relative flex items-center">
                   <va-select
                     v-model="selectedOption"
