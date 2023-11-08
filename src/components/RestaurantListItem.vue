@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import GenericButton from "@/components/GenericButton.vue";
 import ky from "ky";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, defineEmits } from "vue";
 import { useBookmarks } from "@/composables/useBookmarks";
 const props = defineProps<{
   title: string;
@@ -14,6 +14,8 @@ const props = defineProps<{
   distance?: string;
   time?: string;
 }>();
+
+const emits = defineEmits();
 
 const { addBookmark, bookmarks, deleteBookmark } = useBookmarks();
 
@@ -57,6 +59,7 @@ function removeBookmark(event: { stopPropagation: () => void }) {
   if (props.userId && props.placeId) {
     deleteBookmark(props.userId, props.placeId);
   }
+  emits("custom-event-name", props.placeId);
 }
 </script>
 

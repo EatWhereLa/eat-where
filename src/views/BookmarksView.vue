@@ -154,6 +154,15 @@ const toggleSelectedPrice = (price: string) => {
     priceFilters.value.push(price);
   }
 };
+
+const handleCustomEvent = (placeid: string) => {
+  //delete the bookmark locally first
+  for (const restaurant in filteredList.value) {
+    if (placeid == filteredList.value[restaurant].place_id) {
+      filteredList.value.splice(Number(restaurant), 1);
+    }
+  }
+};
 </script>
 
 <template>
@@ -307,6 +316,7 @@ const toggleSelectedPrice = (price: string) => {
                     getRestaurantImageUrl(restaurant),
                   )
                 "
+                @custom-event-name="handleCustomEvent"
               />
             </div>
           </div>

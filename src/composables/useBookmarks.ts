@@ -54,8 +54,7 @@ export function useBookmarks() {
     try {
       await api
         .delete(`bookmark/remove?user_id=${user_id}&place_id=${place_id}`)
-        .text();  
-      await getBookmarks(user_id);
+        .text();
       init({
         message: "Successfully deleted bookmark",
         color: "success",
